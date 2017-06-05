@@ -8,6 +8,7 @@ setup(name='boarbot',
       url="https://github.com/fsufitch/discord-boar-bot",
       package_dir={'': 'src'},
       packages=find_packages('src'),
+      include_package_data=True,
       entry_points={
           "console_scripts": [
               "boarbot=boarbot.cli:main"
