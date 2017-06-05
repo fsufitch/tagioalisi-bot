@@ -1,4 +1,5 @@
 import importlib
+import traceback
 
 from boarbot.common.config import CONFIG
 from boarbot.common.events import EventType
@@ -21,4 +22,8 @@ def initialize_modules(client, reinit=False):
 
 async def dispatch_event(event_type: EventType, *args):
     for module in MODULES:
-        await module.handle_event(event_type, args)
+        try:
+            await module.handle_event(event_type, args)
+        except Exception as e:
+            tb = traceback.format_exc().strip()
+            LOGGER.error('```' + tb + '```')

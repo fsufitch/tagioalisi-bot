@@ -2,6 +2,7 @@ import discord
 
 from boarbot.dispatch import dispatch_event
 from boarbot.common.events import EventType
+from boarbot.common.log import LOGGER
 
 class BoarBotClient(discord.Client):
     async def on_ready(self):

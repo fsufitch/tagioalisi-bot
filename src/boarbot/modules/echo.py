@@ -16,4 +16,6 @@ class EchoModule(BotModule):
             return # Need !echo
 
         echo = message.clean_content.split('!echo', 1)[1]
+        if 'shit' in echo:
+            raise ValueError('Your language is bad and you should feel bad')
         await self.client.send_message(message.channel, echo)
