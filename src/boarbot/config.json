@@ -1,0 +1,9 @@
+{
+  "cliLogLevel": "DEBUG",
+  "discordLogLevel": "INFO",
+  "discordLogChannel": "321395616036945940",
+  "loadModules": [
+    "boarbot.modules.logger:BoarLogger",
+    "boarbot.modules.echo:EchoModule"
+  ]
+}

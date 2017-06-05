@@ -1,4 +1,8 @@
 import argparse
+import asyncio
+
+from boarbot.client import BoarBotClient
+from boarbot.dispatch import initialize_modules
 
 def parse_cli() -> (str, ):
     parser = argparse.ArgumentParser()
@@ -6,10 +10,11 @@ def parse_cli() -> (str, ):
     args = parser.parse_args()
     return (args.token, )
 
-def main() -> None:
-    print('hello!')
+def main():
     (token, ) = parse_cli()
-    print('got token', token)
+    client = BoarBotClient()
+    initialize_modules(client)
+    client.run(token)
 
 if __name__ == '__main__':
     main()
