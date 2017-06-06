@@ -17,5 +17,6 @@ setup(name='boarbot',
 
       install_requires=[
           'discord.py',
+          'PyYAML',
           ],
       )
