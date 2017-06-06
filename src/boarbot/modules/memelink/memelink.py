@@ -41,7 +41,7 @@ class MemeLinkModule(BotModule):
     def get_meme(self, query: str) -> str:
         query = query.lower()
         meme_name, ext = query.split('.', 1)
-        mimetype = mimetypes.guess_type(query)[0]
+        mimetype = mimetypes.guess_type(query)[0] or ''
 
         for meme in MEMES:
             if meme.get('type') and meme['type'] not in mimetype:
