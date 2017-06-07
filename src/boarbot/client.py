@@ -8,8 +8,8 @@ class BoarBotClient(discord.Client):
     async def on_ready(self):
         await dispatch_event(EventType.READY)
 
-    async def on_reload(self):
-        await dispatch_event(EventType.RELOAD)
+    async def on_resumed(self):
+        await dispatch_event(EventType.RESUMED)
 
     async def on_message(self, message: discord.Message):
         await dispatch_event(EventType.MESSAGE, message)

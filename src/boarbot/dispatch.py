@@ -7,11 +7,13 @@ from boarbot.common.log import LOGGER
 
 MODULES = []
 
-def initialize_modules(client, reinit=False):
+def initialize_modules(client, extra_modules=[], reinit=False):
     if MODULES and not reinit:
         print("Not re-initializing modules")
 
-    for module_config in CONFIG.get('loadModules', []):
+    modules = CONFIG.get('loadModules', []) + extra_modules
+
+    for module_config in modules:
         LOGGER.debug('Loading ' + module_config)
         module_name, class_name = module_config.split(':', 1)
 

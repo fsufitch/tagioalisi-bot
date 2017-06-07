@@ -2,7 +2,7 @@ from enum import Enum
 
 class EventType(Enum):
     READY = 1
-    RELOAD = 2
+    RESUMED = 2
     MESSAGE = 3
     MESSAGE_DELETE = 4
     MESSAGE_EDIT = 5
