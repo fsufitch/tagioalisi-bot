@@ -61,7 +61,7 @@ these steps:
 ### Installing new modules
 
 **Default modules:** The default modules (e.g. logging module) that the bot
-loads are configured as part of the (config.json)[src/boarbot/config.json] file.
+loads are configured as part of the [config.json](src/boarbot/config.json) file.
 To change these, you must edit the file and restart the bot (and reinstall, if you
 installed it without the `-e` option).
 
