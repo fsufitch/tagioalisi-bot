@@ -15,7 +15,7 @@ class BoarLogger(BotModule):
 
     async def handle_event(self, event_type, args):
         if event_type == EventType.READY:
-            LOGGER.debug('BoarBot logger set up and ready to go')
+            LOGGER.info('Discord bot started')
 
     async def emit_log(self, message: str):
         channel = self.client.get_channel(LOG_CHANNEL)
