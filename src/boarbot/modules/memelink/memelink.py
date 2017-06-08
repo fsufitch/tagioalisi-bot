@@ -3,6 +3,7 @@ import mimetypes
 import pkg_resources
 import random
 import re
+import types
 import yaml
 
 from boarbot.common.botmodule import BotModule
@@ -75,7 +76,22 @@ class MemeLinkModule(BotModule):
             output_lines.append(output)
 
         if output_lines:
-            reply = '```' + '\n'.join(output_lines) + '```'
+            for message_chunk in self.chunk_output_lines(lines):
+                reply = '```' + '\n'.join(message_chunk) + '```'
+                await self.client.send_message(message.author, reply)
         else:
-            reply = '`No memes found for "%s"`' % query
-        await self.client.send_message(message.author, reply)
+            await self.client.send_message(message.author, '`No memes found for "%s"`' % query)
+
+    def chunk_output_lines(self, lines: [str], max_chars=1900) -> [[str]]:
+        chunks = []
+        current_chunk = []
+        current_chunk_len = 0
+        for line in lines:
+            if current_chunk_len + len(line) > max_chars:
+                chunks.append(current_chunk)
+                current_chunk = []
+                current_chunk_len = 0
+            current_chunk.append(line)
+            current_chunk_len += len(line) + 1 # account for '\n'
+        chunks.append(current_chunk)
+        return chunks
