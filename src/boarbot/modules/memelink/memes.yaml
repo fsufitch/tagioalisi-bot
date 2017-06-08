@@ -6,6 +6,15 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - trumpface
+    - trumpfaces
+    - trump
+    - trumprobot
+  urls:
+    - https://media.giphy.com/media/xTiTnHXbRoaZ1B1Mo8/giphy.gif
+    - https://media.tenor.com/images/b959b5cbaabbfd532a6a78d978a6c65d/tenor.gif
+
+- names:
     - rickroll
   urls:
     - https://www.youtube.com/watch?v=oHg5SJYRHA0
