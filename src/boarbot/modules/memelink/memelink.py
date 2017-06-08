@@ -76,7 +76,7 @@ class MemeLinkModule(BotModule):
             output_lines.append(output)
 
         if output_lines:
-            for message_chunk in self.chunk_output_lines(lines):
+            for message_chunk in self.chunk_output_lines(output_lines):
                 reply = '```' + '\n'.join(message_chunk) + '```'
                 await self.client.send_message(message.author, reply)
         else:
