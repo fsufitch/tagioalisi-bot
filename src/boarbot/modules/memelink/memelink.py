@@ -12,6 +12,8 @@ QUERY_RE = re.compile('[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+')
 MEMES_YAML = pkg_resources.resource_string('boarbot.modules.memelink', 'memes.yaml').decode()
 MEMES = yaml.load(MEMES_YAML)
 
+LIST_MEMES_COMMAND = 'list memes'
+
 class MemeLinkModule(BotModule):
     async def handle_event(self, event_type: EventType, args):
         if event_type != EventType.MESSAGE:
@@ -20,6 +22,10 @@ class MemeLinkModule(BotModule):
         message = args[0] # type: discord.Message
         if message.author.bot:
             return # Ignore bots
+
+        if self.client.user.mentioned_in(message) and LIST_MEMES_COMMAND in message.clean_content:
+            await self.list_memes(message)
+            return
 
         query = self.extract_query(message.clean_content)
         if not query:
@@ -51,3 +57,25 @@ class MemeLinkModule(BotModule):
                 return random.choice(meme['urls'])
 
         return None
+
+    async def list_memes(self, message: discord.Message):
+        query = message.clean_content.split(LIST_MEMES_COMMAND, 1)[1].strip() # type: str
+        output_lines = []
+        for meme in MEMES:
+            for name in meme['names']:
+                if query in name:
+                    break
+            else: # query not in any names, skip this meme
+                continue
+
+            output = '- '
+            if meme.get('type'):
+                output = '- (%s) ' % meme['type']
+            output += ', '.join(meme['names'])
+            output_lines.append(output)
+
+        if output_lines:
+            reply = '```' + '\n'.join(output_lines) + '```'
+        else:
+            reply = '`No memes found for "%s"`' % query
+        await self.client.send_message(message.channel, reply)
