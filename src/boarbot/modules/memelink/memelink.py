@@ -78,4 +78,4 @@ class MemeLinkModule(BotModule):
             reply = '```' + '\n'.join(output_lines) + '```'
         else:
             reply = '`No memes found for "%s"`' % query
-        await self.client.send_message(message.channel, reply)
+        await self.client.send_message(message.author, reply)
