@@ -3,6 +3,7 @@ import shlex
 from abc import ABCMeta, abstractmethod
 
 from boarbot.common.events import EventType
+from boarbot.common.log import LOGGER
 
 class BotModule(metaclass=ABCMeta):
     def __init__(self, client: discord.Client):
@@ -20,6 +21,7 @@ class BotModule(metaclass=ABCMeta):
     def parse_command(self, command: str) -> [str]:
         content = self.content.strip() # type: str
         mention = self.client.user.mention # type: str
+        LOGGER.debug('Parsing content `{}` for command `{}` and user {}', self.content.strip(), command, mention)
         if not content.startswith(mention):
             return None
 
