@@ -29,7 +29,12 @@ class BotModule(metaclass=ABCMeta):
             return None
 
         content = content[len(mention):].strip() # type: str
-        parts = shlex.split(content) # type: [str]
+
+        try:
+            parts = shlex.split(content) # type: [str]
+        except Exception as e:
+            LOGGER.debug('Failed shlex.split on ' + str(content))
+
         if not parts or parts[0] != command:
             return None
 
