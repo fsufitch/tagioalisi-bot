@@ -1,4 +1,5 @@
 import discord
+import shlex
 from abc import ABCMeta, abstractmethod
 
 from boarbot.common.events import EventType
@@ -10,3 +11,21 @@ class BotModule(metaclass=ABCMeta):
     @abstractmethod
     async def handle_event(self, event_type: EventType, args):
         ...
+
+    '''
+    Parse a command in the format `@<bot> <command> <command arguments>`.
+    Returns either a list of string arguments, or None if this is not a valid
+    call to the given command.
+    '''
+    def parse_command(self, command: str) -> [str]:
+        content = self.content.strip() # type: str
+        mention = self.client.user.mention # type: str
+        if not content.startswith(mention):
+            return None
+
+        content = content[len(mention):].split() # type: str
+        parts = shlex.split(content) # type: [str]
+        if not parts or parts[0] != command:
+            return None
+
+        return parts[1:]

@@ -12,7 +12,7 @@ LOG_LEVELS = {
     'CRITICAL': logging.CRITICAL,
 }
 
-LOGGER = logging.getLogger('boarbot')
+LOGGER = logging.getLogger('boarbot') # type: logging.Logger
 
 class AsyncHandler(logging.Handler):
     def __init__(self, callback_async):
