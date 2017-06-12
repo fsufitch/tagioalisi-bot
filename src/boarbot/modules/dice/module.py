@@ -26,28 +26,28 @@ class DiceRollModule(BotModule):
         try:
             parsed_args = DICE_PARSER.parse_args(args)
         except DiceParserException as e:
-            await self.send_message(message.channel, ERROR_FORMAT.format(error=e.args[0]))
+            await self.client.send_message(message.channel, ERROR_FORMAT.format(error=e.args[0]))
             return
 
         if parsed_args.help:
-            await self.send_message(message.channel, '```' + DICE_PARSER.format_help() + '```')
+            await self.client.send_message(message.channel, '```' + DICE_PARSER.format_help() + '```')
             return
 
         if not parsed_args.dice:
-            await self.send_message(message.channel, ERROR_FORMAT.format(error='error: no dice specified'))
+            await self.client.send_message(message.channel, ERROR_FORMAT.format(error='error: no dice specified'))
             return
 
         try:
             roll = DiceRoll(' '.join(parsed_args.dice))
         except Exception as e:
-            await self.send_message(message.channel, ERROR_FORMAT.format(error=str(e)))
+            await self.client.send_message(message.channel, ERROR_FORMAT.format(error=str(e)))
 
         if parsed_args.verbose:
             msg = self.reply_verbose(message.channel, roll)
         else:
             msg = self.reply(message.channel.roll)
 
-        await self.send_message(message.channel, msg)
+        await self.client.send_message(message.channel, msg)
 
     def reply(self, roll: DiceRoll) -> str:
         return '`{}` => `{}`'.format(roll.rolldef, roll.roll[0])
