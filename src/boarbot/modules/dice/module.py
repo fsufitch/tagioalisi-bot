@@ -43,14 +43,14 @@ class DiceRollModule(BotModule):
             await self.client.send_message(message.channel, ERROR_FORMAT.format(error=str(e)))
 
         if parsed_args.verbose:
-            msg = self.reply_verbose(message.channel, roll)
+            msg = self.reply_verbose(roll)
         else:
-            msg = self.reply(message.channel, roll)
+            msg = self.reply(roll)
 
         await self.client.send_message(message.channel, msg)
 
     def reply(self, roll: DiceRoll) -> str:
-        return '`{}` => `{}`'.format(roll.rolldef, roll.roll[0])
+        return '`{}` => `{}`'.format(roohll.rolldef, roll.roll[0])
 
     def reply_verbose(self, roll: DiceRoll):
         msg = self.reply(roll) + '\n**Details:**\n'
