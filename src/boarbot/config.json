@@ -5,6 +5,7 @@
   "loadModules": [
     "boarbot.modules.logger:BoarLogger",
     "boarbot.modules.echo:EchoModule",
-    "boarbot.modules.memelink.memelink:MemeLinkModule"
+    "boarbot.modules.memelink.memelink:MemeLinkModule",
+    "boarbot.modules.dice.module:DiceRollModule"
   ]
 }
