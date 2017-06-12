@@ -6,6 +6,13 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - makeme
+    - makemefrog
+    - meobrigue
+  urls:
+    - http://i3.kym-cdn.com/photos/images/facebook/000/493/200/426.jpg
+
+- names:
     - trumpface
     - trumpfaces
     - trump
