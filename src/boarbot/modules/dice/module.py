@@ -19,7 +19,7 @@ class DiceRollModule(BotModule):
             return
         message = args[0]
 
-        args = self.parse_command(DICE_COMMAND)
+        args = self.parse_command(DICE_COMMAND, message)
         if args is None:
             return
 

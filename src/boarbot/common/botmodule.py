@@ -18,8 +18,11 @@ class BotModule(metaclass=ABCMeta):
     Returns either a list of string arguments, or None if this is not a valid
     call to the given command.
     '''
-    def parse_command(self, command: str) -> [str]:
-        content = self.content.strip() # type: str
+    def parse_command(self, command: str, message: discord.Message, ignore_bots=True) -> [str]:
+        if ignore_bots and message.author.bot:
+            return None
+
+        content = message.content.strip() # type: str
         mention = self.client.user.mention # type: str
         LOGGER.debug('Parsing content `{}` for command `{}` and user {}', self.content.strip(), command, mention)
         if not content.startswith(mention):
