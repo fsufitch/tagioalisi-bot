@@ -24,7 +24,7 @@ class BotModule(metaclass=ABCMeta):
 
         content = message.content.strip() # type: str
         mention = self.client.user.mention # type: str
-        LOGGER.debug('Parsing content `{}` for command `{}` and user {}', self.content.strip(), command, mention)
+        LOGGER.debug('Parsing content `{}` for command `{}` and user {}', message.content.strip(), command, mention)
         if not content.startswith(mention):
             return None
 
