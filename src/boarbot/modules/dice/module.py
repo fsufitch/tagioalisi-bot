@@ -45,7 +45,7 @@ class DiceRollModule(BotModule):
         if parsed_args.verbose:
             msg = self.reply_verbose(message.channel, roll)
         else:
-            msg = self.reply(message.channel.roll)
+            msg = self.reply(message.channel, roll)
 
         await self.client.send_message(message.channel, msg)
 
