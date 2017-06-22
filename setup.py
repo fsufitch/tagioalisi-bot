@@ -19,5 +19,7 @@ setup(name='boarbot',
           'discord.py',
           'PyYAML',
           'regex',
+          'youtube_dl',
+          'pynacl',
           ],
       )

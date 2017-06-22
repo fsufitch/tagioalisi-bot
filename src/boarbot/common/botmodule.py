@@ -39,3 +39,11 @@ class BotModule(metaclass=ABCMeta):
             return None
 
         return parts[1:]
+
+    def load_opus(self):
+        if not discord.opus.is_loaded():
+            from ctypes.util import find_library
+            opus = find_library('opus')
+            LOGGER.debug('Loading Opus codec from ' + opus)
+            discord.opus.load_opus(opus)
+        return discord.opus.is_loaded
