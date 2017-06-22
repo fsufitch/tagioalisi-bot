@@ -44,10 +44,24 @@ class BotModule(metaclass=ABCMeta):
     def load_opus(self):
         if not discord.opus.is_loaded():
             from ctypes.util import find_library
-            opus = find_library('opus')
-            if not opus:
-                LOGGER.error('Opus not found!')
-                return
-            LOGGER.debug('Loading Opus codec from ' + opus)
-            discord.opus.load_opus(opus)
-        return discord.opus.is_loaded
+            LOGGER.debug('libopus not automatically loaded')
+            opus_attempts = [
+                find_library('opus'),
+                'libopus.so.0',
+                'opus.dll',
+                'opus',
+            ]
+            for opus in opus_attempts:
+                if not opus:
+                    continue
+                try:
+                    LOGGER.debug('Loading Opus codec from ' + opus)
+                    discord.opus.load_opus(opus)
+                    LOGGER.debug('Success!')
+                    break
+
+                except OSError as e:
+                    LOGGER.debug('Failed! ' + str(e))
+            else:
+                LOGGER.error('Could not load Opus codec! Voice support is not available.')
+        return discord.opus.is_loaded()
