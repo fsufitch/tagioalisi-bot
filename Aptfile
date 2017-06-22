@@ -2,3 +2,8 @@ libogg0
 libopus0
 libopus-dev
 opus-tools
+libffi6
+libffi-dev
+python3.5-dev
+aiohttp
+websockets
