@@ -7,3 +7,4 @@ libffi-dev
 python3.5-dev
 aiohttp
 websockets
+ffmpeg
