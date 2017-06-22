@@ -2,14 +2,3 @@ libogg0
 libopus0
 libopus-dev
 opus-tools
-libffi6
-libffi-dev
-python3.5-dev
-aiohttp
-websockets
-ffmpeg
-libgl1-mesa-glx
-libusb-1.0-0
-libxdamage1
-x11-common
-x11-utils
