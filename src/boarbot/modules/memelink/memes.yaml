@@ -6,6 +6,21 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - weirdshit
+  urls:
+    - http://i.imgur.com/uNkOUFI.gifv
+
+- names:
+    - wtf
+    - whatthefuck    
+  urls:
+    - http://i.imgur.com/vbIOCp7.gifv
+    - http://i.imgur.com/5ccLtCs.gif
+    - http://media.giphy.com/media/HlFDE0DEp9Gq4/giphy.gif
+    - https://media.giphy.com/media/vfB7MHvJlW5QQ/giphy.gif
+    - http://imgur.com/a/ibuGw
+
+- names:
     - makeme
     - makemefrog
     - meobrigue
