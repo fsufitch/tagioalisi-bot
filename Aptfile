@@ -10,3 +10,4 @@ websockets
 ffmpeg
 libgl1-mesa-glx
 libusb-1.0-0
+libxdamage1
