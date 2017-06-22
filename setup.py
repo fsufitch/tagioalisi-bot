@@ -20,6 +20,5 @@ setup(name='boarbot',
           'PyYAML',
           'regex',
           'youtube_dl',
-          'pynacl',
           ],
       )
