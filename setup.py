@@ -16,7 +16,7 @@ setup(name='boarbot',
         },
 
       install_requires=[
-          'discord.py',
+          'discord.py[voice]',
           'PyYAML',
           'regex',
           'youtube_dl',
