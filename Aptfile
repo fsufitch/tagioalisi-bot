@@ -11,3 +11,5 @@ ffmpeg
 libgl1-mesa-glx
 libusb-1.0-0
 libxdamage1
+x11-common
+x11-utils
