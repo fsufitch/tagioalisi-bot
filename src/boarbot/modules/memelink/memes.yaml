@@ -6,6 +6,14 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - gotogulag
+    - gogulag
+    - gulag
+    - kulak
+  urls:
+    - https://i.imgur.com/EjxQBJh.png
+
+- names:
     - weirdshit
   urls:
     - http://i.imgur.com/uNkOUFI.gifv
