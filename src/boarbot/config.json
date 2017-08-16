@@ -11,6 +11,7 @@
     "boarbot.modules.echo:EchoModule",
     "boarbot.modules.memelink.memelink:MemeLinkModule",
     "boarbot.modules.dice.module:DiceRollModule",
-    "boarbot.modules.ytplay.module:YTPlayModule"
+    "boarbot.modules.ytplay.module:YTPlayModule",
+    "boarbot.modules.welcome.module:WelcomeModule"
   ]
 }
