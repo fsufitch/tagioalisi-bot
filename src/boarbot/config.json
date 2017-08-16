@@ -2,6 +2,10 @@
   "cliLogLevel": "DEBUG",
   "discordLogLevel": "INFO",
   "discordLogChannel": "321395616036945940",
+  "welcome": {
+    "channel": "228286778832846848",
+    "rules": "http://example.org"
+  },
   "loadModules": [
     "boarbot.modules.logger:BoarLogger",
     "boarbot.modules.echo:EchoModule",
