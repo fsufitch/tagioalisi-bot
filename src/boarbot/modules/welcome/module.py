@@ -25,7 +25,7 @@ class WelcomeModule(BotModule):
             return
 
         member = args[0] # type: discord.Member
-        channel = self.client.get_channel(LOG_CHANNEL)
+        channel = self.client.get_channel(WELCOME_CHANNEL)
         if not channel:
             return
 
