@@ -6,6 +6,15 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - stopposting
+    - timetostopposting
+  urls:
+    - http://i0.kym-cdn.com/photos/images/original/000/155/839/stop-posting-yell.jpg
+    - http://i0.kym-cdn.com/photos/images/original/000/157/775/5cbviw.jpg
+    - http://i0.kym-cdn.com/photos/images/original/000/155/834/plz-stop-post.jpg
+    - http://i0.kym-cdn.com/photos/images/original/000/157/772/StopPostingvonKarma.gif
+
+- names:
     - gotogulag
     - gogulag
     - gulag
