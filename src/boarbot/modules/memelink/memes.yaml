@@ -6,6 +6,12 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - bait
+    - thatsbait
+  urls:
+    - http://i.imgur.com/FOwZ77O.gifv
+
+- names:
     - stopposting
     - timetostopposting
   urls:
