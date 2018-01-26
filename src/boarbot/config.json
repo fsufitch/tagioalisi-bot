@@ -3,8 +3,8 @@
   "discordLogLevel": "INFO",
   "discordLogChannel": "321395616036945940",
   "welcome": {
-    "channel": "228286778832846848",
-    "rules": "https://gist.github.com/fsufitch/83ba28eaa67d498e91c1261f104468ac"
+    "channel": "406543147271979031",
+    "rulesChannel": "406543874224553984"
   },
   "loadModules": [
     "boarbot.modules.logger:BoarLogger",

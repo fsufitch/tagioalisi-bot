@@ -4,14 +4,15 @@ import discord
 from boarbot.common.botmodule import BotModule
 from boarbot.common.events import EventType
 from boarbot.common.config import CONFIG
+from boarbot.common.log import LOGGER
 
 WELCOME_CHANNEL = CONFIG.get('welcome', {}).get('channel')
-SERVER_RULES = CONFIG.get('welcome', {}).get('rules')
+RULES_CHANNEL = CONFIG.get('welcome', {}).get('rulesChannel')
 
 WELCOME_MESSAGE = '''Welcome to the Discord server, {mention}!
 
 I am the Boar Bot, and I work very hard to make everyone's life more fun.
-You may want to check out the server guide here: {rules}
+You may want to check out the server rules here: {rulesChannel}
 
 Have fun!
 '''
@@ -27,7 +28,13 @@ class WelcomeModule(BotModule):
         member = args[0] # type: discord.Member
         channel = self.client.get_channel(WELCOME_CHANNEL)
         if not channel:
+            log.error("Could not find welcome channel")
             return
 
-        message_text = WELCOME_MESSAGE.format(mention=member.mention, rules=SERVER_RULES)
+        rules_channel = self.client.get_channel(RULES_CHANNEL)
+        if not rules_channel:
+            log.error("Could not find rules channel")
+            return
+
+        message_text = WELCOME_MESSAGE.format(mention=member.mention, rulesChannel=rules_channel.mention)
         await self.client.send_message(channel, message_text)
