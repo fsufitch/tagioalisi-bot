@@ -6,6 +6,14 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - tidepods
+    - tidepod
+    - tide
+  urls:
+    - https://i.imgur.com/N5HTHp6.gif
+    - http://i0.kym-cdn.com/photos/images/newsfeed/001/329/911/0bd.gif
+
+- names:
     - wrong
     - trumpwrong
   urls:
