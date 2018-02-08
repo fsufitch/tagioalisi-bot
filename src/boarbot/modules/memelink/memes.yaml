@@ -6,6 +6,15 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - obama
+    - obamagun
+    - obamadebt
+    - debt
+    - debtgun
+  urls:
+    - https://i.imgur.com/aNeGcgL.gif
+
+- names:
     - tidepods
     - tidepod
     - tide
