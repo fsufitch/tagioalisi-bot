@@ -6,6 +6,14 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - treason
+    - itstreason
+    - itstreasonthen
+  urls:
+    - http://i.imgur.com/SchZDti.jpg
+    - https://i.imgur.com/ZsdaaEI.gifv
+
+- names:
     - obama
     - obamagun
     - obamadebt
