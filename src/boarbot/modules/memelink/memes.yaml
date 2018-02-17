@@ -6,6 +6,12 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - hmm
+    - thinking
+  urls:
+    - https://i.imgur.com/GPknfcS.gif
+
+- names:
     - treason
     - itstreason
     - itstreasonthen
