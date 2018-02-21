@@ -6,6 +6,11 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - nicepost
+  urls:
+    - https://i.imgur.com/oUGinBn.gifv
+
+- names:
     - hmm
     - thinking
   urls:
