@@ -8,6 +8,7 @@ import yaml
 
 from boarbot.common.botmodule import BotModule
 from boarbot.common.events import EventType
+from boarbot.common.chunks import chunk_lines
 
 from .cmd import MEME_LINK_PARSER, MemeLinkParserException
 
@@ -94,7 +95,7 @@ class MemeLinkModule(BotModule):
             output_lines.append(output)
 
         if output_lines:
-            for message_chunk in self.chunk_output_lines(output_lines):
+            for message_chunk in chunk_lines(output_lines):
                 reply = '```' + '\n'.join(message_chunk) + '```'
                 await self.client.send_message(message.author, reply)
         else:
@@ -102,17 +103,3 @@ class MemeLinkModule(BotModule):
 
         if message.server:
             await self.client.send_message(message.channel, '%s check your direct messages for your search result. You can also query me again there to not spam the channel!' % message.author.mention)
-
-    def chunk_output_lines(self, lines: [str], max_chars=1900) -> [[str]]:
-        chunks = []
-        current_chunk = []
-        current_chunk_len = 0
-        for line in lines:
-            if current_chunk_len + len(line) > max_chars:
-                chunks.append(current_chunk)
-                current_chunk = []
-                current_chunk_len = 0
-            current_chunk.append(line)
-            current_chunk_len += len(line) + 1 # account for '\n'
-        chunks.append(current_chunk)
-        return chunks

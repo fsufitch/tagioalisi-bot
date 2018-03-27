@@ -3,6 +3,7 @@ import discord
 from boarbot.common.botmodule import BotModule
 from boarbot.common.config import CONFIG
 from boarbot.common.events import EventType
+from boarbot.common.chunks import chunk_lines
 
 from .cmd import GROUPS_PARSER, GroupsParserException
 
@@ -40,6 +41,7 @@ class GroupsModule(BotModule):
 
         command_map = {
             'list': self.list_groups,
+            'members': self.list_members,
             'create': self.create_group,
             'delete': self.delete_group,
             'join': self.join_group,
@@ -67,6 +69,24 @@ class GroupsModule(BotModule):
             await self.client.send_message(trigger_message.channel, '\n'.join(lines))
         else:
             await self.client.send_message(trigger_message.channel, 'No mentionable groups with prefix `%s` found' % GROUP_PREFIX)
+
+    async def list_members(self, trigger_message: discord.Message, group_name: str, *args):
+        role_name = GROUP_PREFIX+group_name
+        group = self._find_group(trigger_message, group_name)
+        if not group:
+            await self.client.send_message(trigger_message.channel, 'ERROR: group with name `%s` not found (role `%s`)' % (group_name, role_name))
+            return
+
+        group_members = []
+        for member in trigger_message.server.members:
+            if group in member.roles:
+                group_members.append(member)
+
+        output_lines = ['Group with name %s (role `%s`) has %d members.' % (group_name, role_name, len(group_members))]
+        output_lines += ['- %s' % (member.nick or member.name) for member in group_members]
+        for message_chunk in chunk_lines(output_lines):
+            reply = '\n'.join(message_chunk)
+            await self.client.send_message(trigger_message.channel, reply)
 
     async def create_group(self, trigger_message: discord.Message, group_name: str, *args):
         if not self._is_group_manager(trigger_message.author):
