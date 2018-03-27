@@ -6,6 +6,13 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - areyounotentertained
+    - entertained
+    - gladiator
+  urls:
+    - https://i.imgur.com/TjUq3UR.gifv
+
+- names:
     - nicepost
   urls:
     - https://i.imgur.com/oUGinBn.gifv
