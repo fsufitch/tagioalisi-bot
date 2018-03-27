@@ -9,11 +9,15 @@ import yaml
 from boarbot.common.botmodule import BotModule
 from boarbot.common.events import EventType
 
+from .cmd import MEME_LINK_PARSER, MemeLinkParserException
+
 QUERY_RE = re.compile('[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+')
 MEMES_YAML = pkg_resources.resource_string('boarbot.modules.memelink', 'memes.yaml').decode()
 MEMES = yaml.load(MEMES_YAML)
 
-LIST_MEMES_COMMAND = 'list memes'
+MEMES_COMMAND = '!memes'
+ERROR_FORMAT = '`{error}`\nTry `!memes --help` to get usage instructions.'
+
 
 class MemeLinkModule(BotModule):
     async def handle_event(self, event_type: EventType, args):
@@ -24,19 +28,34 @@ class MemeLinkModule(BotModule):
         if message.author.bot:
             return # Ignore bots
 
-        if self.client.user.mentioned_in(message) and LIST_MEMES_COMMAND in message.clean_content:
-            await self.list_memes(message)
+        meme_query = self.extract_query(message.clean_content)
+        if meme_query:
+            # someone is trying to link a meme
+            url = self.get_meme(meme_query)
+            if not url:
+                return
+
+            msg = '**%s**: %s' % (meme_query, url)
+            await self.client.send_message(message.channel, msg)
             return
 
-        query = self.extract_query(message.clean_content)
-        if not query:
+        # otherwise, someone might be trying to use !memes
+        args = self.parse_command(MEMES_COMMAND, message)
+        if args is None:
             return
-        url = self.get_meme(query)
-        if not url:
+        try:
+            parsed_args = MEME_LINK_PARSER.parse_args(args)
+        except MemeLinkParserException as e:
+            await self.client.send_message(message.channel, ERROR_FORMAT.format(error=e.args[0]))
             return
 
-        msg = '**%s**: %s' % (query, url)
-        await self.client.send_message(message.channel, msg)
+        if parsed_args.help:
+            await self.client.send_message(message.channel, '```' + MEME_LINK_PARSER.format_help() + '```')
+            return
+
+        search = parsed_args.search
+
+        await self.list_memes(message, search)
 
     def extract_query(self, message_text: str) -> str:
         match = QUERY_RE.search(message_text)
@@ -59,12 +78,11 @@ class MemeLinkModule(BotModule):
 
         return None
 
-    async def list_memes(self, message: discord.Message):
-        query = message.clean_content.split(LIST_MEMES_COMMAND, 1)[1].strip() # type: str
+    async def list_memes(self, message: discord.Message, search: str):
         output_lines = []
         for meme in MEMES:
             for name in meme['names']:
-                if query in name:
+                if search in name:
                     break
             else: # query not in any names, skip this meme
                 continue
@@ -80,7 +98,10 @@ class MemeLinkModule(BotModule):
                 reply = '```' + '\n'.join(message_chunk) + '```'
                 await self.client.send_message(message.author, reply)
         else:
-            await self.client.send_message(message.author, '`No memes found for "%s"`' % query)
+            await self.client.send_message(message.author, '`No memes found for "%s"`' % search)
+
+        if message.server:
+            await self.client.send_message(message.channel, '%s check your direct messages for your search result. You can also query me again there to not spam the channel!' % message.author.mention)
 
     def chunk_output_lines(self, lines: [str], max_chars=1900) -> [[str]]:
         chunks = []

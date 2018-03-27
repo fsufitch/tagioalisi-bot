@@ -29,7 +29,7 @@ class BotModule(metaclass=ABCMeta):
         #if not content.startswith(mention):
         #    return None
 
-        content = content[len(mention):].strip() # type: str
+        #content = content[len(mention):].strip() # type: str
 
         try:
             parts = shlex.split(content) # type: [str]

@@ -20,12 +20,12 @@ class GroupsModule(BotModule):
         if message.author.bot:
             return # Ignore bots
 
-        if not message.server:
-            await self.client.send_message(message.channel, "Please send the message in a server-context channel, not a direct message")
-            return
-
         args = self.parse_command(GROUPS_COMMAND, message)
         if args is None:
+            return
+
+        if not message.server:
+            await self.client.send_message(message.channel, "Please send the message in a server-context channel, not a direct message")
             return
 
         try:
@@ -47,7 +47,7 @@ class GroupsModule(BotModule):
         }
         command = parsed_args.command
         if command not in command_map:
-            await self.client.send_message(message.channel, "ERROR: no such command: `%s`" % command)
+            await self.client.send_message(message.channel, ERROR_FORMAT.format(error="no such command: %s" % command))
             return
 
         group_name = parsed_args.group

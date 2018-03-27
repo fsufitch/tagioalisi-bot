@@ -17,7 +17,7 @@
   "loadModules": [
     "boarbot.modules.logger:BoarLogger",
     "boarbot.modules.echo:EchoModule",
-    "boarbot.modules.memelink.memelink:MemeLinkModule",
+    "boarbot.modules.memelink.module:MemeLinkModule",
     "boarbot.modules.dice.module:DiceRollModule",
     "boarbot.modules.groups.module:GroupsModule",
     "boarbot.modules.ytplay.module:YTPlayModule",
