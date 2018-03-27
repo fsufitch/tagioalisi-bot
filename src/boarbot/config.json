@@ -6,11 +6,20 @@
     "channel": "406543147271979031",
     "rulesChannel": "406543874224553984"
   },
+  "groups": {
+    "managers": [
+      "203684963864805376",
+      "208784000896991232",
+      "203684963864805376",
+      "167048845962772480"
+    ]
+  },
   "loadModules": [
     "boarbot.modules.logger:BoarLogger",
     "boarbot.modules.echo:EchoModule",
     "boarbot.modules.memelink.memelink:MemeLinkModule",
     "boarbot.modules.dice.module:DiceRollModule",
+    "boarbot.modules.groups.module:GroupsModule",
     "boarbot.modules.ytplay.module:YTPlayModule",
     "boarbot.modules.welcome.module:WelcomeModule"
   ]
