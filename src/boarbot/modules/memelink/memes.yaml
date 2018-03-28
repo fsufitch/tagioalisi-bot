@@ -6,6 +6,12 @@
 # - type: image/video (optional, restrict by mimetype of filename requested)
 
 - names:
+    - unacceptable
+  urls:
+    - https://www.youtube.com/watch?v=aaSRYecKaqc
+  type: video
+
+- names:
     - areyounotentertained
     - entertained
     - gladiator
