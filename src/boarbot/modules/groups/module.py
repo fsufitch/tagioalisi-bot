@@ -66,9 +66,10 @@ class GroupsModule(BotModule):
             lines.append(line)
 
         if lines:
-            await self.client.send_message(trigger_message.channel, '\n'.join(lines))
+            await self.client.send_message(trigger_message.author, '\n'.join(lines))
         else:
             await self.client.send_message(trigger_message.channel, 'No mentionable groups with prefix `%s` found' % GROUP_PREFIX)
+        await self.client.send_message(trigger_message.channel, 'Group list sent via private message.')
 
     async def list_members(self, trigger_message: discord.Message, group_name: str, *args):
         role_name = GROUP_PREFIX+group_name
@@ -86,7 +87,8 @@ class GroupsModule(BotModule):
         output_lines += ['- %s' % (member.nick or member.name) for member in group_members]
         for message_chunk in chunk_lines(output_lines):
             reply = '\n'.join(message_chunk)
-            await self.client.send_message(trigger_message.channel, reply)
+            await self.client.send_message(trigger_message.author, reply)
+        await self.client.send_message(trigger_message.channel, 'Member list for group `%s` (role `%s`) sent via private message.' % (group_name, role_name))
 
     async def create_group(self, trigger_message: discord.Message, group_name: str, *args):
         if not self._is_group_manager(trigger_message.author):
