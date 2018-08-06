@@ -34,7 +34,7 @@ class BotModule(metaclass=ABCMeta):
         try:
             parts = shlex.split(content) # type: [str]
         except Exception as e:
-            LOGGER.debug('Failed shlex.split on ' + str(content))
+            LOGGER.info('Failed shlex.split on ' + str(content))
             return None
 
         if not parts or parts[0] != command:

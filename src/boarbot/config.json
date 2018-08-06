@@ -21,6 +21,7 @@
     "boarbot.modules.dice.module:DiceRollModule",
     "boarbot.modules.groups.module:GroupsModule",
     "boarbot.modules.ytplay.module:YTPlayModule",
+    "boarbot.modules.nowplaying.module:NowPlayingModule",
     "boarbot.modules.welcome.module:WelcomeModule"
   ]
 }

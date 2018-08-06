@@ -12,7 +12,7 @@ from boarbot.common.chunks import chunk_lines
 
 from .cmd import MEME_LINK_PARSER, MemeLinkParserException
 
-QUERY_RE = re.compile('[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+')
+QUERY_RE = re.compile(r'[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+')
 MEMES_YAML = pkg_resources.resource_string('boarbot.modules.memelink', 'memes.yaml').decode()
 MEMES = yaml.load(MEMES_YAML)
 
@@ -67,7 +67,7 @@ class MemeLinkModule(BotModule):
 
     def get_meme(self, query: str) -> str:
         query = query.lower()
-        meme_name, ext = query.split('.', 1)
+        meme_name, _ = query.split('.', 1)
         mimetype = mimetypes.guess_type(query)[0] or ''
 
         for meme in MEMES:
