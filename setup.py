@@ -21,5 +21,7 @@ setup(name='boarbot',
           'regex',
           'youtube_dl',
           'PyNaCl',
+          'sqlalchemy',
+          'psycopg2',
           ],
       )

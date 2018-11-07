@@ -5,6 +5,7 @@ import random
 import re
 import types
 import yaml
+from sqlalchemy.orm.session import Session
 
 from boarbot.common.botmodule import BotModule
 from boarbot.common.events import EventType
@@ -21,7 +22,7 @@ ERROR_FORMAT = '`{error}`\nTry `!memes --help` to get usage instructions.'
 
 
 class MemeLinkModule(BotModule):
-    async def handle_event(self, event_type: EventType, args):
+    async def handle_event(self, db_session: Session, event_type: EventType, args):
         if event_type != EventType.MESSAGE:
             return
 

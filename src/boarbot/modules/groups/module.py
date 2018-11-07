@@ -6,6 +6,7 @@ from boarbot.common.events import EventType
 from boarbot.common.chunks import chunk_lines
 
 from .cmd import GROUPS_PARSER, GroupsParserException
+from sqlalchemy.orm.session import Session
 
 GROUP_MANAGER_IDS = GROUPS['managers']
 GROUP_PREFIX = 'g-'
@@ -13,7 +14,7 @@ GROUPS_COMMAND = '!groups'
 ERROR_FORMAT = '`{error}`\nTry `!groups --help` to get usage instructions.'
 
 class GroupsModule(BotModule):
-    async def handle_event(self, event_type: EventType, args):
+    async def handle_event(self, db_session: Session, event_type: EventType, args):
         if event_type != EventType.MESSAGE:
             return
         message = args[0]

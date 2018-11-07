@@ -1,5 +1,6 @@
 import argparse
 import discord
+from sqlalchemy.orm.session import Session
 
 from boarbot.common.botmodule import BotModule
 from boarbot.common.events import EventType
@@ -21,19 +22,19 @@ class WelcomeModule(BotModule):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    async def handle_event(self, event_type: EventType, args):
+    async def handle_event(self, db_session: Session, event_type: EventType, args):
         if event_type != EventType.MEMBER_JOIN:
             return
 
         member = args[0] # type: discord.Member
         channel = self.client.get_channel(WELCOME_CHANNEL)
         if not channel:
-            log.error("Could not find welcome channel")
+            LOGGER.error("Could not find welcome channel")
             return
 
         rules_channel = self.client.get_channel(RULES_CHANNEL)
         if not rules_channel:
-            log.error("Could not find rules channel")
+            LOGGER.error("Could not find rules channel")
             return
 
         message_text = WELCOME_MESSAGE.format(mention=member.mention, rulesChannel=rules_channel.mention)

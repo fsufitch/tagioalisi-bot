@@ -1,10 +1,11 @@
 import discord
+from sqlalchemy.orm.session import Session
 
 from boarbot.common.botmodule import BotModule
 from boarbot.common.events import EventType
 
 class EchoModule(BotModule):
-    async def handle_event(self, event_type, args):
+    async def handle_event(self, db_session: Session, event_type: EventType, args):
         if event_type == EventType.MESSAGE:
             await self.echo(args[0])
 

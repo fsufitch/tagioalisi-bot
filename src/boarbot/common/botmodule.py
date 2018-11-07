@@ -1,6 +1,7 @@
 import discord
 import shlex
 from abc import ABCMeta, abstractmethod
+from sqlalchemy.orm.session import Session
 
 from boarbot.common.events import EventType
 from boarbot.common.log import LOGGER
@@ -10,7 +11,7 @@ class BotModule(metaclass=ABCMeta):
         self.client = client
 
     @abstractmethod
-    async def handle_event(self, event_type: EventType, args):
+    async def handle_event(self, db_session: Session, event_type: EventType, args):
         ...
 
     '''
@@ -34,7 +35,7 @@ class BotModule(metaclass=ABCMeta):
         try:
             parts = shlex.split(content) # type: [str]
         except Exception as e:
-            LOGGER.debug('Failed shlex.split on ' + str(content))
+            LOGGER.debug(f'Failed shlex.split on {str(content)}: {e}')
             return None
 
         if not parts or parts[0] != command:

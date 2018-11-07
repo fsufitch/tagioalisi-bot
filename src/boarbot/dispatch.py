@@ -2,10 +2,13 @@ import importlib
 import traceback
 
 from boarbot.common.config import LOAD_MODULES
+from boarbot.db.common import BoarbotDatabase
 from boarbot.common.events import EventType
 from boarbot.common.log import LOGGER
 
 MODULES = []
+
+DB = BoarbotDatabase.get_instance()
 
 def initialize_modules(client, extra_modules=[], reinit=False):
     if MODULES and not reinit:
@@ -24,8 +27,11 @@ def initialize_modules(client, extra_modules=[], reinit=False):
 
 async def dispatch_event(event_type: EventType, *args):
     for module in MODULES:
+        session = DB.get_session()
         try:
-            await module.handle_event(event_type, args)
+            await module.handle_event(session, event_type, args)
         except Exception:
             tb = traceback.format_exc().strip()
             LOGGER.error('```' + tb + '```')
+        finally:
+            session.rollback()

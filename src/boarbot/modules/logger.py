@@ -1,4 +1,5 @@
 import logging
+from sqlalchemy.orm.session import Session
 
 from boarbot.common.botmodule import BotModule
 from boarbot.common.config import LOGGING
@@ -13,7 +14,7 @@ class BoarLogger(BotModule):
         register_discord_handler(self.emit_log)
         LOGGER.debug('Boar logger started and registered with main logger')
 
-    async def handle_event(self, event_type, args):
+    async def handle_event(self, db_session: Session, event_type, args):
         if event_type == EventType.READY:
             LOGGER.info('Discord bot started')
 

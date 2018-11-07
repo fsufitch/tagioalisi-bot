@@ -6,4 +6,8 @@ WELCOME_CHANNEL: 406543147271979031
 WELCOME_RULES_CHANNEL: 406543874224553984
 
 GROUPS_MANAGERS: 203684963864805376,208784000896991232,203684963864805376,167048845962772480
-LOAD_MODULES: boarbot.modules.logger:BoarLogger,boarbot.modules.echo:EchoModule,boarbot.modules.memelink.module:MemeLinkModule,boarbot.modules.dice.module:DiceRollModule,boarbot.modules.groups.module:GroupsModule,boarbot.modules.ytplay.module:YTPlayModule,boarbot.modules.nowplaying.module:NowPlayingModule,boarbot.modules.welcome.module:WelcomeModule
+LOAD_MODULES: boarbot.modules.logger:BoarLogger,boarbot.modules.echo:EchoModule,boarbot.modules.memelink.module:MemeLinkModule,boarbot.modules.dice.module:DiceRollModule,boarbot.modules.groups.module:GroupsModule,boarbot.modules.ytplay.module:YTPlayModule,boarbot.modules.nowplaying.module:NowPlayingModule,boarbot.modules.welcome.module:WelcomeModule,boarbot.modules.dbdebug.module:DBDebugModule
+
+DATABASE_URL: "sqlite:///:memory:"
+DATABASE_ECHO: true
+DATABASE_DEBUG_USERS: 203684963864805376

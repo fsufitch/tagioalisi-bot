@@ -20,7 +20,7 @@ class YTPlayModule(BotModule):
         self.players = {}
         LOGGER.debug('YTPlayModule initialized')
 
-    async def handle_event(self, event_type, args):
+    async def handle_event(self, db_session, event_type, args):
         if event_type != EventType.MESSAGE:
             return
         message = args[0] # type: discord.Message
