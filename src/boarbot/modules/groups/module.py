@@ -4,6 +4,7 @@ from boarbot.common.botmodule import BotModule
 from boarbot.common.config import GROUPS
 from boarbot.common.events import EventType
 from boarbot.common.chunks import chunk_lines
+from boarbot.db.acl import check_acl_user
 
 from .cmd import GROUPS_PARSER, GroupsParserException
 from sqlalchemy.orm.session import Session
@@ -56,9 +57,9 @@ class GroupsModule(BotModule):
         group_name = parsed_args.group
         mentions = self._get_server_members(message, parsed_args.users)
 
-        await command_map[command](message, group_name, mentions)
+        await command_map[command](db_session, message, group_name, mentions)
 
-    async def list_groups(self, trigger_message: discord.Message, *args):
+    async def list_groups(self, db_session: Session, trigger_message: discord.Message, *args):
         groups = self._get_group_list(trigger_message)
         lines = []
         for group in groups:
@@ -72,7 +73,7 @@ class GroupsModule(BotModule):
             await self.client.send_message(trigger_message.channel, 'No mentionable groups with prefix `%s` found' % GROUP_PREFIX)
         await self.client.send_message(trigger_message.channel, 'Group list sent via private message.')
 
-    async def list_members(self, trigger_message: discord.Message, group_name: str, *args):
+    async def list_members(self, db_session: Session, trigger_message: discord.Message, group_name: str, *args):
         role_name = GROUP_PREFIX+group_name
         group = self._find_group(trigger_message, group_name)
         if not group:
@@ -91,8 +92,8 @@ class GroupsModule(BotModule):
             await self.client.send_message(trigger_message.author, reply)
         await self.client.send_message(trigger_message.channel, 'Member list for group `%s` (role `%s`) sent via private message.' % (group_name, role_name))
 
-    async def create_group(self, trigger_message: discord.Message, group_name: str, *args):
-        if not self._is_group_manager(trigger_message.author):
+    async def create_group(self, db_session: Session, trigger_message: discord.Message, group_name: str, *args):
+        if not self._is_group_manager(db_session, trigger_message.author):
             await self.client.send_message(trigger_message.channel, 'ERROR: %s is not a server manager, and cannot create groups' % trigger_message.author.mention)
             return
 
@@ -105,9 +106,8 @@ class GroupsModule(BotModule):
         await self.client.create_role(trigger_message.server, name=role_name, hoist=False, mentionable=True)
         await self.client.send_message(trigger_message.channel, 'Created group with name `%s` (role `%s`)' % (group_name, role_name))
 
-
-    async def delete_group(self, trigger_message: discord.Message, group_name: str, *args):
-        if not self._is_group_manager(trigger_message.author):
+    async def delete_group(self, db_session: Session, trigger_message: discord.Message, group_name: str, *args):
+        if not self._is_group_manager(db_session, trigger_message.author):
             await self.client.send_message(trigger_message.channel, 'ERROR: %s is not a server manager, and cannot delete groups' % trigger_message.author.mention)
             return
 
@@ -119,9 +119,9 @@ class GroupsModule(BotModule):
         await self.client.delete_role(trigger_message.server, group)
         await self.client.send_message(trigger_message.channel, 'Deleted group with name `%s` (role `%s`)' % (group_name, role_name))
 
-    async def join_group(self, trigger_message: discord.Message, group_name: str, user_mentions: [discord.Member]):
+    async def join_group(self, db_session: Session, trigger_message: discord.Message, group_name: str, user_mentions: [discord.Member]):
         if user_mentions:
-            if not self._is_group_manager(trigger_message.author):
+            if not self._is_group_manager(db_session, trigger_message.author):
                 await self.client.send_message(trigger_message.channel, 'ERROR: %s is not a server manager, and cannot use user mentions to edit groups' % trigger_message.author.mention)
                 return
         else:
@@ -140,9 +140,9 @@ class GroupsModule(BotModule):
         message = 'Added {users} to group `{group}` (role `{role}`)'.format(users=added_users, group=group_name, role=role_name)
         await self.client.send_message(trigger_message.channel, message)
 
-    async def leave_group(self, trigger_message: discord.Message, group_name: str, user_mentions: [discord.Member]):
+    async def leave_group(self, db_session: Session, trigger_message: discord.Message, group_name: str, user_mentions: [discord.Member]):
         if user_mentions:
-            if not self._is_group_manager(trigger_message.author):
+            if not self._is_group_manager(db_session, trigger_message.author):
                 await self.client.send_message(trigger_message.channel, 'ERROR: %s is not a server manager, and cannot use user mentions to edit groups' % trigger_message.author.mention)
                 return
         else:
@@ -184,5 +184,12 @@ class GroupsModule(BotModule):
                 members.append(member)
         return members
 
-    def _is_group_manager(self, user: discord.User) -> bool:
-        return user.id in GROUP_MANAGER_IDS
+    def _is_group_manager(self, db_session: Session, user: discord.User) -> bool:
+        if type(user) is not discord.Member:
+            return False
+        
+        acl_id = get_server_group_manager_acl_id(user.server.id)
+        return check_acl_user(db_session, acl_id, user.id)
+
+def get_server_group_manager_acl_id(server_id: str) -> str:
+    return f'boarbot.modules.groups::managers::{server_id}'

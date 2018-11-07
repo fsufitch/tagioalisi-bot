@@ -1,6 +1,8 @@
 import argparse
 import asyncio
 
+from boarbot.bootstrap.bootstrap import run_bootstrap
+from boarbot.db.common import BoarbotDatabase
 from boarbot.client import BoarBotClient
 from boarbot.dispatch import initialize_modules
 
@@ -16,6 +18,8 @@ def parse_cli() -> (str, ):
 def main():
     (token, modules) = parse_cli()
     client = BoarBotClient()
+    db = BoarbotDatabase.get_instance()
+    run_bootstrap(db.get_session())
     initialize_modules(client, modules)
     client.run(token)
 

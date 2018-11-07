@@ -6,9 +6,10 @@ from boarbot.common.botmodule import BotModule
 from boarbot.common.config import DATABASE
 from boarbot.common.events import EventType
 from boarbot.db.kv import KV
+from boarbot.db.acl import check_acl_user
 
 debug_users = DATABASE['debugUsers']
-
+DEBUG_USERS_ACL = "boarbot.modules.dbdebug::users"
 class DBDebugModule(BotModule):
     async def handle_event(self, db_session: Session, event_type: EventType, args):
         if event_type != EventType.MESSAGE:
@@ -21,7 +22,7 @@ class DBDebugModule(BotModule):
             message.clean_content.startswith('!kvdel')):
             return
 
-        if message.author.id not in debug_users:
+        if not check_acl_user(db_session, DEBUG_USERS_ACL, message.author.id):
             await self.client.send_message(message.channel, "You are not authorized to use DB debug functionality. I'm telling on you to Santa, too.")
             return
         
