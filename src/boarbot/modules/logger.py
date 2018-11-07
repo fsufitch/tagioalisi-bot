@@ -1,11 +1,11 @@
 import logging
 
 from boarbot.common.botmodule import BotModule
-from boarbot.common.config import CONFIG
+from boarbot.common.config import LOGGING
 from boarbot.common.events import EventType
 from boarbot.common.log import LOGGER, register_discord_handler
 
-LOG_CHANNEL = CONFIG.get('discordLogChannel')
+LOG_CHANNEL = LOGGING['channel']
 
 class BoarLogger(BotModule):
     def __init__(self, *args, **kwargs):

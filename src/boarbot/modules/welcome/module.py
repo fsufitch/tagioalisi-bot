@@ -3,11 +3,11 @@ import discord
 
 from boarbot.common.botmodule import BotModule
 from boarbot.common.events import EventType
-from boarbot.common.config import CONFIG
+from boarbot.common.config import WELCOME
 from boarbot.common.log import LOGGER
 
-WELCOME_CHANNEL = CONFIG.get('welcome', {}).get('channel')
-RULES_CHANNEL = CONFIG.get('welcome', {}).get('rulesChannel')
+WELCOME_CHANNEL = WELCOME['channel']
+RULES_CHANNEL = WELCOME['rulesChannel']
 
 WELCOME_MESSAGE = '''Welcome to the Discord server, {mention}!
 

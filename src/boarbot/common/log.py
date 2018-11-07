@@ -2,7 +2,7 @@ import asyncio
 import logging, logging.handlers
 import sys
 
-from boarbot.common.config import CONFIG
+from boarbot.common.config import LOGGING
 
 LOG_LEVELS = {
     'DEBUG': logging.DEBUG,
@@ -24,7 +24,7 @@ class AsyncHandler(logging.Handler):
         asyncio.ensure_future(self.callback_async(message))
 
 def register_discord_handler(callback_async):
-    discord_level = _parse_log_level(CONFIG.get('discordLogLevel'))
+    discord_level = _parse_log_level(LOGGING['discordLevel'])
     discord_formatter = logging.Formatter('[%(levelname)s] %(message)s')
     handler = AsyncHandler(callback_async)
     handler.setLevel(discord_level)
@@ -39,7 +39,7 @@ def _parse_log_level(level: str) -> int:
 def _setup_logging():
     LOGGER.setLevel(logging.DEBUG)
 
-    cli_level = _parse_log_level(CONFIG.get('cliLogLevel'))
+    cli_level = _parse_log_level(LOGGING['cliLevel'])
     cli_formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
     console = logging.StreamHandler(sys.stdout)
     console.setLevel(cli_level)

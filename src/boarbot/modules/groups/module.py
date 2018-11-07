@@ -1,13 +1,13 @@
 import discord
 
 from boarbot.common.botmodule import BotModule
-from boarbot.common.config import CONFIG
+from boarbot.common.config import GROUPS
 from boarbot.common.events import EventType
 from boarbot.common.chunks import chunk_lines
 
 from .cmd import GROUPS_PARSER, GroupsParserException
 
-GROUP_MANAGER_IDS = CONFIG.get('groups', {}).get('managers', [])
+GROUP_MANAGER_IDS = GROUPS['managers']
 GROUP_PREFIX = 'g-'
 GROUPS_COMMAND = '!groups'
 ERROR_FORMAT = '`{error}`\nTry `!groups --help` to get usage instructions.'

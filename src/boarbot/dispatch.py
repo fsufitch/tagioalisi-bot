@@ -1,7 +1,7 @@
 import importlib
 import traceback
 
-from boarbot.common.config import CONFIG
+from boarbot.common.config import LOAD_MODULES
 from boarbot.common.events import EventType
 from boarbot.common.log import LOGGER
 
@@ -11,7 +11,7 @@ def initialize_modules(client, extra_modules=[], reinit=False):
     if MODULES and not reinit:
         print("Not re-initializing modules")
 
-    modules = CONFIG.get('loadModules', []) + extra_modules
+    modules = LOAD_MODULES + extra_modules
 
     for module_config in modules:
         LOGGER.debug('Loading ' + module_config)
@@ -26,6 +26,6 @@ async def dispatch_event(event_type: EventType, *args):
     for module in MODULES:
         try:
             await module.handle_event(event_type, args)
-        except Exception as e:
+        except Exception:
             tb = traceback.format_exc().strip()
             LOGGER.error('```' + tb + '```')
