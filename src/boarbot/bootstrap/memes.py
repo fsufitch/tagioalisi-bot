@@ -48,7 +48,7 @@ def _bootstrap_memes_data(db_session: Session):
 
 
 BOOTSTRAP_MEME_USERS = [
-    '203684963864805376', # Blackshell
+    '203684963864805376',  # Blackshell
 ]
 BOOTSTRAP_MEME_ROLES = [
     # TODO
@@ -59,7 +59,7 @@ def _bootstrap_memes_acl(db_session: Session):
         UserACLEntry).filter(UserACLEntry.acl_id == MEME_EDIT_ACL_ID)]
     
     count = 0
-    for user_id in [i for i in ids_known if i not in BOOTSTRAP_MEME_USERS]:
+    for user_id in [i for i in BOOTSTRAP_MEME_USERS if i not in ids_known]:
         acl = UserACLEntry(acl_id=MEME_EDIT_ACL_ID, user_id=user_id,
                         details=f'bootstrapped on {datetime.utcnow().isoformat()}')
         db_session.add(acl)
@@ -71,7 +71,7 @@ def _bootstrap_memes_acl(db_session: Session):
         RoleACLEntry).filter(RoleACLEntry.acl_id == MEME_EDIT_ACL_ID)]
     
     count = 0
-    for role_id in [i for i in ids_known if i not in BOOTSTRAP_MEME_ROLES]:
+    for role_id in [i for i in BOOTSTRAP_MEME_ROLES if i not in ids_known]:
         acl = RoleACLEntry(acl_id=MEME_EDIT_ACL_ID, role_id=role_id,
                         details=f'bootstrapped on {datetime.utcnow().isoformat()}')
         db_session.add(acl)

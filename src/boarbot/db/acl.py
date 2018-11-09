@@ -24,14 +24,14 @@ class RoleACLEntry(Base):
 
     row_id = Column(Integer, Sequence('seq_role_acl_row_id'), primary_key=True)
     acl_id = Column(String, nullable=False)
-    group_id = Column(String, nullable=False)
+    role_id = Column(String, nullable=False)
     details = Column(String)
 
     def __repr__(self) -> str:
         return f'<RoleACL(id=`{self.row_id}`, acl_id=`{self.acl_id}`, role_id=`{self.role_id}`, details=`{self.details}`)>'
 
     __table_args__ = (
-        Index(f'idx_{__tablename__}__acl_group', acl_id, group_id),
+        Index(f'idx_{__tablename__}__acl_group', acl_id, role_id),
     )
 
 def check_acl_user(db_session: Session, acl_id: str, user_id: str) -> bool:
