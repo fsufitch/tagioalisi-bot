@@ -8,9 +8,10 @@ from boarbot.db.kv import KV
 
 from .dbdebug import bootstrap_dbdebug_users
 from .groups import bootstrap_group_managers
+from .memes import bootstrap_memes
 
 BOOTSTRAP_KEY = "__BOOTSTRAP__"
-BOOTSTRAP_VERSION = "1"
+BOOTSTRAP_VERSION = "2"
 
 def _check_bootstrap_needed(db_session: Session):
     if BOOTSTRAP_OVERRIDE:
@@ -36,6 +37,7 @@ def run_bootstrap(db_session: Session):
 
     bootstrap_dbdebug_users(db_session)
     bootstrap_group_managers(db_session)
+    bootstrap_memes(db_session)
 
     _save_bootstrap_version(db_session)
     db_session.commit()

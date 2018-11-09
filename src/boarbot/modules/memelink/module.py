@@ -10,12 +10,13 @@ from sqlalchemy.orm.session import Session
 from boarbot.common.botmodule import BotModule
 from boarbot.common.events import EventType
 from boarbot.common.chunks import chunk_lines
+from boarbot.common.log import LOGGER
+from boarbot.db.memes import get_meme, search_memes
 
 from .cmd import MEME_LINK_PARSER, MemeLinkParserException
 
+MEME_EDIT_ACL_ID = 'boarbot.modules.memelink::edit'
 QUERY_RE = re.compile(r'[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+')
-MEMES_YAML = pkg_resources.resource_string('boarbot.modules.memelink', 'memes.yaml').decode()
-MEMES = yaml.load(MEMES_YAML)
 
 MEMES_COMMAND = '!memes'
 ERROR_FORMAT = '`{error}`\nTry `!memes --help` to get usage instructions.'
@@ -33,11 +34,15 @@ class MemeLinkModule(BotModule):
         meme_query = self.extract_query(message.clean_content)
         if meme_query:
             # someone is trying to link a meme
-            url = self.get_meme(meme_query)
-            if not url:
+            LOGGER.debug(f'Meme query: {message.clean_content} -> {meme_query}')
+            name = meme_query.split('.', 1)[0]
+            meme = get_meme(db_session, name)
+            if not meme or not meme.urls:
                 return
 
-            msg = '**%s**: %s' % (meme_query, url)
+            url = random.choice(meme.urls)
+
+            msg = '**%s**: %s' % (meme_query, url.url)
             await self.client.send_message(message.channel, msg)
             return
 
@@ -55,9 +60,8 @@ class MemeLinkModule(BotModule):
             await self.client.send_message(message.channel, '```' + MEME_LINK_PARSER.format_help() + '```')
             return
 
-        search = parsed_args.search
-
-        await self.list_memes(message, search)
+        if parsed_args.search:
+            await self.list_memes(db_session, message, parsed_args.search)
 
     def extract_query(self, message_text: str) -> str:
         match = QUERY_RE.search(message_text)
@@ -66,34 +70,11 @@ class MemeLinkModule(BotModule):
 
         return match.group(0)
 
-    def get_meme(self, query: str) -> str:
-        query = query.lower()
-        meme_name, _ = query.split('.', 1)
-        mimetype = mimetypes.guess_type(query)[0] or ''
-
-        for meme in MEMES:
-            if meme.get('type') and meme['type'] not in mimetype:
-                continue
-
-            if meme_name in meme['names']:
-                return random.choice(meme['urls'])
-
-        return None
-
-    async def list_memes(self, message: discord.Message, search: str):
+    async def list_memes(self, db_session: Session, message: discord.Message, search: str):
         output_lines = []
-        for meme in MEMES:
-            for name in meme['names']:
-                if search in name:
-                    break
-            else: # query not in any names, skip this meme
-                continue
-
-            output = '- '
-            if meme.get('type'):
-                output = '- (%s) ' % meme['type']
-            output += ', '.join(meme['names'])
-            output_lines.append(output)
+        for meme in search_memes(db_session, search):
+            memelist = ', '.join([n.name for n in meme.names])
+            output_lines.append(f'- [{meme.id}]: {memelist}')
 
         if output_lines:
             for message_chunk in chunk_lines(output_lines):
