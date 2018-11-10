@@ -11,7 +11,7 @@ from .groups import bootstrap_group_managers
 from .memes import bootstrap_memes
 
 BOOTSTRAP_KEY = "__BOOTSTRAP__"
-BOOTSTRAP_VERSION = "2"
+BOOTSTRAP_VERSION = "3"
 
 def _check_bootstrap_needed(db_session: Session):
     if BOOTSTRAP_OVERRIDE:
