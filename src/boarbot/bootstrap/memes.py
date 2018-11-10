@@ -51,7 +51,7 @@ BOOTSTRAP_MEME_USERS = [
     '203684963864805376',  # Blackshell
 ]
 BOOTSTRAP_MEME_ROLES = [
-    # TODO
+    '311324005787500544',  # Members of Sociologic Planning Boar
 ]
 def _bootstrap_memes_acl(db_session: Session):
     LOGGER.info("Bootstrapping users and roles for meme editing")

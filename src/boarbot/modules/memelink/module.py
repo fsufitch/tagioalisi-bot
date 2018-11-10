@@ -83,11 +83,14 @@ class MemeLinkModule(BotModule):
 
         return match.group(0)
 
-    def _is_meme_editor(self, db_session: Session, member: discord.Member) -> bool:
-        return any([
-            check_acl_user(db_session, MEME_EDIT_ACL_ID, member.id),
-            check_acl_roles(db_session, MEME_EDIT_ACL_ID, [r.id for r in member.roles]),
-        ])
+    def _is_meme_editor(self, db_session: Session, user: discord.User) -> bool:
+        return (
+            check_acl_user(db_session, MEME_EDIT_ACL_ID, user.id) or
+            (
+                type(user) is discord.Member and 
+                check_acl_roles(db_session, MEME_EDIT_ACL_ID, [r.id for r in user.roles])
+            )
+        )
 
     async def list_memes(self, db_session: Session, message: discord.Message, search: str):
         output_lines = []
