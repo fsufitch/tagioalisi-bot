@@ -12,7 +12,7 @@ from boarbot.common.events import EventType
 from boarbot.common.chunks import chunk_lines
 from boarbot.common.log import LOGGER
 from boarbot.db.acl import check_acl_roles, check_acl_user
-from boarbot.db.memes import get_meme, search_memes, new_meme, MemeAlreadyExistsException
+from boarbot.db.memes import get_meme, search_memes, new_meme, MemeAlreadyExistsException, add_url, add_alias
 
 from .cmd import MEME_LINK_PARSER, SEARCH_SUBPARSER, ADD_MEME_SUBPARSER, MemeLinkParserException
 
@@ -67,7 +67,14 @@ class MemeLinkModule(BotModule):
             if parsed_args.add_name and parsed_args.add_url:
                 await self.add_meme(db_session, message, parsed_args.add_name, parsed_args.add_url)
             else:
-                await self.client.send_message(message.channel, '```' + SEARCH_SUBPARSER.format_help() + '```')
+                await self.client.send_message(message.channel, '```' + ADD_MEME_SUBPARSER.format_help() + '```')
+
+        if parsed_args.subcommand == 'alias':
+            if parsed_args.alias_name and parsed_args.alias_new:
+                await self.add_alias(db_session, message, parsed_args.alias_name, parsed_args.alias_new)
+            else:
+                await self.client.send_message(message.channel, '```' + ADD_MEME_SUBPARSER.format_help() + '```')
+
 
     def extract_query(self, message_text: str) -> str:
         match = QUERY_RE.search(message_text)
@@ -98,17 +105,53 @@ class MemeLinkModule(BotModule):
         if message.server:
             await self.client.send_message(message.channel, '%s check your direct messages for your search result. You can also query me again there to not spam the channel!' % message.author.mention)
 
-    async def add_meme(self, db_session, message: discord.Message, name: str, url: str):
+    async def add_meme(self, db_session: Session, message: discord.Message, name: str, url: str):
         if not self._is_meme_editor(db_session, message.author):
             await self.client.send_message(message.channel, f'You are not a meme editor and may not do that.')
             return
 
+        if not name.isalnum():
+            await self.client.send_message(message.channel, 'The name must be a single alphanumeric series of characters.')
+            return
+        
         author = f'{message.author.name}#{message.author.discriminator}'
         try:
             new_meme(db_session, name, url, author)
+            await self.client.send_message(message.channel, f'Meme `{name}` -> `{url}` added.')
         except MemeAlreadyExistsException:
-            await self.client.send_message(message.channel, f'A meme using the name `{name}` already exists!')
-            return
+            add_url(db_session, name, url, author)
+            meme = get_meme(db_session, name)
+            also_affected = ', '.join([n.name for n in meme.names if n.name != name.lower()])
+            reply = f'Added new URL to existing meme `{name}`.'
+            if also_affected:
+                reply += f' Also affected: `{also_affected}`'
+            await self.client.send_message(message.channel, reply)
         
         db_session.commit()
-        await self.client.send_message(message.channel, f'Meme `{name}` -> `{url}` added.')
+
+    async def add_alias(self, db_session: Session, message: discord.Message, name: str, alias: str):
+        if not self._is_meme_editor(db_session, message.author):
+            await self.client.send_message(message.channel, f'You are not a meme editor and may not do that.')
+            return
+
+        if not name.isalnum() or not alias.isalnum():
+            await self.client.send_message(message.channel, 'The name must be a single alphanumeric series of characters.')
+            return
+
+        if get_meme(db_session, alias):
+            await self.client.send_message(message.channel, 'A meme already exists with that alias!')
+            return
+
+        alias = alias.lower()
+        author = f'{message.author.name}#{message.author.discriminator}'
+        try:
+            add_alias(db_session, name, alias, author)
+            await self.client.send_message(message.channel, f'Alias `{alias}` added to `{name}`.')
+        except KeyError:
+            await self.client.send_message(message.channel, 'A meme does not exist with that name in the first place.')
+            return
+        except Exception as e:
+            await self.client.send_message(message.channel, f'Exception adding alias: {e}')
+            return
+
+        db_session.commit()

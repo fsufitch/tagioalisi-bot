@@ -68,6 +68,23 @@ def new_meme(db_session: Session, name: str, url: str, author: str) -> Meme:
     db_session.add(meme)
     return meme
 
+def add_url(db_session, name: str, url: str, author: str):
+    timestamp = datetime.utcnow()
+    meme = get_meme(db_session, name)
+    if not meme:
+        raise KeyError()
+
+    meme.urls.append(MemeURL(url=url, timestamp=timestamp, author=author))
+
+def add_alias(db_session, name: str, new_name: str, author: str):
+    timestamp = datetime.utcnow()
+    meme = get_meme(db_session, name)
+    if not meme:
+        raise KeyError()
+
+    meme.names.append(MemeName(name=new_name, timestamp=timestamp, author=author))
+
+
 def delete_meme_name(db_session: Session, name: str):
     meme_name = db_session.query(MemeName).filter(MemeName.name == name.lower()).one_or_none()
     if meme_name:

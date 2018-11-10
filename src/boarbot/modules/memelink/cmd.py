@@ -21,3 +21,7 @@ SEARCH_SUBPARSER.add_argument('search', type=str, help='search query string')
 ADD_MEME_SUBPARSER = _subparsers.add_parser('add', help='add a new meme')
 ADD_MEME_SUBPARSER.add_argument('add_name', metavar='name', type=str, help='a short name for the meme, with no spaces')
 ADD_MEME_SUBPARSER.add_argument('add_url', metavar='url', type=str, help='URL the meme should display')
+
+ADD_MEME_SUBPARSER = _subparsers.add_parser('alias', help='add a new name alias for a meme')
+ADD_MEME_SUBPARSER.add_argument('alias_name', metavar='name', type=str, help='the name of an existing meme')
+ADD_MEME_SUBPARSER.add_argument('alias_new', metavar='alias', type=str, help='new alias for the meme')
