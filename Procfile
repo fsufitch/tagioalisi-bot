@@ -1,1 +1,1 @@
-bot: python -m boarbot.cli $DISCORD_BOT_TOKEN
+bot: pipenv run python boarbot-launch.py $DISCORD_BOT_TOKEN

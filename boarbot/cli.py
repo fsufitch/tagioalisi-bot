@@ -22,6 +22,3 @@ def main():
     run_bootstrap(db.get_session())
     initialize_modules(client, modules)
     client.run(token)
-
-if __name__ == '__main__':
-    main()
