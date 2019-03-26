@@ -70,4 +70,4 @@ class NowPlayingModule(BotModule):
             await self.set_status(status)
 
     async def set_status(self, status: str):
-        await self.client.change_presence(activity=discord.Game(name=status))
+        await self.client.change_presence(game=discord.Game(name=status))
