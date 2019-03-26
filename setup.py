@@ -15,13 +15,13 @@ setup(name='boarbot',
           ],
         },
 
-      install_requires=[
-          'discord.py',
-          'PyYAML',
-          'regex',
-          'youtube_dl',
-          'PyNaCl',
-          'sqlalchemy',
-          'psycopg2',
-          ],
+    #   install_requires=[
+    #       'discord.py',
+    #       'PyYAML',
+    #       'regex',
+    #       'youtube_dl',
+    #       'PyNaCl',
+    #       'sqlalchemy',
+    #       'psycopg2',
+    #       ],
       )
