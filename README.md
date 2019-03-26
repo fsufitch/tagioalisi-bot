@@ -13,18 +13,17 @@ Custom bot for the Sociologic Planning Boar
 > This setup is intended for a Linux system. You're on your own for a different
 system.
 
-1\. Install `virtualenv`
+1\. Install `pipenv`
 
-    $ pip3 install virtualenv --upgrade
+    $ pip3 install --user pipenv --upgrade
 
-2\. Set up the virtual Environment
+2\. Let it handle the rest
 
-    $ python -m virtualenv ./env
+    $ python -m pipenv install
 
-3\. Using the Python binaries from the new environment,
-   install the package.
+3\. Install the bot itself:
 
-    $ env/bin/pip install -e .
+    $ pipenv run python setup.py install
 
 **Running the bot**
 
@@ -36,7 +35,7 @@ these steps:
 
 - Create a bot user for the application
 
-- Run the bot using `env/bin/boarbot <DISCORD_BOT_TOKEN>`
+- Run the bot using `pipenv run boarbot <DISCORD_BOT_TOKEN>`
 
 - Insert your bot's client ID (from the application page above) into this URL
   and visit it in order to add the bot to your server(s):
