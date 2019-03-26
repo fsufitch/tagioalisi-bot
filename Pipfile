@@ -6,13 +6,14 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-"discord.py" = {git = "https://github.com/Rapptz/discord.py.git", ref="master" }
+"discord.py" = {git = "https://github.com/Rapptz/discord.py.git",ref = "master"}
 pyyaml = "*"
 regex = "*"
 youtube-dl = "*"
 pynacl = "*"
 sqlalchemy = "*"
 psycopg2 = "*"
+boarbot = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"
