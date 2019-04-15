@@ -7,7 +7,7 @@ import discord4j.core.event.domain.message.MessageCreateEvent
 
 val DISCORD_BOT_TOKEN = System.getenv("DISCORD_BOT_TOKEN") ?: ""
 
-fun main(args: Array<String>) {
+fun main() {
     val client = DiscordClientBuilder(DISCORD_BOT_TOKEN).build()
 
     client.eventDispatcher.on(ReadyEvent::class.java)
