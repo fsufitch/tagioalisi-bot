@@ -9,6 +9,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("com.discord4j:discord4j-core:3.0.2")
 }
 
 application {
