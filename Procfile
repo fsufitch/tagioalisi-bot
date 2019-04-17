@@ -1,1 +1,1 @@
-web: sh build/stage/discord-boar-bot/bin/discord-boar-bot
+web: build/install/discord-boar-bot/bin/discord-boar-bot

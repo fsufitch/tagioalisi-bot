@@ -9,6 +9,8 @@ val exposedVersion = project.property("exposed.version") as String
 val postgresqlVersion = project.property("postgresql.version") as String
 val klaxonVersion = project.property("klaxon.version") as String
 
+version = "2.0a"
+
 plugins {
     application
     kotlin("jvm") version "1.3.30"
@@ -49,9 +51,5 @@ tasks {
 }
 
 tasks.register("stage") {
-    dependsOn("build")
-    doLast {
-        mkdir("build/stage")
-        unzipTo(File("build/stage/."), File("build/distributions/discord-boar-bot.zip"))
-    }
+    dependsOn("installDist")
 }
