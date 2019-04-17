@@ -17,6 +17,7 @@ val defaultConfiguration = Configuration(
         webEnabled = System.getenv("WEB_ENABLED")?.toBoolean() ?: false,
         webSecret = System.getenv("WEB_SECRET") ?: "",
         discordToken = System.getenv("DISCORD_TOKEN") ?: "",
+        databaseUrl = System.getenv("DATABASE_URL") ?: "",
         blacklistBotModulesString = System.getenv("BLACKLIST_MODULES") ?: ""
 )
 

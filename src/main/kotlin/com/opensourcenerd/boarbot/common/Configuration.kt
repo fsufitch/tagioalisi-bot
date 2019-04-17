@@ -5,12 +5,14 @@ data class Configuration(
         val webPort: Int,
         val webSecret: String,
         val discordToken: String,
+        val databaseUrl: String,
         private val blacklistBotModulesString: String
 ) {
     val blacklistBotModules = blacklistBotModulesString.split(",").toSet().filter { !it.isEmpty() }
 
     init {
         if (discordToken.isEmpty()) throw ConfigurationException("No discord token found")
+        if (databaseUrl.isEmpty()) throw ConfigurationException("No database URL found")
 
         if (webEnabled) {
             if (webPort == 0) throw ConfigurationException("Web enabled, but no port found")

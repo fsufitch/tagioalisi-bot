@@ -37,7 +37,7 @@ class BoarBotDiscord(private val context: ApplicationContext): ApplicationContex
                 .filter { msg -> msg.content.map { it.contains("!crash") }.orElse(false)}
                 .flatMap { msg -> msg.channel}
                 .flatMap { channel -> channel.createMessage("oops!")}
-                .subscribe({ throw RuntimeException("whoops")})
+                .subscribe { throw RuntimeException("whoops")}
     }
 
     fun start() {
