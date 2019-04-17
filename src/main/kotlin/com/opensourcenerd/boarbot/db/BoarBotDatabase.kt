@@ -10,4 +10,8 @@ class BoarBotDatabase(val context: ApplicationContext): ApplicationContext.AppMo
     val logger = KotlinLogging.logger {}
 
     val db = Database.connect(context.configuration.databaseUrl, "org.postgresql.Driver")
+
+    init {
+        logger.info("Database initialized")
+    }
 }

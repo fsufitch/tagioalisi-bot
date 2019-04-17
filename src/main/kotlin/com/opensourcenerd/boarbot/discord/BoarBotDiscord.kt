@@ -31,13 +31,6 @@ class BoarBotDiscord(private val context: ApplicationContext): ApplicationContex
                 .flatMap { msg -> msg.channel}
                 .flatMap { channel -> channel.createMessage("Pong!") }
                 .subscribe()
-
-        client.eventDispatcher.on(MessageCreateEvent::class.java)
-                .map {ev -> ev.message}
-                .filter { msg -> msg.content.map { it.contains("!crash") }.orElse(false)}
-                .flatMap { msg -> msg.channel}
-                .flatMap { channel -> channel.createMessage("oops!")}
-                .subscribe { throw RuntimeException("whoops")}
     }
 
     fun start() {

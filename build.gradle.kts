@@ -5,6 +5,7 @@ var slf4jBridgeVersion = project.property("slf4j-log4j12.version") as String
 val coroutinesVersion = project.property("kotlinx-coroutines.version") as String
 val exposedVersion = project.property("exposed.version") as String
 val postgresqlVersion = project.property("postgresql.version") as String
+val klaxonVersion = project.property("klaxon.version") as String
 
 plugins {
     application
@@ -14,6 +15,7 @@ plugins {
 repositories {
     mavenCentral()
     maven("https://dl.bintray.com/kotlin/exposed")
+    maven("https://dl.bintray.com/cbeust/maven")
 }
 
 dependencies {
@@ -26,6 +28,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutinesVersion)
     implementation("org.jetbrains.exposed", "exposed", exposedVersion)
     implementation("org.postgresql", "postgresql", postgresqlVersion)
+    implementation("com.beust", "klaxon", klaxonVersion)
 }
 
 application {
