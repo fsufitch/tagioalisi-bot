@@ -9,7 +9,8 @@ val exposedVersion = project.property("exposed.version") as String
 val postgresqlVersion = project.property("postgresql.version") as String
 val klaxonVersion = project.property("klaxon.version") as String
 
-version = "2.0a"
+group = project.property("projectGroup") as String
+version = project.property("projectVersion") as String
 
 plugins {
     application
