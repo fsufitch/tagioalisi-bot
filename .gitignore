@@ -109,3 +109,6 @@ ENV/
 # IDEA stuff
 .idea
 discord-boar-bot.iml
+
+# Do not auto-add changes to this to prevent mishaps
+dev-environment.sh
