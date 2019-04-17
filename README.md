@@ -1,6 +1,12 @@
 # discord-boar-bot
 Custom bot for the Sociologic Planning Boar
 
+> **FYI:** due to the direction of development of `discord.py`, the bot is 
+  currently being fully rewritten on top of a Discord4J Kotlin base. You
+  can see the progress [here](https://github.com/fsufitch/discord-boar-bot/tree/kt-rewrite).
+  The master branch will get snapshot into a different branch before the 
+  upgrade.
+
 ## Development setup instructions
 
 **Requirements**
