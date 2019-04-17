@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.support.unzipTo
+
 val discord4jVersion  = project.property("discord4j.version") as String
 val undertowVersion  = project.property("undertow.version") as String
 val kotlinLoggingVersion = project.property("kotlin-logging.version") as String
@@ -43,5 +45,13 @@ tasks {
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
+    }
+}
+
+tasks.register("stage") {
+    dependsOn("build")
+    doLast {
+        mkdir("build/stage")
+        unzipTo(File("build/stage/."), File("build/distributions/discord-boar-bot.zip"))
     }
 }
