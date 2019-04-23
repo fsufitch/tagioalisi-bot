@@ -7,6 +7,8 @@ package main
 
 import (
 	"github.com/fsufitch/discord-boar-bot/bot"
+	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
+	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
 	"github.com/fsufitch/discord-boar-bot/common"
 	"github.com/fsufitch/discord-boar-bot/web"
 )
@@ -20,8 +22,15 @@ func InitializeCLIRuntime() (*CLIRuntime, error) {
 	}
 	loggerModule := common.NewLoggerModule()
 	cliLogModule := common.CreateCLILogModule(configuration, loggerModule)
-	boarBotServer := web.NewBoarBotServer(configuration, loggerModule)
-	discordBoarBot := bot.NewDiscordBoarBot(configuration, loggerModule)
+	secretBearerAuthorizationWrapper := web.NewSecretBearerAuthorizationWrapper(configuration)
+	helloHandler := web.NewHelloHandler()
+	module := sockpuppet.NewModule()
+	sockpuppetHandler := web.NewSockpuppetHandler(module)
+	router := web.NewRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler)
+	boarBotServer := web.NewBoarBotServer(configuration, loggerModule, router)
+	pingModule := ping.NewModule()
+	moduleRegistry := bot.InitModuleRegistry(configuration, loggerModule, pingModule, module)
+	discordBoarBot := bot.NewDiscordBoarBot(configuration, loggerModule, moduleRegistry)
 	cliRuntime := NewCLIRuntime(configuration, loggerModule, cliLogModule, boarBotServer, discordBoarBot)
 	return cliRuntime, nil
 }

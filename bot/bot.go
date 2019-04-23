@@ -12,6 +12,7 @@ type DiscordBoarBot struct {
 	configuration *common.Configuration
 	log           *common.LoggerModule
 	session       *discordgo.Session
+	modules       ModuleRegistry
 }
 
 // Start is a blocking function that holds the runtime of the Discord bot
@@ -21,8 +22,12 @@ func (b *DiscordBoarBot) Start() error {
 		return errors.Wrap(err, "Could not create bot session")
 	}
 
-	// TODO: injected handler system
-	session.AddHandler(pingHandler)
+	for _, module := range b.modules {
+		if err = module.Register(session); err != nil {
+			return errors.Wrap(err, "Error registering "+module.Name())
+		}
+		b.log.Info("Registered bot module: " + module.Name())
+	}
 
 	err = session.Open()
 	if err != nil {
@@ -36,21 +41,17 @@ func (b *DiscordBoarBot) Start() error {
 	return session.Close()
 }
 
-func pingHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Content == "!ping" {
-		s.ChannelMessageSend(m.ChannelID, "pong!")
-	}
-}
-
 // NewDiscordBoarBot creates a new Discord Boar Bot
 func NewDiscordBoarBot(
 	configuration *common.Configuration,
 	log *common.LoggerModule,
+	modules ModuleRegistry,
 ) *DiscordBoarBot {
 	log.Info("Initializing Discord bot")
 	return &DiscordBoarBot{
 		Stop:          make(chan bool, 1),
 		configuration: configuration,
 		log:           log,
+		modules:       modules,
 	}
 }

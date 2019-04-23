@@ -17,7 +17,7 @@ type Configuration struct {
 	DiscordToken        string
 	DatabaseURL         string
 	CLILogLevel         LogLevel
-	BlacklistBotModules []string
+	BlacklistBotModules map[string]bool
 }
 
 // ConfigurationFromEnvironment bootstraps a configuration object based on environment variables
@@ -73,7 +73,10 @@ func ConfigurationFromEnvironment() (*Configuration, error) {
 	}
 
 	blacklistString := os.Getenv("BLACKLIST_BOT_MODULES")
-	c.BlacklistBotModules = strings.Split(blacklistString, ",")
+	c.BlacklistBotModules = map[string]bool{}
+	for _, moduleName := range strings.Split(blacklistString, ",") {
+		c.BlacklistBotModules[moduleName] = true
+	}
 
 	return &c, nil
 }
