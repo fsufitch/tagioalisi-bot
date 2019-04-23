@@ -6,7 +6,9 @@
 package main
 
 import (
+	"github.com/fsufitch/discord-boar-bot/bot"
 	"github.com/fsufitch/discord-boar-bot/common"
+	"github.com/fsufitch/discord-boar-bot/web"
 )
 
 // Injectors from wire.go:
@@ -18,6 +20,8 @@ func InitializeCLIRuntime() (*CLIRuntime, error) {
 	}
 	loggerModule := common.NewLoggerModule()
 	cliLogModule := common.CreateCLILogModule(configuration, loggerModule)
-	cliRuntime := NewCLIRuntime(configuration, loggerModule, cliLogModule)
+	boarBotServer := web.NewBoarBotServer(configuration, loggerModule)
+	discordBoarBot := bot.NewDiscordBoarBot(configuration, loggerModule)
+	cliRuntime := NewCLIRuntime(configuration, loggerModule, cliLogModule, boarBotServer, discordBoarBot)
 	return cliRuntime, nil
 }

@@ -59,6 +59,26 @@ func (l *LoggerModule) Log(level LogLevel, message string) {
 	}
 }
 
+// Debug is a shorthand for sending a debug message
+func (l *LoggerModule) Debug(message string) {
+	l.Log(LogDebug, message)
+}
+
+// Info is a shorthand for sending an info message
+func (l *LoggerModule) Info(message string) {
+	l.Log(LogInfo, message)
+}
+
+// Warn is a shorthand for sending a warning message
+func (l *LoggerModule) Warn(message string) {
+	l.Log(LogWarning, message)
+}
+
+// Error is a shorthand for sending an error message
+func (l *LoggerModule) Error(message string) {
+	l.Log(LogError, message)
+}
+
 // NewLoggerModule creates a new logger module
 func NewLoggerModule() *LoggerModule {
 	return &LoggerModule{
