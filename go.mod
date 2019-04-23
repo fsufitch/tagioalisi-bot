@@ -1,3 +1,5 @@
+// +heroku install ./cmd/...
+
 module github.com/fsufitch/discord-boar-bot
 
 require (
