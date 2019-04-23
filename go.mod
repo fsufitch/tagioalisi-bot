@@ -1,4 +1,3 @@
-// +heroku goVersion go1.11.4
 // +heroku install ./cmd/...
 
 module github.com/fsufitch/discord-boar-bot
