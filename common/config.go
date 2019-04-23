@@ -1,0 +1,79 @@
+package common
+
+import (
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+
+	"github.com/pkg/errors"
+)
+
+// Configuration is a container for start-of-process runtime configuration values
+type Configuration struct {
+	WebEnabled          bool
+	WebPort             int
+	WebSecret           string
+	DiscordToken        string
+	DatabaseURL         string
+	CLILogLevel         LogLevel
+	BlacklistBotModules []string
+}
+
+// ConfigurationFromEnvironment bootstraps a configuration object based on environment variables
+func ConfigurationFromEnvironment() (*Configuration, error) {
+	c := Configuration{}
+
+	if webEnabled, err := strconv.ParseBool(os.Getenv("WEB_ENABLED")); err == nil {
+		c.WebEnabled = webEnabled
+	} else {
+		return nil, errors.Wrap(err, "invalid or missing value for WEB_ENABLED")
+	}
+
+	if c.WebEnabled {
+		if webPort, err := strconv.ParseInt(os.Getenv("PORT"), 10, 64); err == nil {
+			c.WebPort = int(webPort)
+		} else {
+			return nil, errors.Wrap(err, "invalid or missing value for PORT")
+		}
+
+		if webSecret, ok := os.LookupEnv("WEB_SECRET"); ok && webSecret != "" {
+			c.WebSecret = webSecret
+		} else {
+			return nil, errors.New("missing value for WEB_SECRET")
+		}
+	}
+
+	if token, ok := os.LookupEnv("DISCORD_TOKEN"); ok {
+		c.DiscordToken = token
+	} else {
+		return nil, errors.New("missing value for DISCORD_TOKEN")
+	}
+
+	if dbURL, ok := os.LookupEnv("DATABASE_URL"); ok {
+		c.DatabaseURL = dbURL
+	} else {
+		return nil, errors.New("missing value for DATABASE_URL")
+	}
+
+	c.CLILogLevel = LogInfo
+	if logLevelString, ok := os.LookupEnv("LOG_LEVEL"); ok {
+		switch logLevelString {
+		case "debug":
+			c.CLILogLevel = LogDebug
+		case "info":
+			c.CLILogLevel = LogInfo
+		case "warn", "warning":
+			c.CLILogLevel = LogWarning
+		case "error":
+			c.CLILogLevel = LogError
+		default:
+			return nil, fmt.Errorf("invalid value for LOG_LEVEL: %s", logLevelString)
+		}
+	}
+
+	blacklistString := os.Getenv("BLACKLIST_BOT_MODULES")
+	c.BlacklistBotModules = strings.Split(blacklistString, ",")
+
+	return &c, nil
+}
