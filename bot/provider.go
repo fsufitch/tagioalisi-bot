@@ -3,6 +3,7 @@ package bot
 import (
 	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
 	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/discord-boar-bot/db"
 	"github.com/google/wire"
 )
 
@@ -12,4 +13,5 @@ var BotProviderSet = wire.NewSet(
 	InitModuleRegistry,
 	ping.NewModule,
 	sockpuppet.NewModule,
+	db.DBProviderSet, // Database access *required* for bot functionality
 )
