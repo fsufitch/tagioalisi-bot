@@ -5,17 +5,17 @@ import (
 	"os"
 )
 
-// CLILogModule is a pluggable module for outputting logs to the CLI
-type CLILogModule struct {
+// CLILogReceiver is a pluggable module for outputting logs to the CLI
+type CLILogReceiver struct {
 	Stop      chan bool
-	logModule *LoggerModule
+	logModule *LogDispatcher
 	level     LogLevel
 	listener  chan LogEntry
 	stdLog    log.Logger
 	errLog    log.Logger
 }
 
-func (m *CLILogModule) processEntry(entry LogEntry) {
+func (m *CLILogReceiver) processEntry(entry LogEntry) {
 	if entry.Level < m.level {
 		return
 	}
@@ -27,7 +27,7 @@ func (m *CLILogModule) processEntry(entry LogEntry) {
 	}
 }
 
-func (m *CLILogModule) listen() {
+func (m *CLILogReceiver) listen() {
 	stopped := false
 	for !stopped {
 		select {
@@ -41,9 +41,9 @@ func (m *CLILogModule) listen() {
 	m.logModule.RemoveListener(m.listener)
 }
 
-// CreateCLILogModule creates a CLILogModule
-func CreateCLILogModule(configuration *Configuration, logModule *LoggerModule) *CLILogModule {
-	mod := CLILogModule{
+// NewCLILogReceiver creates a CLILogReceiver
+func NewCLILogReceiver(configuration *Configuration, logModule *LogDispatcher) *CLILogReceiver {
+	mod := CLILogReceiver{
 		level:     configuration.CLILogLevel,
 		logModule: logModule,
 		listener:  make(chan LogEntry),

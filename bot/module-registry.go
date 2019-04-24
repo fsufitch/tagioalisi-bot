@@ -19,7 +19,7 @@ type ModuleRegistry []RegisterableModule
 // InitModuleRegistry initializes the module registry and blacklists appropriate modules
 func InitModuleRegistry(
 	configuration *common.Configuration,
-	log *common.LoggerModule,
+	log *common.LogDispatcher,
 	ping *ping.Module,
 	sockpuppet *sockpuppet.Module,
 ) ModuleRegistry {

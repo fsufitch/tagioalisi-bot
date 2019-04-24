@@ -12,7 +12,7 @@ import (
 type BoarBotServer struct {
 	Running       bool
 	configuration *common.Configuration
-	logger        *common.LoggerModule
+	logger        *common.LogDispatcher
 	router        *mux.Router
 }
 
@@ -37,7 +37,7 @@ func (s BoarBotServer) Start() error {
 // NewBoarBotServer creates a new BoarBotServer
 func NewBoarBotServer(
 	configuration *common.Configuration,
-	logger *common.LoggerModule,
+	logger *common.LogDispatcher,
 	router *mux.Router,
 ) *BoarBotServer {
 	logger.Info("Initializing web server")

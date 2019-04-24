@@ -20,17 +20,17 @@ func InitializeCLIRuntime() (*CLIRuntime, error) {
 	if err != nil {
 		return nil, err
 	}
-	loggerModule := common.NewLoggerModule()
-	cliLogModule := common.CreateCLILogModule(configuration, loggerModule)
+	logDispatcher := common.NewLogDispatcher()
+	cliLogReceiver := common.NewCLILogReceiver(configuration, logDispatcher)
 	secretBearerAuthorizationWrapper := web.NewSecretBearerAuthorizationWrapper(configuration)
 	helloHandler := web.NewHelloHandler()
 	module := sockpuppet.NewModule()
 	sockpuppetHandler := web.NewSockpuppetHandler(module)
 	router := web.NewRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler)
-	boarBotServer := web.NewBoarBotServer(configuration, loggerModule, router)
+	boarBotServer := web.NewBoarBotServer(configuration, logDispatcher, router)
 	pingModule := ping.NewModule()
-	moduleRegistry := bot.InitModuleRegistry(configuration, loggerModule, pingModule, module)
-	discordBoarBot := bot.NewDiscordBoarBot(configuration, loggerModule, moduleRegistry)
-	cliRuntime := NewCLIRuntime(configuration, loggerModule, cliLogModule, boarBotServer, discordBoarBot)
+	moduleRegistry := bot.InitModuleRegistry(configuration, logDispatcher, pingModule, module)
+	discordBoarBot := bot.NewDiscordBoarBot(configuration, logDispatcher, moduleRegistry)
+	cliRuntime := NewCLIRuntime(configuration, logDispatcher, cliLogReceiver, boarBotServer, discordBoarBot)
 	return cliRuntime, nil
 }

@@ -10,7 +10,7 @@ import (
 type DiscordBoarBot struct {
 	Stop          chan bool
 	configuration *common.Configuration
-	log           *common.LoggerModule
+	log           *common.LogDispatcher
 	session       *discordgo.Session
 	modules       ModuleRegistry
 }
@@ -44,7 +44,7 @@ func (b *DiscordBoarBot) Start() error {
 // NewDiscordBoarBot creates a new Discord Boar Bot
 func NewDiscordBoarBot(
 	configuration *common.Configuration,
-	log *common.LoggerModule,
+	log *common.LogDispatcher,
 	modules ModuleRegistry,
 ) *DiscordBoarBot {
 	log.Info("Initializing Discord bot")

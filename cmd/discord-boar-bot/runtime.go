@@ -15,8 +15,8 @@ import (
 // CLIRuntime encapsulates a bot runtime in the CLI
 type CLIRuntime struct {
 	Configuration *common.Configuration
-	Logger        *common.LoggerModule
-	CLILog        *common.CLILogModule
+	Logger        *common.LogDispatcher
+	CLILog        *common.CLILogReceiver
 	WebServer     *web.BoarBotServer
 	Bot           *bot.DiscordBoarBot
 }
@@ -64,9 +64,8 @@ func (r *CLIRuntime) Start() error {
 // NewCLIRuntime creates a new CLIRuntime
 func NewCLIRuntime(
 	configuration *common.Configuration,
-	logger *common.LoggerModule,
-	cliLog *common.CLILogModule,
-	webServer *web.BoarBotServer,
+	logger *common.LogDispatcher,
+	cliLog *common.CLILogReceiver, webServer *web.BoarBotServer,
 	bot *bot.DiscordBoarBot,
 ) *CLIRuntime {
 	return &CLIRuntime{
@@ -82,6 +81,6 @@ func NewCLIRuntime(
 var CLIRuntimeProviderSet = wire.NewSet(
 	NewCLIRuntime,
 	common.ConfigurationFromEnvironment,
-	common.NewLoggerModule,
-	common.CreateCLILogModule,
+	common.NewLogDispatcher,
+	common.NewCLILogReceiver,
 )
