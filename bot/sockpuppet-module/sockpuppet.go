@@ -21,7 +21,7 @@ func (m *Module) Register(session *discordgo.Session) error {
 	return nil
 }
 
-// NewModule creates a new ping handling module
+// NewModule creates a new sockpuppet module
 func NewModule() *Module {
 	return &Module{}
 }

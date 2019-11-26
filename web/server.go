@@ -40,6 +40,10 @@ func NewBoarBotServer(
 	logger *common.LogDispatcher,
 	router *mux.Router,
 ) *BoarBotServer {
+	if configuration.RunMode != common.Bot {
+		logger.Info("Not initializing web server since run mode is not Bot")
+		return nil
+	}
 	logger.Info("Initializing web server")
 	return &BoarBotServer{
 		configuration: configuration,

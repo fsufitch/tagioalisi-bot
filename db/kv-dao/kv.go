@@ -25,9 +25,14 @@ func (dao KeyValueDAO) Set(key string, value string) error {
 		return err
 	}
 
+	now := time.Now()
+
 	tx.QueryRow(`
-		SELECT key, value, timestamp FROM kv WHERE key=$1
-	`, key)
+		INSERT INTO kv (key, value, timestamp)
+		VALUES ($1, $2, $3)
+		ON CONFLICT (key)
+			DO UPDATE SET value = $4, timestamp = $5
+	`, key, value, now, value, now)
 
 	return tx.Rollback()
 }

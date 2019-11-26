@@ -9,8 +9,19 @@ import (
 	"github.com/pkg/errors"
 )
 
+// RunMode is an enum representing the mode in which the binary is running
+type RunMode int
+
+// Values for RunMode
+const (
+	Unknown RunMode = iota
+	Bot
+	Migration
+)
+
 // Configuration is a container for start-of-process runtime configuration values
 type Configuration struct {
+	RunMode             RunMode
 	WebEnabled          bool
 	WebPort             int
 	WebSecret           string
@@ -18,11 +29,21 @@ type Configuration struct {
 	DatabaseURL         string
 	CLILogLevel         LogLevel
 	BlacklistBotModules map[string]bool
+	MigrationDir        string
 }
 
 // ConfigurationFromEnvironment bootstraps a configuration object based on environment variables
 func ConfigurationFromEnvironment() (*Configuration, error) {
 	c := Configuration{}
+
+	switch strings.ToLower(os.Getenv("RUN_MODE")) {
+	case "", "bot":
+		c.RunMode = Bot
+	case "migration":
+		c.RunMode = Migration
+	default:
+		c.RunMode = Unknown
+	}
 
 	if webEnabled, err := strconv.ParseBool(os.Getenv("WEB_ENABLED")); err == nil {
 		c.WebEnabled = webEnabled
@@ -77,6 +98,8 @@ func ConfigurationFromEnvironment() (*Configuration, error) {
 	for _, moduleName := range strings.Split(blacklistString, ",") {
 		c.BlacklistBotModules[moduleName] = true
 	}
+
+	c.MigrationDir = os.Getenv("MIGRATION_DIR")
 
 	return &c, nil
 }

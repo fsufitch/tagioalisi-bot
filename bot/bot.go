@@ -47,6 +47,10 @@ func NewDiscordBoarBot(
 	log *common.LogDispatcher,
 	modules ModuleRegistry,
 ) *DiscordBoarBot {
+	if configuration.RunMode != common.Bot {
+		log.Info("Not initializing bot since run mode is not Bot")
+		return nil
+	}
 	log.Info("Initializing Discord bot")
 	return &DiscordBoarBot{
 		Stop:          make(chan bool, 1),

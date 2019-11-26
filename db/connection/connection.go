@@ -1,9 +1,11 @@
 package connection
 
-import "database/sql"
-import _ "github.com/lib/pq" // Inject database driver
+import (
+	"database/sql"
 
-import "github.com/fsufitch/discord-boar-bot/common"
+	"github.com/fsufitch/discord-boar-bot/common"
+	_ "github.com/lib/pq" // Inject database driver
+)
 
 // DatabaseConnection is a struct wrapping *sql.DB and injecting connections to dependent DAOs
 type DatabaseConnection struct {
@@ -18,7 +20,12 @@ func (d DatabaseConnection) Transaction() (*sql.Tx, error) {
 // NewDatabaseConnection creates a new DatabaseConnection
 func NewDatabaseConnection(
 	configuration *common.Configuration,
+	logger *common.LogDispatcher,
 ) (*DatabaseConnection, error) {
+	if configuration.RunMode != common.Bot {
+		logger.Info("Not initializing database since run mode is not Bot")
+		return nil, nil
+	}
 	db, err := sql.Open("postgres", configuration.DatabaseURL)
 
 	if err != nil {
