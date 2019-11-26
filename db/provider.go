@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/fsufitch/discord-boar-bot/db/connection"
 	"github.com/fsufitch/discord-boar-bot/db/kv-dao"
+	"github.com/fsufitch/discord-boar-bot/db/memes-dao"
 	"github.com/google/wire"
 )
 
@@ -10,4 +11,5 @@ import (
 var DBProviderSet = wire.NewSet(
 	connection.NewDatabaseConnection,
 	kv.NewKeyValueDAO,
+	memes.NewMemeDAO,
 )
