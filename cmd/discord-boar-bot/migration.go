@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -24,7 +25,9 @@ func (r *CLIRuntime) runMigration() error {
 	}
 
 	version, dirty, err := m.Version()
-	r.Logger.Info(fmt.Sprintf("Migration done; version=%d dirty=%d err=%v", version, dirty, err))
 
+	r.Logger.Info(fmt.Sprintf("Migration done; version=%d dirty=%v err=%v", version, dirty, err))
+
+	<-time.After(1 * time.Second)
 	return nil
 }
