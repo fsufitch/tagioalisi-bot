@@ -48,9 +48,9 @@ func (dao DAO) SearchByName(name string) (*Meme, error) {
 	stmt, err := tx.Prepare(`
 		SELECT m.id, m_n.id, m_n.name, m_n.timestamp, m_n.author, m_u.id, m_u.url, m_u.timestamp, m_u.author
 		FROM meme_names m_n
-		INNER JOIN memes m ON m_n.meme_id==m.id
-		INNER JOIN meme_urls m_u ON m.id==m_u.meme_id
-		WHERE m_n.name==?
+		INNER JOIN memes m ON m_n.meme_id=m.id
+		INNER JOIN meme_urls m_u ON m.id=m_u.meme_id
+		WHERE m_n.name=$1
 	`)
 	if err != nil {
 		return nil, err
@@ -108,6 +108,9 @@ func (dao DAO) SearchByName(name string) (*Meme, error) {
 			})
 		}
 	}
+	if meme.ID == 0 {
+		return nil, nil
+	}
 
 	return &meme, nil
 }
@@ -122,7 +125,7 @@ func (dao DAO) AddName(memeID int, name string, author string) error {
 
 	stmt, err := tx.Prepare(`
 		INSERT INTO meme_names (name, timestamp, author, meme_id)
-		VALUES (?, ?, ?, ?)
+		VALUES ($1, $2, $3, $4)
 	`)
 	if err != nil {
 		return err
@@ -145,7 +148,7 @@ func (dao DAO) AddURL(memeID int, url string, author string) error {
 
 	stmt, err := tx.Prepare(`
 		INSERT INTO meme_urls (url, timestamp, author, meme_id)
-		VALUES (?, ?, ?, ?)
+		VALUES ($1, $2, $3, $4)
 	`)
 	if err != nil {
 		return err
@@ -169,7 +172,7 @@ func (dao DAO) Add(name string, url string, author string) error {
 	var memeID int
 
 	if stmt, err := tx.Prepare(`
-		INSERT INTO memes VALUES () RETURNING id
+		INSERT INTO memes DEFAULT VALUES RETURNING id
 	`); err != nil {
 		return err
 	} else if err := stmt.QueryRow().Scan(&memeID); err != nil {
@@ -179,8 +182,8 @@ func (dao DAO) Add(name string, url string, author string) error {
 	timestamp := time.Now()
 
 	if stmt, err := tx.Prepare(`
-		INSERT INTO meme_names (name, timestamp, author, meme_id)
-		VALUES (?, ?, ?, ?)
+		INSERT INTO meme_names(name, timestamp, author, meme_id)
+		VALUES($1, $2, $3, $4)
 	`); err != nil {
 		return err
 	} else if _, err := stmt.Exec(name, timestamp, author, memeID); err != nil {
@@ -188,8 +191,8 @@ func (dao DAO) Add(name string, url string, author string) error {
 	}
 
 	if stmt, err := tx.Prepare(`
-		INSERT INTO meme_urls (url, timestamp, author, meme_id)
-		VALUES (?, ?, ?, ?)
+		INSERT INTO meme_urls(url, timestamp, author, meme_id)
+		VALUES($1, $2, $3, $4)
 	`); err != nil {
 		return err
 	} else if _, err := stmt.Exec(url, timestamp, author, memeID); err != nil {
@@ -208,7 +211,7 @@ func (dao DAO) DeleteName(memeID int, name string) error {
 	defer tx.Rollback()
 
 	if stmt, err := tx.Prepare(`
-		DELETE FROM meme_names WHERE meme_id=? AND name=?
+		DELETE FROM meme_names WHERE meme_id=$1 AND name=$2
 	`); err != nil {
 		return err
 	} else if _, err := stmt.Exec(memeID, name); err != nil {
@@ -227,7 +230,7 @@ func (dao DAO) DeleteURL(memeID int, url string) error {
 	defer tx.Rollback()
 
 	if stmt, err := tx.Prepare(`
-		DELETE FROM meme_urls WHERE meme_id=? AND url=?
+		DELETE FROM meme_urls WHERE meme_id=$1 AND url=$2
 	`); err != nil {
 		return err
 	} else if _, err := stmt.Exec(memeID, url); err != nil {
@@ -246,7 +249,7 @@ func (dao DAO) Delete(memeID int) error {
 	defer tx.Rollback()
 
 	if stmt, err := tx.Prepare(`
-		DELETE FROM memes WHERE id=?
+		DELETE FROM memes WHERE id=$1
 	`); err != nil {
 		return err
 	} else if _, err := stmt.Exec(memeID); err != nil {

@@ -7,10 +7,18 @@ package main
 
 import (
 	"github.com/fsufitch/discord-boar-bot/bot"
+	"github.com/fsufitch/discord-boar-bot/bot/memelink-module"
 	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
 	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
 	"github.com/fsufitch/discord-boar-bot/common"
+	"github.com/fsufitch/discord-boar-bot/db/connection"
+	"github.com/fsufitch/discord-boar-bot/db/memes-dao"
 	"github.com/fsufitch/discord-boar-bot/web"
+)
+
+import (
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 // Injectors from wire.go:
@@ -29,7 +37,13 @@ func InitializeCLIRuntime() (*CLIRuntime, error) {
 	router := web.NewRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler)
 	boarBotServer := web.NewBoarBotServer(configuration, logDispatcher, router)
 	pingModule := ping.NewModule()
-	moduleRegistry := bot.InitModuleRegistry(configuration, logDispatcher, pingModule, module)
+	databaseConnection, err := connection.NewDatabaseConnection(configuration, logDispatcher)
+	if err != nil {
+		return nil, err
+	}
+	dao := memes.NewMemeDAO(databaseConnection)
+	memelinkModule := memelink.NewModule(databaseConnection, logDispatcher, dao)
+	moduleRegistry := bot.InitModuleRegistry(configuration, logDispatcher, pingModule, module, memelinkModule)
 	discordBoarBot := bot.NewDiscordBoarBot(configuration, logDispatcher, moduleRegistry)
 	cliRuntime := NewCLIRuntime(configuration, logDispatcher, cliLogReceiver, boarBotServer, discordBoarBot)
 	return cliRuntime, nil
