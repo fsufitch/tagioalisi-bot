@@ -28,6 +28,8 @@ type Configuration struct {
 	DiscordToken        string
 	DatabaseURL         string
 	CLILogLevel         LogLevel
+	DiscordLogLevel     LogLevel
+	DiscordLogChannel   string
 	BlacklistBotModules map[string]bool
 	MigrationDir        string
 }
@@ -92,6 +94,24 @@ func ConfigurationFromEnvironment() (*Configuration, error) {
 			return nil, fmt.Errorf("invalid value for LOG_LEVEL: %s", logLevelString)
 		}
 	}
+
+	c.DiscordLogLevel = LogInfo
+	if logLevelString, ok := os.LookupEnv("DISCORD_LOG_LEVEL"); ok {
+		switch logLevelString {
+		case "debug":
+			c.DiscordLogLevel = LogDebug
+		case "info":
+			c.DiscordLogLevel = LogInfo
+		case "warn", "warning":
+			c.DiscordLogLevel = LogWarning
+		case "error":
+			c.DiscordLogLevel = LogError
+		default:
+			return nil, fmt.Errorf("invalid value for DISCORD_LOG_LEVEL: %s", logLevelString)
+		}
+	}
+
+	c.DiscordLogChannel = os.Getenv("DISCORD_LOG_CHANNEL")
 
 	blacklistString := os.Getenv("BLACKLIST_BOT_MODULES")
 	c.BlacklistBotModules = map[string]bool{}

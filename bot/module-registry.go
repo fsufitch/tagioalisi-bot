@@ -2,6 +2,7 @@ package bot
 
 import (
 	"github.com/bwmarrin/discordgo"
+	dLog "github.com/fsufitch/discord-boar-bot/bot/log-module"
 	"github.com/fsufitch/discord-boar-bot/bot/memelink-module"
 	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
 	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
@@ -24,8 +25,10 @@ func InitModuleRegistry(
 	ping *ping.Module,
 	sockpuppet *sockpuppet.Module,
 	memelink *memelink.Module,
+	discordLog *dLog.Module,
 ) ModuleRegistry {
 	unfilteredModules := []RegisterableModule{
+		discordLog,
 		ping,
 		sockpuppet,
 		memelink,

@@ -7,6 +7,7 @@ package main
 
 import (
 	"github.com/fsufitch/discord-boar-bot/bot"
+	"github.com/fsufitch/discord-boar-bot/bot/log-module"
 	"github.com/fsufitch/discord-boar-bot/bot/memelink-module"
 	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
 	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
@@ -43,7 +44,8 @@ func InitializeCLIRuntime() (*CLIRuntime, error) {
 	}
 	dao := memes.NewMemeDAO(databaseConnection)
 	memelinkModule := memelink.NewModule(databaseConnection, logDispatcher, dao)
-	moduleRegistry := bot.InitModuleRegistry(configuration, logDispatcher, pingModule, module, memelinkModule)
+	logModule := log.NewModule(configuration, logDispatcher)
+	moduleRegistry := bot.InitModuleRegistry(configuration, logDispatcher, pingModule, module, memelinkModule, logModule)
 	discordBoarBot := bot.NewDiscordBoarBot(configuration, logDispatcher, moduleRegistry)
 	cliRuntime := NewCLIRuntime(configuration, logDispatcher, cliLogReceiver, boarBotServer, discordBoarBot)
 	return cliRuntime, nil

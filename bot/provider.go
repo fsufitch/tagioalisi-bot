@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"github.com/fsufitch/discord-boar-bot/bot/log-module"
 	"github.com/fsufitch/discord-boar-bot/bot/memelink-module"
 	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
 	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
@@ -15,5 +16,6 @@ var BotProviderSet = wire.NewSet(
 	ping.NewModule,
 	sockpuppet.NewModule,
 	memelink.NewModule,
+	log.NewModule,
 	db.DBProviderSet, // Database access *required* for bot functionality
 )
