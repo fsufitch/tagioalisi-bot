@@ -115,6 +115,85 @@ func (dao DAO) SearchByName(name string) (*Meme, error) {
 	return &meme, nil
 }
 
+// SearchMany does a fuzzy name search; on empty query, returns all memes
+func (dao DAO) SearchMany(query string) ([]Meme, error) {
+	tx, err := dao.dbConn.Transaction()
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	var rows *sql.Rows
+
+	if query != "" {
+		rows, err = tx.Query(`
+			SELECT m.id, m_n.id, m_n.name, m_n.timestamp, m_n.author, m_u.id, m_u.url, m_u.timestamp, m_u.author
+			FROM meme_names m_n
+			INNER JOIN memes m ON m_n.meme_id=m.id
+			INNER JOIN meme_urls m_u ON m.id=m_u.meme_id
+			WHERE m_n.name LIKE $1
+		`, strings.ToLower(query))
+	} else {
+		rows, err = tx.Query(`
+			SELECT m.id, m_n.id, m_n.name, m_n.timestamp, m_n.author, m_u.id, m_u.url, m_u.timestamp, m_u.author
+			FROM meme_names m_n
+			INNER JOIN memes m ON m_n.meme_id=m.id
+			INNER JOIN meme_urls m_u ON m.id=m_u.meme_id
+		`)
+	}
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+
+	memes := map[int]*Meme{}
+	var (
+		mID         int
+		mnID        int
+		mnName      string
+		mnTimestamp time.Time
+		mnAuthor    string
+		muID        int
+		muURL       string
+		muTimestamp time.Time
+		muAuthor    string
+	)
+	for rows.Next() {
+		if err = rows.Scan(&mID, &mnID, &mnName, &mnTimestamp, &mnAuthor, &muID, &muURL, &muTimestamp, &muAuthor); err != nil {
+			return nil, err
+		}
+
+		if _, ok := memes[mID]; !ok {
+			memes[mID] = &Meme{ID: mID, Names: []MemeName{}, URLs: []MemeURL{}}
+		}
+
+		if mnID > 0 {
+			memes[mID].Names = append(memes[mID].Names, MemeName{
+				ID:        mnID,
+				Name:      mnName,
+				Timestamp: mnTimestamp,
+				Author:    mnAuthor,
+			})
+		}
+		if muID > 0 {
+			memes[mID].URLs = append(memes[mID].URLs, MemeURL{
+				ID:        muID,
+				URL:       muURL,
+				Timestamp: muTimestamp,
+				Author:    muAuthor,
+			})
+		}
+	}
+
+	resultMemes := []Meme{}
+	for _, meme := range memes {
+		resultMemes = append(resultMemes, *meme)
+	}
+	return resultMemes, nil
+}
+
 // AddName adds a name alias to a meme
 func (dao DAO) AddName(memeID int, name string, author string) error {
 	tx, err := dao.dbConn.Transaction()
