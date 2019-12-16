@@ -148,7 +148,6 @@ func (dao DAO) SearchMany(query string) ([]Meme, error) {
 		return nil, err
 	}
 
-	memes := map[int]*Meme{}
 	var (
 		mID         int
 		mnID        int
@@ -160,6 +159,11 @@ func (dao DAO) SearchMany(query string) ([]Meme, error) {
 		muTimestamp time.Time
 		muAuthor    string
 	)
+
+	memes := map[int]*Meme{}
+	memeNamesToMemes := map[string]*Meme{}
+	memeURLsToMemes := map[string]*Meme{}
+
 	for rows.Next() {
 		if err = rows.Scan(&mID, &mnID, &mnName, &mnTimestamp, &mnAuthor, &muID, &muURL, &muTimestamp, &muAuthor); err != nil {
 			return nil, err
@@ -170,20 +174,28 @@ func (dao DAO) SearchMany(query string) ([]Meme, error) {
 		}
 
 		if mnID > 0 {
-			memes[mID].Names = append(memes[mID].Names, MemeName{
-				ID:        mnID,
-				Name:      mnName,
-				Timestamp: mnTimestamp,
-				Author:    mnAuthor,
-			})
+			if _, ok := memeNamesToMemes[mnName]; !ok {
+				memeNamesToMemes[mnName] = memes[mID]
+				memes[mID].Names = append(memes[mID].Names, MemeName{
+					ID:        mnID,
+					Name:      mnName,
+					Timestamp: mnTimestamp,
+					Author:    mnAuthor,
+				})
+			}
 		}
+
 		if muID > 0 {
-			memes[mID].URLs = append(memes[mID].URLs, MemeURL{
-				ID:        muID,
-				URL:       muURL,
-				Timestamp: muTimestamp,
-				Author:    muAuthor,
-			})
+			if _, ok := memeURLsToMemes[muURL]; !ok {
+				memeURLsToMemes[muURL] = memes[mID]
+				memes[mID].URLs = append(memes[mID].URLs, MemeURL{
+					ID:        muID,
+					URL:       muURL,
+					Timestamp: muTimestamp,
+					Author:    muAuthor,
+				})
+			}
+
 		}
 	}
 
