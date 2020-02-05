@@ -4,50 +4,30 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/fsufitch/discord-boar-bot/common"
+	"github.com/fsufitch/discord-boar-bot/config"
+	"github.com/fsufitch/discord-boar-bot/log"
 	"github.com/gorilla/mux"
 )
 
 // BoarBotServer is the webserver of the boar bot
 type BoarBotServer struct {
-	Running       bool
-	configuration *common.Configuration
-	logger        *common.LogDispatcher
-	router        *mux.Router
+	WebPort config.WebPort
+	Log     *log.Logger
+	Router  Router
 }
 
-// Start is a blocking function that starts and serves the web API
-func (s BoarBotServer) Start() error {
+// Run is a blocking function that starts and serves the web API
+func (s BoarBotServer) Run() error {
 	serv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", s.configuration.WebPort),
-		Handler: s.router,
+		Addr:    fmt.Sprintf(":%d", s.WebPort),
+		Handler: (*mux.Router)(s.Router),
 	}
 
-	s.logger.Info("Starting web server on addr: " + serv.Addr)
+	s.Log.Infof("Starting web server on addr: %s " + serv.Addr)
 
-	s.Running = true
 	err := serv.ListenAndServe()
-	s.Running = false
 
-	s.logger.Error("Web server unexpectedly shut down")
+	s.Log.Errorf("Web server unexpectedly shut down with error: %v", err)
 
 	return err
-}
-
-// NewBoarBotServer creates a new BoarBotServer
-func NewBoarBotServer(
-	configuration *common.Configuration,
-	logger *common.LogDispatcher,
-	router *mux.Router,
-) *BoarBotServer {
-	if configuration.RunMode != common.Bot {
-		logger.Info("Not initializing web server since run mode is not Bot")
-		return nil
-	}
-	logger.Info("Initializing web server")
-	return &BoarBotServer{
-		configuration: configuration,
-		logger:        logger,
-		router:        router,
-	}
 }

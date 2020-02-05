@@ -24,7 +24,7 @@ func (m Module) handleLink(s *discordgo.Session, event *discordgo.MessageCreate)
 	uniqueMemes := map[string]string{}
 	for _, fileName := range memeRegex.FindAllString(event.Message.Content, -1) {
 		if parts := strings.SplitN(strings.ToLower(fileName), ".", 2); len(parts) < 1 {
-			m.log.Error("Somehow found meme without a dot: " + fileName)
+			m.Log.Errorf("Somehow found meme without a dot: %v", fileName)
 			continue
 		} else {
 			uniqueMemes[parts[0]] = fileName
@@ -33,9 +33,9 @@ func (m Module) handleLink(s *discordgo.Session, event *discordgo.MessageCreate)
 
 	memeCount := 0
 	for memeName, memeFileName := range uniqueMemes {
-		meme, err := m.memeDAO.SearchByName(memeName)
+		meme, err := m.MemeDAO.SearchByName(memeName)
 		if err != nil {
-			m.log.Error(fmt.Sprintf("Error searching for meme `%s`: %v", memeName, err))
+			m.Log.Errorf("error searching for meme `%s`: %v", memeName, err)
 			continue
 		}
 		if meme == nil {
@@ -48,7 +48,7 @@ func (m Module) handleLink(s *discordgo.Session, event *discordgo.MessageCreate)
 		message := fmt.Sprintf("**%s:** %s", memeFileName, url.URL)
 		_, err = s.ChannelMessageSend(event.Message.ChannelID, message)
 		if err != nil {
-			m.log.Error(err.Error())
+			m.Log.Errorf("error sending meme: %v", err)
 			return
 		}
 		memeCount++
@@ -58,7 +58,7 @@ func (m Module) handleLink(s *discordgo.Session, event *discordgo.MessageCreate)
 	}
 	if memeCount >= 3 {
 		_, err := s.ChannelMessageSend(event.Message.ChannelID, "Too many memes in one message! Chill out!")
-		m.log.Error(err.Error())
+		m.Log.Errorf("error sending throttle message: %v", err)
 		return
 	}
 	return

@@ -1,29 +1,32 @@
 package sockpuppet
 
 import (
+	"context"
 	"errors"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/fsufitch/discord-boar-bot/log"
 )
 
 // Module is a bot module that sockpuppets messages from elsewhere
 type Module struct {
 	session *discordgo.Session
+	done    bool
+	Log     *log.Logger
 }
 
 // Name returns the name of the module, for blacklisting
 func (m Module) Name() string { return "sockpuppet" }
 
 // Register adds this module to the Discord session
-func (m *Module) Register(session *discordgo.Session) error {
+func (m *Module) Register(ctx context.Context, session *discordgo.Session) error {
 	m.session = session
-	// Nothing to do here, it does not react to anything
+	go func() {
+		<-ctx.Done()
+		m.Log.Warningf("sockpuppet module context done")
+		m.done = true
+	}()
 	return nil
-}
-
-// NewModule creates a new sockpuppet module
-func NewModule() *Module {
-	return &Module{}
 }
 
 // SendMessage is used to send a message via the sockpuppet

@@ -7,9 +7,9 @@ import (
 	"github.com/google/wire"
 )
 
-// DBProviderSet contains all the necessary wire providers to use the Boar Bot database
-var DBProviderSet = wire.NewSet(
-	connection.NewDatabaseConnection,
-	kv.NewKeyValueDAO,
-	memes.NewMemeDAO,
+// ProvidePostgresDatabase contains all the necessary wire providers to use the Boar Bot Postgres database
+var ProvidePostgresDatabase = wire.NewSet(
+	connection.ProvidePostgresDatabaseConnection,
+	wire.Struct(new(kv.DAO), "*"),
+	wire.Struct(new(memes.DAO), "*"),
 )

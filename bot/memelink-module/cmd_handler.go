@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/discord-boar-bot/common"
+	"github.com/fsufitch/discord-boar-bot/bot/util"
 	"github.com/fsufitch/discord-boar-bot/db/memes-dao"
 	"github.com/urfave/cli/v2"
 )
@@ -96,14 +96,14 @@ func (m Module) handleCommand(s *discordgo.Session, event *discordgo.MessageCrea
 
 	cmd, stdout, stderr := m.cliApp(commandContext{s, event})
 	if err := cmd.Run(fields); err != nil {
-		m.log.Error(fmt.Sprintf("error while running !memes cli (`%s`): %v", event.Message.Content, err))
+		m.Log.Errorf("error while running !memes cli (`%s`): %v", event.Message.Content, err)
 	}
 
 	if errData, _ := ioutil.ReadAll(stderr); len(errData) > 0 {
-		common.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(errData))
+		util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(errData))
 	}
 	if stdData, _ := ioutil.ReadAll(stdout); len(stdData) > 0 {
-		common.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(stdData))
+		util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(stdData))
 	}
 }
 
@@ -127,18 +127,18 @@ func (m Module) handleAddMeme(s *discordgo.Session, event *discordgo.MessageCrea
 	appended := false
 
 	if appendOK {
-		existingMeme, errSearch := m.memeDAO.SearchByName(name)
+		existingMeme, errSearch := m.MemeDAO.SearchByName(name)
 		if errSearch != nil {
 			return errSearch
 		}
 		if existingMeme != nil {
 			s.ChannelMessageSend(event.Message.ChannelID, fmt.Sprintf("Adding URL to meme %d", existingMeme.ID))
-			err = m.memeDAO.AddURL(existingMeme.ID, url, event.Author.String())
+			err = m.MemeDAO.AddURL(existingMeme.ID, url, event.Author.String())
 			appended = true
 		}
 	}
 	if !appended {
-		err = m.memeDAO.Add(name, url, event.Author.String())
+		err = m.MemeDAO.Add(name, url, event.Author.String())
 	}
 
 	if err != nil {
@@ -156,13 +156,13 @@ func (m Module) handleAddAlias(s *discordgo.Session, event *discordgo.MessageCre
 	}
 	s.ChannelMessageSend(event.Message.ChannelID, fmt.Sprintf("Adding alias `%s` -> `%s`", newName, oldName))
 
-	if existingMeme, err := m.memeDAO.SearchByName(oldName); err != nil {
+	if existingMeme, err := m.MemeDAO.SearchByName(oldName); err != nil {
 		return err
 	} else if existingMeme == nil {
 		_, err = s.ChannelMessageSend(event.Message.ChannelID, "No meme found with the old alias")
 		return err
 	} else {
-		return m.memeDAO.AddName(existingMeme.ID, newName, event.Author.String())
+		return m.MemeDAO.AddName(existingMeme.ID, newName, event.Author.String())
 	}
 
 }
@@ -173,9 +173,9 @@ func (m Module) handleSearch(s *discordgo.Session, event *discordgo.MessageCreat
 	var memeResults []memes.Meme
 	var err error
 	if all {
-		memeResults, err = m.memeDAO.SearchMany("")
+		memeResults, err = m.MemeDAO.SearchMany("")
 	} else if query != "" {
-		memeResults, err = m.memeDAO.SearchMany(query)
+		memeResults, err = m.MemeDAO.SearchMany(query)
 	} else {
 		_, err = s.ChannelMessageSend(event.Message.ChannelID, "No query specified. Please specify a query or `--all`/`-a`")
 		return err
@@ -203,7 +203,7 @@ func (m Module) handleSearch(s *discordgo.Session, event *discordgo.MessageCreat
 		}
 	}
 
-	lineGroups := common.ChunkLines(lines)
+	lineGroups := util.ChunkLines(lines)
 	ch, err := s.UserChannelCreate(event.Author.ID)
 	if err != nil {
 		return err

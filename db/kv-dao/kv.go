@@ -2,25 +2,26 @@ package kv
 
 import (
 	"database/sql"
-	"github.com/fsufitch/discord-boar-bot/db/connection"
 	"time"
+
+	"github.com/fsufitch/discord-boar-bot/db/connection"
 )
 
-// KeyValueDAO exposes database KV functionality
-type KeyValueDAO struct {
-	dbConn *connection.DatabaseConnection
+// DAO exposes database KV functionality
+type DAO struct {
+	Conn connection.DatabaseConnection
 }
 
-// KeyValueEntry is a simple container for a KV row
-type KeyValueEntry struct {
+// Entry is a simple container for a KV row
+type Entry struct {
 	Key       string
 	Value     string
 	Timestamp time.Time
 }
 
 // Set sets a key in the KV table
-func (dao KeyValueDAO) Set(key string, value string) error {
-	tx, err := dao.dbConn.Transaction()
+func (dao DAO) Set(key string, value string) error {
+	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return err
 	}
@@ -38,8 +39,8 @@ func (dao KeyValueDAO) Set(key string, value string) error {
 }
 
 // Get gets a key from the KV table
-func (dao KeyValueDAO) Get(key string) (*KeyValueEntry, error) {
-	tx, err := dao.dbConn.Transaction()
+func (dao DAO) Get(key string) (*Entry, error) {
+	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +49,7 @@ func (dao KeyValueDAO) Get(key string) (*KeyValueEntry, error) {
 		SELECT key, value, timestamp FROM kv WHERE key=$1
 	`, key)
 
-	output := &KeyValueEntry{}
+	output := &Entry{}
 	err = row.Scan(&output.Key, &output.Value, &output.Timestamp)
 
 	if err == sql.ErrNoRows {
@@ -59,13 +60,4 @@ func (dao KeyValueDAO) Get(key string) (*KeyValueEntry, error) {
 	}
 
 	return output, tx.Rollback()
-}
-
-// NewKeyValueDAO creates a new KeyValueDAO
-func NewKeyValueDAO(
-	dbConn *connection.DatabaseConnection,
-) *KeyValueDAO {
-	return &KeyValueDAO{
-		dbConn: dbConn,
-	}
 }

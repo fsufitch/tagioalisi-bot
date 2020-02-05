@@ -11,7 +11,7 @@ import (
 
 // DAO is a database abstraction around the meme feature set
 type DAO struct {
-	dbConn *connection.DatabaseConnection
+	Conn connection.DatabaseConnection
 }
 
 // Meme encapsulates the data about an individual meme
@@ -39,7 +39,7 @@ type MemeName struct {
 
 // SearchByName finds a meme given the filename prefix
 func (dao DAO) SearchByName(name string) (*Meme, error) {
-	tx, err := dao.dbConn.Transaction()
+	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (dao DAO) SearchByName(name string) (*Meme, error) {
 
 // SearchMany does a fuzzy name search; on empty query, returns all memes
 func (dao DAO) SearchMany(query string) ([]Meme, error) {
-	tx, err := dao.dbConn.Transaction()
+	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return nil, err
 	}
@@ -208,7 +208,7 @@ func (dao DAO) SearchMany(query string) ([]Meme, error) {
 
 // AddName adds a name alias to a meme
 func (dao DAO) AddName(memeID int, name string, author string) error {
-	tx, err := dao.dbConn.Transaction()
+	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return err
 	}
@@ -231,7 +231,7 @@ func (dao DAO) AddName(memeID int, name string, author string) error {
 
 // AddURL adds a url to a meme
 func (dao DAO) AddURL(memeID int, url string, author string) error {
-	tx, err := dao.dbConn.Transaction()
+	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return err
 	}
@@ -254,7 +254,7 @@ func (dao DAO) AddURL(memeID int, url string, author string) error {
 
 // Add creates a new meme with the given name and URL
 func (dao DAO) Add(name string, url string, author string) error {
-	tx, err := dao.dbConn.Transaction()
+	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return err
 	}
@@ -295,7 +295,7 @@ func (dao DAO) Add(name string, url string, author string) error {
 
 // DeleteName deletes a meme name
 func (dao DAO) DeleteName(memeID int, name string) error {
-	tx, err := dao.dbConn.Transaction()
+	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return err
 	}
@@ -314,7 +314,7 @@ func (dao DAO) DeleteName(memeID int, name string) error {
 
 // DeleteURL deletes a meme URL
 func (dao DAO) DeleteURL(memeID int, url string) error {
-	tx, err := dao.dbConn.Transaction()
+	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return err
 	}
@@ -333,7 +333,7 @@ func (dao DAO) DeleteURL(memeID int, url string) error {
 
 // Delete deletes a meme
 func (dao DAO) Delete(memeID int) error {
-	tx, err := dao.dbConn.Transaction()
+	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return err
 	}
@@ -348,9 +348,4 @@ func (dao DAO) Delete(memeID int) error {
 	}
 
 	return tx.Commit()
-}
-
-// NewMemeDAO creates a new MemeDAO
-func NewMemeDAO(dbConn *connection.DatabaseConnection) *DAO {
-	return &DAO{dbConn: dbConn}
 }

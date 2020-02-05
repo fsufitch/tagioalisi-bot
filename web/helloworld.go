@@ -11,8 +11,3 @@ func (h HelloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Hello, world!"))
 }
-
-// NewHelloHandler creates a HelloHandler for dependency injection
-func NewHelloHandler() *HelloHandler {
-	return &HelloHandler{}
-}

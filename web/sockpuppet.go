@@ -10,7 +10,7 @@ import (
 
 // SockpuppetHandler is a http.Handler that sends messages through the bot
 type SockpuppetHandler struct {
-	sockpuppetModule *sockpuppet.Module
+	BotModule *sockpuppet.Module
 }
 
 // SockpuppetPayload is the incoming payload from a sockpuppet request
@@ -25,7 +25,7 @@ func (h SockpuppetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	payload := SockpuppetPayload{}
 	json.Unmarshal(body, &payload)
 
-	err := h.sockpuppetModule.SendMessage(payload.ChannelID, payload.Message)
+	err := h.BotModule.SendMessage(payload.ChannelID, payload.Message)
 
 	if err != nil {
 		w.Header().Set("Content-Type", "text/plain")
@@ -37,13 +37,4 @@ func (h SockpuppetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("OK"))
-}
-
-// NewSockpuppetHandler creates a HelloHandler for dependency injection
-func NewSockpuppetHandler(
-	sockpuppetModule *sockpuppet.Module,
-) *SockpuppetHandler {
-	return &SockpuppetHandler{
-		sockpuppetModule: sockpuppetModule,
-	}
 }

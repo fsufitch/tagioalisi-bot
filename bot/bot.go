@@ -1,61 +1,51 @@
 package bot
 
 import (
+	"context"
+
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/discord-boar-bot/common"
+	"github.com/fsufitch/discord-boar-bot/config"
+	"github.com/fsufitch/discord-boar-bot/log"
 	"github.com/pkg/errors"
 )
 
-// DiscordBoarBot encapsulates the Discord bot process
-type DiscordBoarBot struct {
-	Stop          chan bool
-	configuration *common.Configuration
-	log           *common.LogDispatcher
-	session       *discordgo.Session
-	modules       ModuleRegistry
+// Bot is a general interface for a runnable bot
+type Bot interface {
+	Run(context.Context) error
 }
 
-// Start is a blocking function that holds the runtime of the Discord bot
-func (b *DiscordBoarBot) Start() error {
-	session, err := discordgo.New("Bot " + b.configuration.DiscordToken)
-	if err != nil {
-		return errors.Wrap(err, "Could not create bot session")
-	}
+// DiscordBoarBot is the concrete implementation of Bot
+type DiscordBoarBot struct {
+	Log             *log.Logger
+	Modules         ModuleList
+	ModuleBlacklist config.BotModuleBlacklist
+	Token           config.DiscordBotToken
+}
 
-	for _, module := range b.modules {
-		if err = module.Register(session); err != nil {
-			return errors.Wrap(err, "Error registering "+module.Name())
+// Run is a blocking function that holds the runtime of the Discord bot
+func (b DiscordBoarBot) Run(ctx context.Context) error {
+	session, err := discordgo.New("Bot " + b.Token)
+	if err != nil {
+		return errors.Wrap(err, "could not create bot session")
+	}
+	defer session.Close()
+
+	for _, module := range b.Modules {
+		if _, ok := b.ModuleBlacklist[module.Name()]; ok {
+			b.Log.Infof("not registering blacklisted module `%s`", module.Name())
+			continue
 		}
-		b.log.Info("Registered bot module: " + module.Name())
+		if err = module.Register(ctx, session); err != nil {
+			return errors.Wrap(err, "error registering bot module: "+module.Name())
+		}
+		b.Log.Infof("registered module `%s`", module.Name())
 	}
 
 	err = session.Open()
 	if err != nil {
-		return errors.Wrap(err, "Could not open communication to Discord server")
+		return errors.Wrap(err, "could not open communication to Discord server")
 	}
-
-	b.log.Info("Discord bot starting...")
-	<-b.Stop
-	b.log.Info("Discord bot graceful shutdown...")
-
+	b.Log.Infof("bot initialized and listening")
+	<-ctx.Done()
 	return session.Close()
-}
-
-// NewDiscordBoarBot creates a new Discord Boar Bot
-func NewDiscordBoarBot(
-	configuration *common.Configuration,
-	log *common.LogDispatcher,
-	modules ModuleRegistry,
-) *DiscordBoarBot {
-	if configuration.RunMode != common.Bot {
-		log.Info("Not initializing bot since run mode is not Bot")
-		return nil
-	}
-	log.Info("Initializing Discord bot")
-	return &DiscordBoarBot{
-		Stop:          make(chan bool, 1),
-		configuration: configuration,
-		log:           log,
-		modules:       modules,
-	}
 }
