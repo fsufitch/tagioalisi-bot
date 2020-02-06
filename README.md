@@ -71,14 +71,14 @@ The bot functionality is split up into mostly independent modules that each act 
 
 | Name | Implemented/Ported | Purpose |
 | --- | --- | --- |
-| `log` | [x] | writes logs of warning+ level into a channel; with `DEBUG` set, also writes info-level logs |
-| `memelink` | [x] | registers and responds with meme link content in response to certain "filenames" (e.g. `facepalm.jpg`)  |
-| `ping` | [x] | responds to `!ping` with `!pong` for sanity checking |
-| `sockpuppet` | [x] | hooks allowing for custom messages to be sent via the web UI |
-| `groups` | [ ] | manage a server groups system using special prefixed roles |
-| `dice` | [ ] | roll dice (e.g. `!roll 1d20+3`) |
-| `welcome` | [ ] | welcomes new users and points them useful places|
-| `remindme` | [ ] | basic reminder system for reminding yourself and others of stuff |
-| `ytplay` | [ ] | pipe audio from a YouTube video into an audio channel; as annoying as possible |
+| `log` | ✅ | writes logs of warning+ level into a channel; with `DEBUG` set, also writes info-level logs |
+| `memelink` | ✅ | registers and responds with meme link content in response to certain "filenames" (e.g. `facepalm.jpg`)  |
+| `ping` | ✅ | responds to `!ping` with `!pong` for sanity checking |
+| `sockpuppet` | ✅ | hooks allowing for custom messages to be sent via the web UI |
+| `groups` | ⬜️ | manage a server groups system using special prefixed roles |
+| `dice` | ⬜️ | roll dice (e.g. `!roll 1d20+3`) |
+| `welcome` | ⬜️ | welcomes new users and points them useful places|
+| `remindme` | ⬜️ | basic reminder system for reminding yourself and others of stuff |
+| `ytplay` | ⬜️ | pipe audio from a YouTube video into an audio channel; as annoying as possible |
 
 These can be individually turned on/off using the `BLACKLIST_BOT_MODULES` environment variable. 
