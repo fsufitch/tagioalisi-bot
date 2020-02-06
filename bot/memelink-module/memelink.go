@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/fsufitch/discord-boar-bot/db/acl-dao"
 	"github.com/fsufitch/discord-boar-bot/db/memes-dao"
 	"github.com/fsufitch/discord-boar-bot/log"
 )
@@ -12,6 +13,7 @@ import (
 type Module struct {
 	Log     *log.Logger
 	MemeDAO *memes.DAO
+	ACLDAO  *acl.DAO
 
 	session *discordgo.Session
 }

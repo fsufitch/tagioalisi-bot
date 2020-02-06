@@ -109,6 +109,11 @@ func (m Module) handleCommand(s *discordgo.Session, event *discordgo.MessageCrea
 
 func (m Module) handleAddMeme(s *discordgo.Session, event *discordgo.MessageCreate,
 	name string, url string, appendOK bool) error {
+	if !m.isMemeEditor(s, event.Author.ID, event.GuildID) {
+		_, err := s.ChannelMessageSend(event.Message.ChannelID, "Sorry, you do not have meme editor permissions")
+		return err
+	}
+
 	name = strings.TrimSpace(name)
 	url = strings.TrimSpace(url)
 
@@ -150,6 +155,11 @@ func (m Module) handleAddMeme(s *discordgo.Session, event *discordgo.MessageCrea
 
 func (m Module) handleAddAlias(s *discordgo.Session, event *discordgo.MessageCreate,
 	newName string, oldName string) error {
+	if !m.isMemeEditor(s, event.Author.ID, event.GuildID) {
+		_, err := s.ChannelMessageSend(event.Message.ChannelID, "Sorry, you do not have meme editor permissions")
+		return err
+	}
+
 	if newName == "" || oldName == "" {
 		_, err := s.ChannelMessageSend(event.Message.ChannelID, "aliasing requires two arguments for meme names (new name, old name)")
 		return err

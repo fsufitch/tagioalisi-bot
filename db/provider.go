@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/fsufitch/discord-boar-bot/db/acl-dao"
 	"github.com/fsufitch/discord-boar-bot/db/connection"
 	"github.com/fsufitch/discord-boar-bot/db/kv-dao"
 	"github.com/fsufitch/discord-boar-bot/db/memes-dao"
@@ -12,4 +13,5 @@ var ProvidePostgresDatabase = wire.NewSet(
 	connection.ProvidePostgresDatabaseConnection,
 	wire.Struct(new(kv.DAO), "*"),
 	wire.Struct(new(memes.DAO), "*"),
+	wire.Struct(new(acl.DAO), "*"),
 )

@@ -12,6 +12,7 @@ import (
 	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
 	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
 	"github.com/fsufitch/discord-boar-bot/config"
+	"github.com/fsufitch/discord-boar-bot/db/acl-dao"
 	"github.com/fsufitch/discord-boar-bot/db/connection"
 	"github.com/fsufitch/discord-boar-bot/db/memes-dao"
 	"github.com/fsufitch/discord-boar-bot/log"
@@ -50,9 +51,13 @@ func InitializeMain() (Main, func(), error) {
 	dao := &memes.DAO{
 		Conn: databaseConnection,
 	}
+	aclDAO := &acl.DAO{
+		Conn: databaseConnection,
+	}
 	memelinkModule := &memelink.Module{
 		Log:     logger,
 		MemeDAO: dao,
+		ACLDAO:  aclDAO,
 	}
 	modules := bot.Modules{
 		Ping:       module,
