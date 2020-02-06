@@ -10,10 +10,10 @@ type DatabaseString string
 
 // ProvideDatabaseStringFromEnvironment creates a DatabaseString from the environment, or errors when it's missing
 func ProvideDatabaseStringFromEnvironment() (DatabaseString, error) {
-	if envValue, ok := os.LookupEnv("DATABASE"); ok {
+	if envValue, ok := os.LookupEnv("DATABASE_URL"); ok {
 		return DatabaseString(envValue), nil
 	}
-	return "", errors.New("missing env var: DATABASE")
+	return "", errors.New("missing env var: DATABASE_URL")
 
 }
 

@@ -29,7 +29,6 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 	m.session = session
 
 	if m.LogChannel != "" {
-		close(m.sendQueue)
 		err := m.Log.RegisterReceiver("discord", m)
 		if err != nil {
 			return err

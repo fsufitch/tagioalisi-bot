@@ -23,7 +23,7 @@ func (s BoarBotServer) Run() error {
 		Handler: (*mux.Router)(s.Router),
 	}
 
-	s.Log.Infof("Starting web server on addr: %s " + serv.Addr)
+	s.Log.Infof("Starting web server on addr: %s ", serv.Addr)
 
 	err := serv.ListenAndServe()
 
