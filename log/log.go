@@ -49,7 +49,7 @@ func (l Logger) RegisterReceiver(name string, recv MessageReceiver) error {
 	}
 	ch := make(chan Message, l.BufferSize)
 	l.destinations[name] = destination{name, recv, ch}
-	recv.Receive(ch)
+	go recv.Receive(ch)
 	return nil
 }
 

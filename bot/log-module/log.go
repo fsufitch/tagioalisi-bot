@@ -85,5 +85,5 @@ func format(message log.Message) string {
 	case log.Critical:
 		levelPrefix = "[CRITICAL]"
 	}
-	return fmt.Sprintf("**[%s]** %s", levelPrefix, fmt.Sprintf(message.Format, message.Values...))
+	return fmt.Sprintf("**%s** %s", levelPrefix, fmt.Sprintf(message.Format, message.Values...))
 }

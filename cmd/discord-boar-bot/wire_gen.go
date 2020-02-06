@@ -43,7 +43,7 @@ func InitializeMain() (Main, func(), error) {
 	if err != nil {
 		return Main{}, nil, err
 	}
-	databaseConnection, cleanup, err := connection.ProvidePostgresDatabaseConnection(databaseString)
+	databaseConnection, cleanup, err := connection.ProvidePostgresDatabaseConnection(logger, databaseString)
 	if err != nil {
 		return Main{}, nil, err
 	}
