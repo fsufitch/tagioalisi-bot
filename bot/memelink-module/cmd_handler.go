@@ -100,6 +100,7 @@ func (m Module) handleCommand(s *discordgo.Session, event *discordgo.MessageCrea
 	}
 
 	if errData, _ := ioutil.ReadAll(stderr); len(errData) > 0 {
+		m.Log.Errorf("Error output while executing memelink command: %s", string(errData))
 		util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(errData))
 	}
 	if stdData, _ := ioutil.ReadAll(stdout); len(stdData) > 0 {

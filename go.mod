@@ -4,7 +4,7 @@
 module github.com/fsufitch/discord-boar-bot
 
 require (
-	github.com/bwmarrin/discordgo v0.19.0
+	github.com/bwmarrin/discordgo v0.20.2
 	github.com/docker/docker v0.7.3-0.20190817195342-4760db040282
 	github.com/docker/go-metrics v0.0.1 // indirect
 	github.com/golang-migrate/migrate/v4 v4.7.0

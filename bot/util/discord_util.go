@@ -9,13 +9,19 @@ import (
 
 // DiscordMessageSendRawBlock sends an arbitrary raw block of "pre" formatted
 // text, split into multiple messages if necessaty
-func DiscordMessageSendRawBlock(s *discordgo.Session, channelID string, text string) {
+func DiscordMessageSendRawBlock(s *discordgo.Session, channelID string, text string) error {
 	escapedText := strings.Replace(text, "```", "###", -1)
 	chunks := Chunk(escapedText)
 	for _, chunk := range chunks {
-		s.ChannelMessageSend(channelID, fmt.Sprintf("```%s```", chunk))
+		if _, err := s.ChannelMessageSend(channelID, fmt.Sprintf("```%s```", chunk)); err != nil {
+			return err
+		}
+
 	}
 	if escapedText != text {
-		s.ChannelMessageSend(channelID, "```[[ Message contained triple backticks, which were escaped to '###' ]]]```")
+		if _, err := s.ChannelMessageSend(channelID, "```[[ Message contained triple backticks, which were escaped to '###' ]]]```"); err != nil {
+			return err
+		}
 	}
+	return nil
 }
