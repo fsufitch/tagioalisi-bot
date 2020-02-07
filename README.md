@@ -14,7 +14,7 @@ delivery of the following items:
 - [x] Discord bot client bootstrapping, module system, and asynchronous operation
 - [x] Web API bootstrapping and asynchronous operation
 - [x] DAOs for the following DB feature sets: ~~key/value~~, ~~memes~~, ~~ACL~~
-- [ ] The following bot modules: ~~ping~~, ~~log~~, ~~memelink~~, ~~sockpuppet~~ (incl. ~~linking with web API~~), welcome, groups
+- [ ] The following bot modules: ~~ping~~, ~~log~~, ~~memelink~~, ~~sockpuppet~~ (incl. ~~linking with web API~~), welcome, ~~groups~~
 - [ ] Single page web UI for interacting with the web API
 - [ ] Two stage deployment setup for integration testing on Heroku
 - [ ] Rebranding to something not related to Guild Wars 2; who plays that game anyway?
@@ -60,6 +60,7 @@ do differ from the values in `.env.template`.
 | `DISCORD_TOKEN` | **ERROR** | (bot only) used for authenticating the bot to Discord |
 | `BLACKLIST_BOT_MODULES` | (bot only) comma-separated bot modules to not load; see below for details |
 | `DISCORD_LOG_CHANNEL` | | (bot only) ID of channel the bot should use for logging; no channel logs if empty |
+| `GROUP_PREFIX` | `g-` | (bot only) the prefix to use for any bot-managed roles, as part of the `groups` module` |
 | `WEB_ENABLED` | false | (bot only) enable the HTTP web API for runtime control of the bot |
 | `WEB_SECRET` | | (bot only) the secret token to use for securing the web API; web API will not launch without this |
 | `PORT` | 9999 | (bot only) the TCP port that the bot HTTP web API listens on |
@@ -75,7 +76,7 @@ The bot functionality is split up into mostly independent modules that each act 
 | `memelink` | ✅ | registers and responds with meme link content in response to certain "filenames" (e.g. `facepalm.jpg`)  |
 | `ping` | ✅ | responds to `!ping` with `!pong` for sanity checking |
 | `sockpuppet` | ✅ | hooks allowing for custom messages to be sent via the web UI |
-| `groups` | ⬜️ | manage a server groups system using special prefixed roles |
+| `groups` | ✅ | manage a server groups system using special prefixed roles |
 | `dice` | ⬜️ | roll dice (e.g. `!roll 1d20+3`) |
 | `welcome` | ⬜️ | welcomes new users and points them useful places|
 | `remindme` | ⬜️ | basic reminder system for reminding yourself and others of stuff |
