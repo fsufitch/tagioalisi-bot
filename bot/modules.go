@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/fsufitch/discord-boar-bot/bot/groups-module"
 	"github.com/fsufitch/discord-boar-bot/bot/log-module"
 	"github.com/fsufitch/discord-boar-bot/bot/memelink-module"
 	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
@@ -22,6 +23,7 @@ type Modules struct {
 	Log        *log.Module
 	SockPuppet *sockpuppet.Module
 	MemeLink   *memelink.Module
+	Groups     *groups.Module
 }
 
 // ModuleList is a list containing all the possible implemented modules
@@ -34,5 +36,6 @@ func ProvideModuleList(m Modules) ModuleList {
 		m.Log,
 		m.SockPuppet,
 		m.MemeLink,
+		m.Groups,
 	}
 }

@@ -7,6 +7,7 @@ package main
 
 import (
 	"github.com/fsufitch/discord-boar-bot/bot"
+	"github.com/fsufitch/discord-boar-bot/bot/groups-module"
 	log2 "github.com/fsufitch/discord-boar-bot/bot/log-module"
 	"github.com/fsufitch/discord-boar-bot/bot/memelink-module"
 	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
@@ -59,11 +60,17 @@ func InitializeMain() (Main, func(), error) {
 		MemeDAO: dao,
 		ACLDAO:  aclDAO,
 	}
+	managedGroupPrefix := config.ProvideManagedGroupPrefixFromEnvironment()
+	groupsModule := &groups.Module{
+		Log:    logger,
+		Prefix: managedGroupPrefix,
+	}
 	modules := bot.Modules{
 		Ping:       module,
 		Log:        logModule,
 		SockPuppet: sockpuppetModule,
 		MemeLink:   memelinkModule,
+		Groups:     groupsModule,
 	}
 	moduleList := bot.ProvideModuleList(modules)
 	botModuleBlacklist := config.ProvideBotModuleBlacklistFromEnvironment()

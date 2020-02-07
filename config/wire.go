@@ -9,6 +9,7 @@ var EnvironmentProviderSet = wire.NewSet(
 	ProvideDebugModeFromEnvironment,
 	ProvideDiscordBotTokenFromEnvironment,
 	ProvideDiscordLogChannelFromEnvironment,
+	ProvideManagedGroupPrefixFromEnvironment,
 	ProvideMigrationDirFromEnvironment,
 	ProvideWebEnabledFromEnvironment,
 	ProvideWebPortFromEnvironment,

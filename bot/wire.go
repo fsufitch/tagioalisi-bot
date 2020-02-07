@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"github.com/fsufitch/discord-boar-bot/bot/groups-module"
 	"github.com/fsufitch/discord-boar-bot/bot/log-module"
 	"github.com/fsufitch/discord-boar-bot/bot/memelink-module"
 	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
@@ -18,4 +19,5 @@ var ProvideDiscordBoarBot = wire.NewSet(
 	sockpuppet.ProvideModule,
 	memelink.ProvideModule,
 	log.ProvideModule,
+	groups.ProvideModule,
 )
