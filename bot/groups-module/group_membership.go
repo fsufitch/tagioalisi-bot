@@ -136,7 +136,7 @@ func (m Module) groupLeave(session *discordgo.Session, event *discordgo.MessageC
 		}
 	}
 
-	msg := fmt.Sprintf("Added %d user(s) to the group", len(targetUserIDs))
+	msg := fmt.Sprintf("Removed %d user(s) from the group", len(targetUserIDs))
 	_, err = session.ChannelMessageSend(event.ChannelID, msg)
 	return err
 }
