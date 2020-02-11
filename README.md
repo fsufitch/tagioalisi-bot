@@ -14,7 +14,7 @@ delivery of the following items:
 - [x] Discord bot client bootstrapping, module system, and asynchronous operation
 - [x] Web API bootstrapping and asynchronous operation
 - [x] DAOs for the following DB feature sets: ~~key/value~~, ~~memes~~, ~~ACL~~
-- [ ] The following bot modules: ~~ping~~, ~~log~~, ~~memelink~~, ~~sockpuppet~~ (incl. ~~linking with web API~~), welcome, ~~groups~~
+- [x] The following bot modules: ~~ping~~, ~~log~~, ~~memelink~~, ~~sockpuppet~~ (incl. ~~linking with web API~~), ~~groups~~
 - [ ] Single page web UI for interacting with the web API
 - [ ] Two stage deployment setup for integration testing on Heroku
 - [ ] Rebranding to something not related to Guild Wars 2; who plays that game anyway?
