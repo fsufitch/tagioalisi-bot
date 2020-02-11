@@ -4,9 +4,10 @@ import "github.com/bwmarrin/discordgo"
 
 const memeEditorACL = "boarbot.modules.memelink::edit"
 
+// TODO: change to (bool, err) return type to bubble errors up
 func (m Module) isMemeEditor(s *discordgo.Session, userID string, guildID string) bool {
 	if allowed, err := m.ACLDAO.CheckUserACL(userID, memeEditorACL); err != nil {
-		m.Log.Errorf("could not check meme editor user ACL: %v", err)
+		m.Log.Errorf("memelink: could not check meme editor user ACL: %v", err)
 		return false
 	} else if allowed {
 		return true

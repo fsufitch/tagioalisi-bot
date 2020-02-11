@@ -48,6 +48,7 @@ func (m Main) Main() int {
 		m.log.Criticalf("critical web error: %v", err)
 		return 1
 	case <-m.context.Done():
+		m.log.Infof("main context canceled, shutting down")
 		return 0
 	}
 }

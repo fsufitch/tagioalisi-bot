@@ -2,10 +2,10 @@ package sockpuppet
 
 import (
 	"context"
-	"errors"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/fsufitch/discord-boar-bot/log"
+	"github.com/pkg/errors"
 )
 
 // Module is a bot module that sockpuppets messages from elsewhere
@@ -23,7 +23,7 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 	m.session = session
 	go func() {
 		<-ctx.Done()
-		m.Log.Warningf("sockpuppet module context done")
+		m.Log.Infof("sockpuppet module context done")
 		m.done = true
 	}()
 	return nil
@@ -35,6 +35,8 @@ func (m *Module) SendMessage(channelID string, message string) error {
 		return errors.New("No session to send messages through")
 	}
 
-	_, err := m.session.ChannelMessageSend(channelID, message)
-	return err
+	if _, err := m.session.ChannelMessageSend(channelID, message); err != nil {
+		return errors.Wrap(err, "sockpuppet: could not send message")
+	}
+	return nil
 }

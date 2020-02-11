@@ -23,11 +23,11 @@ func (s BoarBotServer) Run() error {
 		Handler: (*mux.Router)(s.Router),
 	}
 
-	s.Log.Infof("Starting web server on addr: %s ", serv.Addr)
+	s.Log.Infof("web: starting server on addr: %s ", serv.Addr)
 
 	err := serv.ListenAndServe()
 
-	s.Log.Errorf("Web server unexpectedly shut down with error: %v", err)
+	s.Log.Errorf("web: server unexpectedly shut down with error: %v", err)
 
 	return err
 }

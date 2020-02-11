@@ -47,5 +47,6 @@ func (b DiscordBoarBot) Run(ctx context.Context) error {
 	}
 	b.Log.Infof("bot initialized and listening")
 	<-ctx.Done()
+	b.Log.Infof("bot context canceled, shutting down")
 	return session.Close()
 }

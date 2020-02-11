@@ -66,6 +66,7 @@ func (m *Module) cliApp(ctx commandContext) (app *cli.App, stdout, stderr *bytes
 			fmt.Fprintf(stderr, "Unknown command for `%s`: %s `%s`\n", context.App.Name, context.Command.Name, command)
 		},
 	}
+	m.Log.Debugf("groups: created urfave/cli command for message %v", ctx.messageCreate.ID)
 
 	return
 }
@@ -81,20 +82,28 @@ func (m Module) handleCommand(s *discordgo.Session, event *discordgo.MessageCrea
 		return
 	}
 
+	m.Log.Debugf("groups: message %v triggers !groups: %s", event.ID, event.Content)
+
 	if event.Message.Author == nil || event.Message.Author.Bot {
+		m.Log.Debugf("groups: message %v ignored due to nil/bot author", event.ID)
 		return
 	}
 
 	cmd, stdout, stderr := m.cliApp(commandContext{s, event})
 	if err := cmd.Run(fields); err != nil {
-		m.Log.Errorf("error while running !groups cli (`%s`): %v", event.Message.Content, err)
+		m.Log.Errorf("groups: message %v error while running cli: %v", event.ID, err)
 	}
 
 	if errData, _ := ioutil.ReadAll(stderr); len(errData) > 0 {
-		m.Log.Errorf("Error output while executing groups command: %s", string(errData))
-		util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(errData))
+		m.Log.Errorf("groups: message %v error output while executing groups command: %s", event.ID, string(errData))
+		if err := util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(errData)); err != nil {
+			m.Log.Errorf("groups: message %v error while sending stdout: %v", event.ID, err)
+		}
+
 	}
 	if stdData, _ := ioutil.ReadAll(stdout); len(stdData) > 0 {
-		util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(stdData))
+		if err := util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(stdData)); err != nil {
+			m.Log.Errorf("groups: message %v error while sending stderr: %v", event.ID, err)
+		}
 	}
 }

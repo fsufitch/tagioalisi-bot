@@ -6,6 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/fsufitch/discord-boar-bot/config"
 	"github.com/fsufitch/discord-boar-bot/log"
+	"github.com/pkg/errors"
 )
 
 // Module is a bot module that responds to "!groups" commands
@@ -22,7 +23,7 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 	cancel := session.AddHandler(m.handleCommand)
 	go func() {
 		<-ctx.Done()
-		m.Log.Warningf("groups module context done")
+		m.Log.Infof("groups module context done")
 		cancel()
 	}()
 	return nil
@@ -31,12 +32,12 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 func (m Module) isGroupManager(session *discordgo.Session, event *discordgo.MessageCreate) (bool, error) {
 	member, err := session.GuildMember(event.GuildID, event.Author.ID)
 	if err != nil {
-		return false, err
+		return false, errors.Wrapf(err, "could not convert user to member %v", event.Author.ID)
 	}
 
 	allRoles, err := session.GuildRoles(event.GuildID)
 	if err != nil {
-		return false, err
+		return false, errors.Wrap(err, "could not retrieve existing roles")
 	}
 	roleMap := map[string]*discordgo.Role{}
 	for _, role := range allRoles {

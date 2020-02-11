@@ -6,11 +6,13 @@ import (
 	"net/http"
 
 	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/discord-boar-bot/log"
 )
 
 // SockpuppetHandler is a http.Handler that sends messages through the bot
 type SockpuppetHandler struct {
 	BotModule *sockpuppet.Module
+	Log       *log.Logger
 }
 
 // SockpuppetPayload is the incoming payload from a sockpuppet request
@@ -31,10 +33,13 @@ func (h SockpuppetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error: " + err.Error()))
+		h.Log.Errorf("sockpuppet-web: error sending message: %v", err)
+		h.Log.HTTP(http.StatusBadRequest, r)
 		return
 	}
 
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
+	h.Log.HTTP(http.StatusOK, r)
 	w.Write([]byte("OK"))
 }

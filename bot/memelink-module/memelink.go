@@ -29,7 +29,7 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 
 	go func() {
 		<-ctx.Done()
-		m.Log.Warningf("memelink module context done")
+		m.Log.Infof("memelink module context done")
 		cancel1()
 		cancel2()
 	}()

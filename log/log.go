@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 )
 
@@ -81,6 +82,18 @@ func (l Logger) Warningf(format string, values ...interface{}) {
 // Errorf prints a debug message to the appropriate logger
 func (l Logger) Errorf(format string, values ...interface{}) {
 	l.print(Message{Error, format, values})
+}
+
+// HTTP logs a received HTTP request
+func (l Logger) HTTP(status int, r *http.Request) {
+	l.print(Message{Info, "HTTP %d: %s %s referer:%s remote:%s ", []interface{}{
+		status,
+		r.Method,
+		r.URL.String,
+		r.Referer,
+		r.RemoteAddr,
+		r.UserAgent(),
+	}})
 }
 
 // Criticalf prints a debug message to the appropriate logger

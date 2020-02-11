@@ -37,7 +37,7 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 		go m.sendWorker()
 		return nil
 	}
-	m.Log.Warningf("Discord logging channel ID not set, cannot log to Discord")
+	m.Log.Warningf("log: Discord logging channel ID not set, cannot log to Discord")
 	return nil
 }
 
@@ -66,7 +66,8 @@ func (m Module) sendWorker() {
 		text := format(message)
 
 		if _, err := m.session.ChannelMessageSend(string(m.LogChannel), text); err != nil {
-			// uh oh
+			// oh boy
+			fmt.Fprint(os.Stderr, "XXX: unable to send log message to discord\n")
 		}
 	}
 }

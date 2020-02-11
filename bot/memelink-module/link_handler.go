@@ -13,7 +13,6 @@ var memeRegex = regexp.MustCompile("[a-zA-Z0-9_-]+(?:\\.[a-zA-Z0-9_-]+)+")
 
 func (m Module) handleLink(s *discordgo.Session, event *discordgo.MessageCreate) {
 	if event.Message.Author == nil || event.Message.Author.Bot {
-		//m.log.Debug("memelink: Ignoring message from bot")
 		return // Ignore bots
 	}
 
@@ -24,7 +23,7 @@ func (m Module) handleLink(s *discordgo.Session, event *discordgo.MessageCreate)
 	uniqueMemes := map[string]string{}
 	for _, fileName := range memeRegex.FindAllString(event.Message.Content, -1) {
 		if parts := strings.SplitN(strings.ToLower(fileName), ".", 2); len(parts) < 1 {
-			m.Log.Errorf("Somehow found meme without a dot: %v", fileName)
+			m.Log.Errorf("memelink: somehow found meme without a dot: %v", fileName)
 			continue
 		} else {
 			uniqueMemes[parts[0]] = fileName
@@ -41,6 +40,7 @@ func (m Module) handleLink(s *discordgo.Session, event *discordgo.MessageCreate)
 		if meme == nil {
 			continue
 		}
+		m.Log.Debugf("memelink: found meme with name `%v`", memeName)
 
 		url := meme.URLs[rand.Intn(len(meme.URLs))]
 
@@ -53,13 +53,14 @@ func (m Module) handleLink(s *discordgo.Session, event *discordgo.MessageCreate)
 		}
 		memeCount++
 		if memeCount >= 3 {
+			m.Log.Debugf("memelink: capping memes per proc at 3")
 			break
 		}
 	}
 	if memeCount >= 3 {
-		_, err := s.ChannelMessageSend(event.Message.ChannelID, "Too many memes in one message! Chill out!")
-		m.Log.Errorf("error sending throttle message: %v", err)
-		return
+		if _, err := s.ChannelMessageSend(event.Message.ChannelID, "Too many memes in one message! Chill out!"); err != nil {
+			m.Log.Errorf("error sending throttle message: %v", err)
+		}
 	}
 	return
 }

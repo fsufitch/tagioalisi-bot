@@ -75,6 +75,7 @@ func (m *Module) cliApp(ctx commandContext) (app *cli.App, stdout, stderr *bytes
 			fmt.Fprintf(stderr, "Unknown command for `%s`: %s `%s`\n", context.App.Name, context.Command.Name, command)
 		},
 	}
+	m.Log.Debugf("memelink: created urfave/cli command for message %v", ctx.messageCreate.ID)
 
 	return
 }
@@ -89,8 +90,10 @@ func (m Module) handleCommand(s *discordgo.Session, event *discordgo.MessageCrea
 	if len(fields) < 1 || fields[0] != "!memes" {
 		return
 	}
+	m.Log.Debugf("memelink: message %v triggers !memes: %s", event.ID, event.Content)
 
 	if event.Message.Author == nil || event.Message.Author.Bot {
+		m.Log.Debugf("groups: message %v ignored due to nil/bot author", event.ID)
 		return
 	}
 
@@ -99,13 +102,18 @@ func (m Module) handleCommand(s *discordgo.Session, event *discordgo.MessageCrea
 		m.Log.Errorf("error while running !memes cli (`%s`): %v", event.Message.Content, err)
 	}
 
+	if stdData, _ := ioutil.ReadAll(stdout); len(stdData) > 0 {
+		if err := util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(stdData)); err != nil {
+			m.Log.Errorf("groups: message %v error while sending stdout: %v", event.ID, err)
+		}
+	}
 	if errData, _ := ioutil.ReadAll(stderr); len(errData) > 0 {
 		m.Log.Errorf("Error output while executing memelink command: %s", string(errData))
-		util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(errData))
+		if err := util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(errData)); err != nil {
+			m.Log.Errorf("groups: message %v error while sending stderr: %v", event.ID, err)
+		}
 	}
-	if stdData, _ := ioutil.ReadAll(stdout); len(stdData) > 0 {
-		util.DiscordMessageSendRawBlock(s, event.Message.ChannelID, string(stdData))
-	}
+
 }
 
 func (m Module) handleAddMeme(s *discordgo.Session, event *discordgo.MessageCreate,

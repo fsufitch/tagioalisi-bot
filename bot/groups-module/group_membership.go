@@ -7,12 +7,14 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/fsufitch/discord-boar-bot/bot/util"
+	"github.com/pkg/errors"
 )
 
 func (m Module) groupList(session *discordgo.Session, event *discordgo.MessageCreate) error {
+	m.Log.Debugf("groups: message %v listing groups", event.ID)
 	roles, err := session.GuildRoles(event.GuildID)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "could not retrieve existing roles")
 	}
 
 	managedGroupRoles := []*discordgo.Role{}
@@ -31,16 +33,17 @@ func (m Module) groupList(session *discordgo.Session, event *discordgo.MessageCr
 
 	ch, err := session.UserChannelCreate(event.Author.ID)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "could not open private channel to user")
 	}
 
 	return util.DiscordMessageSendRawBlock(session, ch.ID, buf.String())
 }
 
 func (m Module) groupJoin(session *discordgo.Session, event *discordgo.MessageCreate, groupName string) error {
+	m.Log.Debugf("groups: message %v joining group", event.ID)
 	roles, err := session.GuildRoles(event.GuildID)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "could not retrieve existing roles")
 	}
 
 	roleName := fmt.Sprintf("%s%s", m.Prefix, strings.ToLower(groupName))
@@ -53,7 +56,7 @@ func (m Module) groupJoin(session *discordgo.Session, event *discordgo.MessageCr
 	}
 	if foundRole == nil {
 		_, err := session.ChannelMessageSend(event.ChannelID, "Could not find a group by that name.")
-		return err
+		return errors.Wrap(err, "could not send message")
 	}
 
 	targetUserIDs := []string{}
@@ -71,28 +74,29 @@ func (m Module) groupJoin(session *discordgo.Session, event *discordgo.MessageCr
 
 	if targetOthers {
 		if isGroupManager, err := m.isGroupManager(session, event); err != nil {
-			return err
+			return errors.Wrap(err, "could not check group manager permissions")
 		} else if !isGroupManager {
 			_, err := session.ChannelMessageSend(event.ChannelID, "You are not allowed to add others to groups. Administrator permissions required.")
-			return err
+			return errors.Wrap(err, "could not send message")
 		}
 	}
 
 	for _, target := range targetUserIDs {
 		if err := session.GuildMemberRoleAdd(event.GuildID, target, foundRole.ID); err != nil {
-			return err
+			return errors.Wrapf(err, "could not add member %v to role", target)
 		}
 	}
 
 	msg := fmt.Sprintf("Added %d user(s) to the group", len(targetUserIDs))
 	_, err = session.ChannelMessageSend(event.ChannelID, msg)
-	return err
+	return errors.Wrap(err, "could not send message")
 }
 
 func (m Module) groupLeave(session *discordgo.Session, event *discordgo.MessageCreate, groupName string) error {
+	m.Log.Debugf("groups: message %v leaving group", event.ID)
 	roles, err := session.GuildRoles(event.GuildID)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "could not retrieve existing roles")
 	}
 
 	roleName := fmt.Sprintf("%s%s", m.Prefix, strings.ToLower(groupName))
@@ -105,7 +109,7 @@ func (m Module) groupLeave(session *discordgo.Session, event *discordgo.MessageC
 	}
 	if foundRole == nil {
 		_, err := session.ChannelMessageSend(event.ChannelID, "Could not find a group by that name.")
-		return err
+		return errors.Wrap(err, "could not send message")
 	}
 
 	targetUserIDs := []string{}
@@ -123,20 +127,20 @@ func (m Module) groupLeave(session *discordgo.Session, event *discordgo.MessageC
 
 	if targetOthers {
 		if isGroupManager, err := m.isGroupManager(session, event); err != nil {
-			return err
+			return errors.Wrap(err, "could not check group manager permissions")
 		} else if !isGroupManager {
 			_, err := session.ChannelMessageSend(event.ChannelID, "You are not allowed to remove others from groups. Administrator permissions required.")
-			return err
+			return errors.Wrap(err, "could not send message")
 		}
 	}
 
 	for _, target := range targetUserIDs {
 		if err := session.GuildMemberRoleRemove(event.GuildID, target, foundRole.ID); err != nil {
-			return err
+			return errors.Wrapf(err, "could not remove member %v from role", target)
 		}
 	}
 
 	msg := fmt.Sprintf("Removed %d user(s) from the group", len(targetUserIDs))
 	_, err = session.ChannelMessageSend(event.ChannelID, msg)
-	return err
+	return errors.Wrap(err, "could not send message")
 }

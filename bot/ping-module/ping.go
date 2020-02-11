@@ -20,7 +20,7 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 	cancel := session.AddHandler(m.pingHandler)
 	go func() {
 		<-ctx.Done()
-		m.Log.Warningf("ping module context done")
+		m.Log.Infof("ping module context done")
 		cancel()
 	}()
 	return nil
@@ -28,7 +28,9 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 
 func (m *Module) pingHandler(s *discordgo.Session, msg *discordgo.MessageCreate) {
 	if msg.Content == "!ping" {
-		m.Log.Debugf("ping received")
-		s.ChannelMessageSend(msg.ChannelID, "pong!")
+		m.Log.Debugf("ping: pinged")
+		if _, err := s.ChannelMessageSend(msg.ChannelID, "pong!"); err != nil {
+			m.Log.Errorf("ping: could not send message: %v", err)
+		}
 	}
 }

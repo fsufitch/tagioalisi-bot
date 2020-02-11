@@ -105,10 +105,14 @@ func InitializeMain() (Main, func(), error) {
 	webSecret := config.ProvideWebSecretFromEnvironment()
 	secretBearerAuthorizationWrapper := &web.SecretBearerAuthorizationWrapper{
 		Secret: webSecret,
+		Log:    logger,
 	}
-	helloHandler := &web.HelloHandler{}
+	helloHandler := &web.HelloHandler{
+		Log: logger,
+	}
 	sockpuppetHandler := &web.SockpuppetHandler{
 		BotModule: sockpuppetModule,
+		Log:       logger,
 	}
 	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler)
 	boarBotServer := web.BoarBotServer{
