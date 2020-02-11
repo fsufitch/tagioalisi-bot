@@ -1,0 +1,5 @@
+{
+    "root": "dist/",
+    "https_only": true,
+    "canonical_host": "${CANONICAL_HOST}"
+}
