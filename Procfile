@@ -1,1 +1,1 @@
-web: bin/discord-boar-bot
+web: bin/tagi-bot

@@ -6,7 +6,7 @@ import (
 
 // ProvideWebServer contains all the necessary wire providers to stand up a webserver
 var ProvideWebServer = wire.NewSet(
-	wire.Struct(new(BoarBotServer), "*"),
+	wire.Struct(new(TagioalisiAPIServer), "*"),
 	wire.Struct(new(SecretBearerAuthorizationWrapper), "*"),
 	ProvideRouter,
 	wire.Struct(new(HelloHandler), "*"),

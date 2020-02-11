@@ -8,7 +8,7 @@ import (
 	"github.com/google/wire"
 )
 
-// ProvidePostgresDatabase contains all the necessary wire providers to use the Boar Bot Postgres database
+// ProvidePostgresDatabase contains all the necessary wire providers to use the Tagioalisi Postgres database
 var ProvidePostgresDatabase = wire.NewSet(
 	connection.ProvidePostgresDatabaseConnection,
 	wire.Struct(new(kv.DAO), "*"),

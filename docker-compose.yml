@@ -11,6 +11,6 @@ services:
     db:
         image: "postgres:12"
         environment: 
-            POSTGRES_USER: boarbot
+            POSTGRES_USER: tagi
             POSTGRES_PASSWORD: secret
-            POSTGRES_DB: boarbot
+            POSTGRES_DB: tagi

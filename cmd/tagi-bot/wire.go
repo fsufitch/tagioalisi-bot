@@ -19,7 +19,7 @@ func InitializeMain() (Main, func(), error) {
 		ProvideWebRunFunc,
 		config.EnvironmentProviderSet,
 		log.CLILoggingProviderSet,
-		bot.ProvideDiscordBoarBot,
+		bot.ProvideTagioalisiBot,
 		db.ProvidePostgresDatabase,
 		web.ProvideWebServer,
 	))

@@ -79,7 +79,7 @@ func InitializeMain() (Main, func(), error) {
 		cleanup()
 		return Main{}, nil, err
 	}
-	discordBoarBot := &bot.DiscordBoarBot{
+	tagioalisiBot := &bot.TagioalisiBot{
 		Log:             logger,
 		Modules:         moduleList,
 		ModuleBlacklist: botModuleBlacklist,
@@ -115,13 +115,13 @@ func InitializeMain() (Main, func(), error) {
 		Log:       logger,
 	}
 	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler)
-	boarBotServer := web.BoarBotServer{
+	tagioalisiAPIServer := web.TagioalisiAPIServer{
 		WebPort: webPort,
 		Log:     logger,
 		Router:  router,
 	}
-	webRunFunc := ProvideWebRunFunc(webEnabled, boarBotServer)
-	mainMain, cleanup2, err := ProvideMain(interruptContext, discordBoarBot, logger, debugMode, cliLoggingBootstrapper, webRunFunc)
+	webRunFunc := ProvideWebRunFunc(webEnabled, tagioalisiAPIServer)
+	mainMain, cleanup2, err := ProvideMain(interruptContext, tagioalisiBot, logger, debugMode, cliLoggingBootstrapper, webRunFunc)
 	if err != nil {
 		cleanup()
 		return Main{}, nil, err

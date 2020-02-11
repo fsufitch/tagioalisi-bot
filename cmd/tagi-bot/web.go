@@ -9,7 +9,7 @@ import (
 type WebRunFunc func() error
 
 // ProvideWebRunFunc assigns the appropriate web run function
-func ProvideWebRunFunc(webEnabled config.WebEnabled, server web.BoarBotServer) WebRunFunc {
+func ProvideWebRunFunc(webEnabled config.WebEnabled, server web.TagioalisiAPIServer) WebRunFunc {
 	if !webEnabled {
 		return nil
 	}

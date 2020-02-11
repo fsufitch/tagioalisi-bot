@@ -9,7 +9,7 @@ RUN go mod download
 FROM deps
 
 ADD . /bot
-RUN go build ./cmd/discord-boar-bot
-RUN go build ./cmd/boarbot-migrate
+RUN go build ./cmd/tagi-bot
+RUN go build ./cmd/tagi-migrate
 
-CMD [ "./discord-boar-bot" ]
+CMD [ "./tagi-bot" ]

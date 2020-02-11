@@ -9,15 +9,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// BoarBotServer is the webserver of the boar bot
-type BoarBotServer struct {
+// TagioalisiAPIServer is the API webserver of Tagioalisi
+type TagioalisiAPIServer struct {
 	WebPort config.WebPort
 	Log     *log.Logger
 	Router  Router
 }
 
 // Run is a blocking function that starts and serves the web API
-func (s BoarBotServer) Run() error {
+func (s TagioalisiAPIServer) Run() error {
 	serv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", s.WebPort),
 		Handler: (*mux.Router)(s.Router),

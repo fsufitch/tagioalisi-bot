@@ -2,7 +2,7 @@ package memelink
 
 import "github.com/bwmarrin/discordgo"
 
-const memeEditorACL = "boarbot.modules.memelink::edit"
+const memeEditorACL = "boarbot.modules.memelink::edit" // TODO: rename to tagi namespace once ACL is more easily editable
 
 // TODO: change to (bool, err) return type to bubble errors up
 func (m Module) isMemeEditor(s *discordgo.Session, userID string, guildID string) bool {

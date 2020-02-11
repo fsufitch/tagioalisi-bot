@@ -9,10 +9,10 @@ import (
 	"github.com/google/wire"
 )
 
-// ProvideDiscordBoarBot contains all the necessary wire providers to stand up a Discord Boar Bot
-var ProvideDiscordBoarBot = wire.NewSet(
-	wire.Struct(new(DiscordBoarBot), "*"),
-	wire.Bind(new(Bot), new(*DiscordBoarBot)),
+// ProvideTagioalisiBot contains all the necessary wire providers to stand up a Tagioalisi Bot
+var ProvideTagioalisiBot = wire.NewSet(
+	wire.Struct(new(TagioalisiBot), "*"),
+	wire.Bind(new(Bot), new(*TagioalisiBot)),
 	wire.Struct(new(Modules), "*"),
 	ProvideModuleList,
 	ping.ProvideModule,

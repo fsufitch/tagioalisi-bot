@@ -1,5 +1,17 @@
-# discord-boar-bot
-Custom bot for the Sociologic Planning Boar. Now in Go!
+# Tagioalisi
+
+> Formerly _discord-boar-bot_
+
+Custom bot for the Sociologic Planning Boar server on Discord. Now in Go!
+
+                 ,           _______________
+            `-.   \    .-'  < Hello, world! >
+    ,-"`````""-\__ |  /      ---------------
+     '-.._    _.-'` '-o,   /
+         _>--:{{<   ) |)  /
+     .-''      '-.__.-o`
+    '-._____..-/`  |  \
+         ,-'   /    `-.
 
 ### Python to Go Migration
 
@@ -17,7 +29,7 @@ delivery of the following items:
 - [x] The following bot modules: ~~ping~~, ~~log~~, ~~memelink~~, ~~sockpuppet~~ (incl. ~~linking with web API~~), ~~groups~~
 - [ ] Single page web UI for interacting with the web API
 - [ ] Two stage deployment setup for integration testing on Heroku
-- [ ] Rebranding to something not related to Guild Wars 2; who plays that game anyway?
+- [x] Rebranding to something not related to Guild Wars 2; who plays that game anyway?
 
 ## Requirements
 
@@ -28,8 +40,8 @@ delivery of the following items:
 
 The bot provides two executable entry points, which can be built with these commands:
 
-    go build ./cmd/discord-boar-bot
-    go build ./cmd/boarbot-migrate
+    go build ./cmd/tagi-bot
+    go build ./cmd/tagi-migrate
     
 The executables produced by these packages are ready to be run anywhere. They are configured
 using environment variables. An example configuration for local development can be found
@@ -45,7 +57,7 @@ The bot comes with a `Dockerfile` and `docker-compose.yml` to ease setup. To set
 running bot, follow these steps.
 
 1. Copy `.env.template` into `.env` and edit it so `DISCORD_TOKEN` contains a valid Discord bot token 
-2. Run `docker compose run ./boarbot-migrate` to set up the database
+2. Run `docker-compose run bot ./tagi-migrate` to set up the database
 3. Run `docker up` (with `--build` after every time you make code changes)
 
 ## Configuration

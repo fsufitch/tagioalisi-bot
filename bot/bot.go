@@ -14,8 +14,8 @@ type Bot interface {
 	Run(context.Context) error
 }
 
-// DiscordBoarBot is the concrete implementation of Bot
-type DiscordBoarBot struct {
+// TagioalisiBot is the concrete implementation of Bot
+type TagioalisiBot struct {
 	Log             *log.Logger
 	Modules         ModuleList
 	ModuleBlacklist config.BotModuleBlacklist
@@ -23,7 +23,7 @@ type DiscordBoarBot struct {
 }
 
 // Run is a blocking function that holds the runtime of the Discord bot
-func (b DiscordBoarBot) Run(ctx context.Context) error {
+func (b TagioalisiBot) Run(ctx context.Context) error {
 	session, err := discordgo.New("Bot " + string(b.Token))
 	if err != nil {
 		return errors.Wrap(err, "could not create bot session")
