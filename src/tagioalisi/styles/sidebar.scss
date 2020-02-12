@@ -1,0 +1,33 @@
+
+.sidebar {
+    @extend .col-md-3;
+    
+    background: darkred;
+    color: lightgray;
+
+    nav {
+        border-top: thin dashed lightgray;
+    
+        ul {
+            @extend .list-unstyled;
+            li {
+                @extend .row;
+                cursor: pointer;
+                &:hover {
+                    background: red;
+                }
+
+                a {
+                    @extend .col;
+                    @extend .p-3;
+                    color: inherit;
+                    text-decoration: inherit;
+                    &.active {
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+    }
+
+}

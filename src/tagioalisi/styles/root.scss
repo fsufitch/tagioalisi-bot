@@ -1,0 +1,13 @@
+body {
+    background: $gray-500;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.rootContainer {
+    @extend .container;
+    background: $gray-100;
+}
+
+.rootContent {
+    @extend .col-md-9;
+}

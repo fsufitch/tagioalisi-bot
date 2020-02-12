@@ -5,6 +5,7 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const DefinePlugin = require('webpack').DefinePlugin;
+const Dotenv = require('dotenv-webpack');
 
 let babelLoader = { loader: 'babel-loader' };
 
@@ -26,11 +27,11 @@ if (process.env.HEROKU_SLUG_COMMIT || process.env.HEROKU_RELEASE_VERSION || proc
 console.log("Version data: ", JSON.stringify(versionData));
 
 let htmlLoader = { loader: 'html-loader' };
-let sassLoader = { loader: 'sass-loader', options: {sourceMap: true}};
+let sassLoader = { loader: 'sass-loader', options: {sourceMap: true }};
 let cssLoader = { loader: 'css-loader', options: { sourceMap: true, modules: {
-    localIdentName: "[hash:base64]--[local]", // XXX: make this opaque for prod?
+    localIdentName: '[path][name]__[local]--[hash:base64:5]',
 } } };
-let cssModulesTyescriptLoader = { loader: 'css-modules-typescript-loader' };
+let cssModulesTypescriptLoader = { loader: 'css-modules-typescript-loader' };
 let miniCssExtractLoader = { loader: MiniCssExtractPlugin.loader };
 let styleLoader = { loader: 'style-loader' };
 let fileLoader = { loader: 'file-loader', options: { name: '[name]--[contenthash].[ext]' } };
@@ -56,7 +57,7 @@ module.exports = {
         rules: [
             { test: /\.tsx?$/i, use: [babelLoader, tsLoader] },
             { test: /\.html$/i, use: [htmlLoader] },
-            { test: /\.s[ac]ss/i, use: [miniCssExtractLoader, cssLoader, sassLoader] },
+            { test: /\.s[ac]ss/i, use: [miniCssExtractLoader, cssModulesTypescriptLoader, cssLoader, sassLoader] },
             { test: /\.(png|jpe?g|gif)$/i, use: [urlLoader]},
         ]
     },
@@ -69,7 +70,9 @@ module.exports = {
         }),
         new DefinePlugin({
             VERSION_DATA: JSON.stringify(versionData),
+            "process.env.wtf": JSON.stringify("wtf"),
         }),
+        new Dotenv({}),
     ],
     optimization: {
         minimizer: [
@@ -78,6 +81,9 @@ module.exports = {
                 sourceMap: true,
             }),
         ],
+        splitChunks: {
+            chunks: 'all',
+        },
     },
     devServer: {
         
