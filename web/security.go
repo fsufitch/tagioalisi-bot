@@ -22,6 +22,7 @@ type wrappedHandler struct {
 
 func (h wrappedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	auth := r.Header.Get("Authorization")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // TODO: make this smarter?
 	if !strings.HasPrefix(auth, "Bearer ") {
 		plainTextResponse(w, http.StatusUnauthorized, []byte("Missing `Authorization: Bearer ...` header"))
 		h.log.HTTP(http.StatusUnauthorized, r)
