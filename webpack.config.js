@@ -70,9 +70,8 @@ module.exports = {
         }),
         new DefinePlugin({
             VERSION_DATA: JSON.stringify(versionData),
-            "process.env.wtf": JSON.stringify("wtf"),
         }),
-        new Dotenv({}),
+        new Dotenv({systemvars: true}),
     ],
     optimization: {
         minimizer: [
