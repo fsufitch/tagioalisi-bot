@@ -1,6 +1,8 @@
 package web
 
-import "github.com/gorilla/mux"
+import (
+	"github.com/gorilla/mux"
+)
 
 // Router is a router for our server
 type Router *mux.Router

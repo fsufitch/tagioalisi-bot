@@ -115,10 +115,12 @@ func InitializeMain() (Main, func(), error) {
 		Log:       logger,
 	}
 	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler)
+	corsWrapper := &web.CORSWrapper{}
 	tagioalisiAPIServer := web.TagioalisiAPIServer{
 		WebPort: webPort,
 		Log:     logger,
 		Router:  router,
+		CORS:    corsWrapper,
 	}
 	webRunFunc := ProvideWebRunFunc(webEnabled, tagioalisiAPIServer)
 	mainMain, cleanup2, err := ProvideMain(interruptContext, tagioalisiBot, logger, debugMode, cliLoggingBootstrapper, webRunFunc)

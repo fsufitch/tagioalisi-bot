@@ -14,15 +14,14 @@ type SecretBearerAuthorizationWrapper struct {
 	Log    *log.Logger
 }
 
-type wrappedHandler struct {
+type securityWrappedHandler struct {
 	log     *log.Logger
 	secret  string
 	handler http.Handler
 }
 
-func (h wrappedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h securityWrappedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	auth := r.Header.Get("Authorization")
-	w.Header().Set("Access-Control-Allow-Origin", "*") // TODO: make this smarter?
 	if !strings.HasPrefix(auth, "Bearer ") {
 		plainTextResponse(w, http.StatusUnauthorized, []byte("Missing `Authorization: Bearer ...` header"))
 		h.log.HTTP(http.StatusUnauthorized, r)
@@ -41,7 +40,7 @@ func (h wrappedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Wrap returns a new handler that transparently checks the secret bearer header
 func (w SecretBearerAuthorizationWrapper) Wrap(h http.Handler) http.Handler {
-	return wrappedHandler{
+	return securityWrappedHandler{
 		secret:  string(w.Secret),
 		handler: h,
 		log:     w.Log,

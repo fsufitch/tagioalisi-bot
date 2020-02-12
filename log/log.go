@@ -86,11 +86,11 @@ func (l Logger) Errorf(format string, values ...interface{}) {
 
 // HTTP logs a received HTTP request
 func (l Logger) HTTP(status int, r *http.Request) {
-	l.print(Message{Info, "HTTP %d: %s %s referer:%s remote:%s ", []interface{}{
+	l.print(Message{Info, "HTTP %d: %s %s referer=%s remote=%s user-agent=%s", []interface{}{
 		status,
 		r.Method,
-		r.URL.String,
-		r.Referer,
+		r.URL.String(),
+		r.Referer(),
 		r.RemoteAddr,
 		r.UserAgent(),
 	}})
