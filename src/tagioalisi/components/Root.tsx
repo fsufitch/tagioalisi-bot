@@ -8,8 +8,8 @@ import { Sockpuppet } from "./Sockpuppet";
 
 export function Root() {
   const [endpoint, setEndpoint] = useState(process.env.BOT_BASE_URL);
+  const [authToken, setAuthToken] = useState("");
   return (
-
     <Router>
       <div className={styles.rootContainer}>
         <div className={styles.row}>
@@ -17,7 +17,12 @@ export function Root() {
           <div className={styles.rootContent}>
             <Switch>
               <Route path="/sockpuppet">
-                <Sockpuppet />
+                <Sockpuppet
+                  endpoint={endpoint}
+                  onEndpointChanged={setEndpoint}
+                  authToken={authToken}
+                  onAuthTokenChanged={setAuthToken}
+                />
               </Route>
               <Route path="/">
                 <Home endpoint={endpoint} onEndpointChanged={setEndpoint} />
