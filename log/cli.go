@@ -3,7 +3,7 @@ package log
 import (
 	"os"
 
-	"github.com/fsufitch/discord-boar-bot/config"
+	"github.com/fsufitch/tagialisi-bot/config"
 )
 
 // StdOutReceiver is a receiver to print to stdout

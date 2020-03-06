@@ -6,18 +6,18 @@
 package main
 
 import (
-	"github.com/fsufitch/discord-boar-bot/bot"
-	"github.com/fsufitch/discord-boar-bot/bot/groups-module"
-	log2 "github.com/fsufitch/discord-boar-bot/bot/log-module"
-	"github.com/fsufitch/discord-boar-bot/bot/memelink-module"
-	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
-	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
-	"github.com/fsufitch/discord-boar-bot/config"
-	"github.com/fsufitch/discord-boar-bot/db/acl-dao"
-	"github.com/fsufitch/discord-boar-bot/db/connection"
-	"github.com/fsufitch/discord-boar-bot/db/memes-dao"
-	"github.com/fsufitch/discord-boar-bot/log"
-	"github.com/fsufitch/discord-boar-bot/web"
+	"github.com/fsufitch/tagialisi-bot/bot"
+	"github.com/fsufitch/tagialisi-bot/bot/groups-module"
+	log2 "github.com/fsufitch/tagialisi-bot/bot/log-module"
+	"github.com/fsufitch/tagialisi-bot/bot/memelink-module"
+	"github.com/fsufitch/tagialisi-bot/bot/ping-module"
+	"github.com/fsufitch/tagialisi-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagialisi-bot/config"
+	"github.com/fsufitch/tagialisi-bot/db/acl-dao"
+	"github.com/fsufitch/tagialisi-bot/db/connection"
+	"github.com/fsufitch/tagialisi-bot/db/memes-dao"
+	"github.com/fsufitch/tagialisi-bot/log"
+	"github.com/fsufitch/tagialisi-bot/web"
 )
 
 // Injectors from wire.go:

@@ -1,7 +1,7 @@
 // +heroku goVersion go1.14
 // +heroku install ./cmd/...
 
-module github.com/fsufitch/discord-boar-bot
+module github.com/fsufitch/tagialisi-bot
 
 go 1.14
 

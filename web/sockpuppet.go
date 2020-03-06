@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
-	"github.com/fsufitch/discord-boar-bot/log"
+	"github.com/fsufitch/tagialisi-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagialisi-bot/log"
 )
 
 // SockpuppetHandler is a http.Handler that sends messages through the bot

@@ -4,8 +4,8 @@
 package main
 
 import (
-	"github.com/fsufitch/discord-boar-bot/config"
-	"github.com/fsufitch/discord-boar-bot/log"
+	"github.com/fsufitch/tagialisi-bot/config"
+	"github.com/fsufitch/tagialisi-bot/log"
 	"github.com/google/wire"
 )
 

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/fsufitch/discord-boar-bot/config"
-	"github.com/fsufitch/discord-boar-bot/web"
+	"github.com/fsufitch/tagialisi-bot/config"
+	"github.com/fsufitch/tagialisi-bot/web"
 )
 
 // WebRunFunc is a function to launch the web server, or nil if web is disabled

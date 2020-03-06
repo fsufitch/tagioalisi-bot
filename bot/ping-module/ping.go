@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/discord-boar-bot/log"
+	"github.com/fsufitch/tagialisi-bot/log"
 )
 
 // Module is a bot module that responds to "!ping" with "!pong"

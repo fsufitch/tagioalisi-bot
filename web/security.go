@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/fsufitch/discord-boar-bot/config"
-	"github.com/fsufitch/discord-boar-bot/log"
+	"github.com/fsufitch/tagialisi-bot/config"
+	"github.com/fsufitch/tagialisi-bot/log"
 )
 
 // SecretBearerAuthorizationWrapper is an object for wrapping handlers to only allow authorized requets

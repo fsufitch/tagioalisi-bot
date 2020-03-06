@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/fsufitch/discord-boar-bot/log"
+	"github.com/fsufitch/tagialisi-bot/log"
 )
 
 type Main struct {

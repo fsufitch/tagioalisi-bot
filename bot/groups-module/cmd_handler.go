@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/discord-boar-bot/bot/util"
+	"github.com/fsufitch/tagialisi-bot/bot/util"
 	"github.com/urfave/cli/v2"
 )
 

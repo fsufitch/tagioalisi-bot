@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/discord-boar-bot/db/acl-dao"
-	"github.com/fsufitch/discord-boar-bot/db/memes-dao"
-	"github.com/fsufitch/discord-boar-bot/log"
+	"github.com/fsufitch/tagialisi-bot/db/acl-dao"
+	"github.com/fsufitch/tagialisi-bot/db/memes-dao"
+	"github.com/fsufitch/tagialisi-bot/log"
 )
 
 // Module is a meme link module implementing RegisterableModule

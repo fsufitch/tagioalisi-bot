@@ -1,11 +1,11 @@
 package bot
 
 import (
-	"github.com/fsufitch/discord-boar-bot/bot/groups-module"
-	"github.com/fsufitch/discord-boar-bot/bot/log-module"
-	"github.com/fsufitch/discord-boar-bot/bot/memelink-module"
-	"github.com/fsufitch/discord-boar-bot/bot/ping-module"
-	"github.com/fsufitch/discord-boar-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagialisi-bot/bot/groups-module"
+	"github.com/fsufitch/tagialisi-bot/bot/log-module"
+	"github.com/fsufitch/tagialisi-bot/bot/memelink-module"
+	"github.com/fsufitch/tagialisi-bot/bot/ping-module"
+	"github.com/fsufitch/tagialisi-bot/bot/sockpuppet-module"
 	"github.com/google/wire"
 )
 

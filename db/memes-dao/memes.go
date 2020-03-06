@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fsufitch/discord-boar-bot/db/connection"
+	"github.com/fsufitch/tagialisi-bot/db/connection"
 )
 
 // DAO is a database abstraction around the meme feature set
