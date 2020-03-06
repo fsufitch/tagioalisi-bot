@@ -13,24 +13,6 @@ Custom bot for the Sociologic Planning Boar server on Discord. Now in Go!
     '-._____..-/`  |  \
          ,-'   /    `-.
 
-### Python to Go Migration
-
-This branch hosts the in-progress effort to rewrite the bot in Go, while adding new features.
-The bots are designed to run in parallel until this version is complete. Completion means 
-delivery of the following items:
-
-- [x] General infrastructure, dependency injection setup, Heroku deployment, etc
-- [x] Database setup and migration of schema to a mutually compatible form (including migration script infrastructure)
-- [x] Asynchronous logging system
-- [x] Environment-based configuration
-- [x] Discord bot client bootstrapping, module system, and asynchronous operation
-- [x] Web API bootstrapping and asynchronous operation
-- [x] DAOs for the following DB feature sets: ~~key/value~~, ~~memes~~, ~~ACL~~
-- [x] The following bot modules: ~~ping~~, ~~log~~, ~~memelink~~, ~~sockpuppet~~ (incl. ~~linking with web API~~), ~~groups~~
-- [x] Single page web UI for interacting with the web API
-- [ ] Two stage deployment setup for integration testing on Heroku
-- [x] Rebranding to something not related to Guild Wars 2; who plays that game anyway?
-
 ## Requirements
 
 * Go 1.12+
