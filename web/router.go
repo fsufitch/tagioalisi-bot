@@ -17,6 +17,7 @@ func ProvideRouter(
 	sockpuppet *SockpuppetHandler,
 	login *LoginHandler,
 	authCode *AuthCodeHandler,
+	logout *LogoutHandler,
 ) Router {
 	r := mux.NewRouter()
 	cors := handlers.CORS(
@@ -28,6 +29,7 @@ func ProvideRouter(
 	r.Handle("/sockpuppet", handlers.MethodHandler{"POST": security.Wrap(sockpuppet)})
 	r.Handle("/login", handlers.MethodHandler{"GET": login})
 	r.Handle("/login/redirect", handlers.MethodHandler{"GET": authCode})
+	r.Handle("/logout", handlers.MethodHandler{"GET": logout})
 
 	return Router(cors(r))
 }

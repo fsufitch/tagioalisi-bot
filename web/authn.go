@@ -83,3 +83,43 @@ func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	})
 	http.Redirect(w, r, loginState.ReturnURL, http.StatusFound)
 }
+
+// LogoutHandler handles logout logic
+type LogoutHandler struct {
+	SessionStorage oauth.SessionStorage
+	JWTSecret      config.JWTHMACSecret
+}
+
+func (h LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var (
+		cookie *http.Cookie
+		err    error
+	)
+	if cookie, err = r.Cookie(TagiJWTCookieName); err != nil {
+		http.Error(w, "could not recover auth cookie: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	jwtToken, err := jwt.Parse(cookie.Value, func(*jwt.Token) (interface{}, error) {
+		return []byte(h.JWTSecret), nil
+	})
+	if err != nil {
+		http.Error(w, "could not parse JWT token: "+err.Error(), http.StatusForbidden)
+		return
+	}
+
+	var sessionID string
+	switch c := jwtToken.Claims.(type) {
+	case jwt.StandardClaims:
+		sessionID = c.Id
+	case jwt.MapClaims:
+		sessionID = c["jti"].(string)
+	}
+
+	h.SessionStorage.Clear(sessionID)
+	// TODO: also revoke the token
+
+	clearedCookie := cookie
+	clearedCookie.Value = ""
+	http.SetCookie(w, clearedCookie)
+	w.WriteHeader(http.StatusNoContent)
+}

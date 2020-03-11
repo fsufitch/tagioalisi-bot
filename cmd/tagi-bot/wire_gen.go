@@ -130,7 +130,11 @@ func InitializeMain() (Main, func(), error) {
 		SessionStorage: memorySessionStorage,
 		JWTSecret:      jwthmacSecret,
 	}
-	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler, loginHandler, authCodeHandler)
+	logoutHandler := &web.LogoutHandler{
+		SessionStorage: memorySessionStorage,
+		JWTSecret:      jwthmacSecret,
+	}
+	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler)
 	tagioalisiAPIServer := web.TagioalisiAPIServer{
 		WebPort: webPort,
 		Log:     logger,
