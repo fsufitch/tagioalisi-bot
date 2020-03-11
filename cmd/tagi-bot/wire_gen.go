@@ -17,6 +17,7 @@ import (
 	"github.com/fsufitch/tagialisi-bot/db/connection"
 	"github.com/fsufitch/tagialisi-bot/db/memes-dao"
 	"github.com/fsufitch/tagialisi-bot/log"
+	"github.com/fsufitch/tagialisi-bot/oauth"
 	"github.com/fsufitch/tagialisi-bot/web"
 )
 
@@ -114,7 +115,22 @@ func InitializeMain() (Main, func(), error) {
 		BotModule: sockpuppetModule,
 		Log:       logger,
 	}
-	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler)
+	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
+	states := _wireStatesValue
+	jwthmacSecret := config.ProvideJWTHMACSecretFromEnvironment()
+	loginHandler := &web.LoginHandler{
+		OAuth2Config: oAuth2Config,
+		LoginStates:  states,
+		JWTSecret:    jwthmacSecret,
+	}
+	memorySessionStorage := oauth.ProvideMemorySessionStorage()
+	authCodeHandler := &web.AuthCodeHandler{
+		OAuth2Config:   oAuth2Config,
+		LoginStates:    states,
+		SessionStorage: memorySessionStorage,
+		JWTSecret:      jwthmacSecret,
+	}
+	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler, loginHandler, authCodeHandler)
 	tagioalisiAPIServer := web.TagioalisiAPIServer{
 		WebPort: webPort,
 		Log:     logger,
@@ -131,3 +147,7 @@ func InitializeMain() (Main, func(), error) {
 		cleanup()
 	}, nil
 }
+
+var (
+	_wireStatesValue = oauth.States{}
+)

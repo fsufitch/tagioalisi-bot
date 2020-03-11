@@ -15,6 +15,8 @@ func ProvideRouter(
 	security *SecretBearerAuthorizationWrapper,
 	hello *HelloHandler,
 	sockpuppet *SockpuppetHandler,
+	login *LoginHandler,
+	authCode *AuthCodeHandler,
 ) Router {
 	r := mux.NewRouter()
 	cors := handlers.CORS(
@@ -24,6 +26,8 @@ func ProvideRouter(
 
 	r.Handle("/", handlers.MethodHandler{"GET": hello})
 	r.Handle("/sockpuppet", handlers.MethodHandler{"POST": security.Wrap(sockpuppet)})
+	r.Handle("/login", handlers.MethodHandler{"GET": login})
+	r.Handle("/login/redirect", handlers.MethodHandler{"GET": authCode})
 
 	return Router(cors(r))
 }
