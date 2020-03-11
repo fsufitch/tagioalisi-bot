@@ -25,6 +25,7 @@ func (c CookieSupport) SetSessionID(w http.ResponseWriter, sessionID string) err
 		Name:     AuthCookieName,
 		Value:    jwtString,
 		SameSite: http.SameSiteLaxMode,
+		Path:     "/",
 	}
 	http.SetCookie(w, &cookie)
 	return nil

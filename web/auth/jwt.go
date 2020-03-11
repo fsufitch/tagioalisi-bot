@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/fsufitch/tagialisi-bot/config"
@@ -39,10 +40,10 @@ func (s JWTSupport) DecodeSessionID(encodedJWT string) (sessionID string, err er
 	}
 
 	switch c := token.Claims.(type) {
-	case Claims:
+	case (*Claims):
 		sessionID = c.SessionID
 	default:
-		err = errors.New("could not use custom claims type")
+		err = fmt.Errorf("could not use custom claims type (claims was %s)", token.Claims)
 	}
 	return
 }

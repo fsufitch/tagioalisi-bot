@@ -18,6 +18,7 @@ func ProvideRouter(
 	login *LoginHandler,
 	authCode *AuthCodeHandler,
 	logout *LogoutHandler,
+	whoami *WhoAmIHandler,
 ) Router {
 	r := mux.NewRouter()
 	cors := handlers.CORS(
@@ -30,6 +31,7 @@ func ProvideRouter(
 	r.Handle("/login", handlers.MethodHandler{"GET": login})
 	r.Handle("/login/redirect", handlers.MethodHandler{"GET": authCode})
 	r.Handle("/logout", handlers.MethodHandler{"GET": logout})
+	r.Handle("/whoami", handlers.MethodHandler{"GET": whoami})
 
 	return Router(cors(r))
 }

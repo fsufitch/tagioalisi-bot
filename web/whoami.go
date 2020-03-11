@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/fsufitch/tagialisi-bot/log"
 	"github.com/fsufitch/tagialisi-bot/web/auth"
 	"github.com/fsufitch/tagialisi-bot/web/usersession"
 )
@@ -19,6 +20,7 @@ type whoAmIResponse struct {
 
 // WhoAmIHandler returns details about the current authenticated user
 type WhoAmIHandler struct {
+	Log            *log.Logger
 	SessionStorage auth.SessionStorage
 	AuthCookie     auth.CookieSupport
 }

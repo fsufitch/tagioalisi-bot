@@ -8,7 +8,7 @@ import (
 // SessionStorage is an abstract place to store Discord OAuth2 Tokens
 type SessionStorage interface {
 	Get(id string) *oauth2.Token
-	Set(token *oauth2.Token) string
+	Set(session *oauth2.Token) string
 	Clear(id string)
 }
 

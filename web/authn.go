@@ -30,9 +30,6 @@ func (h LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, redirectURL, http.StatusFound)
 }
 
-// TagiJWTCookieName is the cookie name to store the JWT
-const TagiJWTCookieName = "tagi-jwt"
-
 // AuthCodeHandler handles the redirected successful OAuth2 login
 type AuthCodeHandler struct {
 	OAuth2Config   config.OAuth2Config
@@ -57,9 +54,10 @@ func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	h.LoginStates.Clear(state)
 
+	//session, err := discordgo.New(code)
 	oauthToken, err := (*oauth2.Config)(h.OAuth2Config).Exchange(context.Background(), code)
 	if err != nil {
-		http.Error(w, "failed to retrieve Oauth2 Token: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "failed to start Discord session with OAuth2 Code: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	sessionID := h.SessionStorage.Set(oauthToken)

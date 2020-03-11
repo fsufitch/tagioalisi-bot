@@ -139,7 +139,12 @@ func InitializeMain() (Main, func(), error) {
 		SessionStorage: memorySessionStorage,
 		AuthCookie:     cookieSupport,
 	}
-	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler)
+	whoAmIHandler := &web.WhoAmIHandler{
+		Log:            logger,
+		SessionStorage: memorySessionStorage,
+		AuthCookie:     cookieSupport,
+	}
+	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler, whoAmIHandler)
 	tagioalisiAPIServer := web.TagioalisiAPIServer{
 		WebPort: webPort,
 		Log:     logger,

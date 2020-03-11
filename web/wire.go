@@ -15,5 +15,6 @@ var ProvideWebServer = wire.NewSet(
 	wire.Struct(new(LoginHandler), "*"),
 	wire.Struct(new(AuthCodeHandler), "*"),
 	wire.Struct(new(LogoutHandler), "*"),
+	wire.Struct(new(WhoAmIHandler), "*"),
 	auth.ProvideWebAuth,
 )

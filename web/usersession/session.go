@@ -3,7 +3,7 @@ package usersession
 import "github.com/bwmarrin/discordgo"
 
 var newSession = func(token string) (*discordgo.Session, error) {
-	return discordgo.New(token)
+	return discordgo.New("Bearer " + token)
 }
 
 type websocketSupport interface {
