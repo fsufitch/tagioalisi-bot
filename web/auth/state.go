@@ -1,4 +1,4 @@
-package oauth
+package auth
 
 import (
 	"errors"
@@ -7,11 +7,11 @@ import (
 	"github.com/google/uuid"
 )
 
-// States is a map of currently active login attempts
-type States map[string]State
+// LoginStates is a map of currently active login attempts
+type LoginStates map[string]LoginState
 
-// State is an active login attempt
-type State struct {
+// LoginState is an active login attempt
+type LoginState struct {
 	ID        string
 	Time      time.Time
 	ReturnURL string
@@ -23,8 +23,8 @@ var ErrLoginStateNotFound = errors.New(`state not found`)
 var stateTimeout = time.Minute * 10
 
 // New creates a new login state
-func (s States) New(returnURL string) State {
-	state := State{
+func (s LoginStates) New(returnURL string) LoginState {
+	state := LoginState{
 		ID:        uuid.New().String(),
 		Time:      time.Now(),
 		ReturnURL: returnURL,
@@ -35,7 +35,7 @@ func (s States) New(returnURL string) State {
 }
 
 // Get retrieves a login state, if possible
-func (s States) Get(id string) *State {
+func (s LoginStates) Get(id string) *LoginState {
 	if state, ok := s[id]; !ok {
 		return nil
 	} else if time.Now().Sub(state.Time) > stateTimeout {
@@ -47,6 +47,6 @@ func (s States) Get(id string) *State {
 }
 
 // Clear deletes a login state
-func (s States) Clear(id string) {
+func (s LoginStates) Clear(id string) {
 	delete(s, id)
 }

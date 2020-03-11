@@ -4,17 +4,15 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/fsufitch/tagialisi-bot/config"
-	"github.com/fsufitch/tagialisi-bot/oauth"
+	"github.com/fsufitch/tagialisi-bot/web/auth"
 	"golang.org/x/oauth2"
 )
 
 // LoginHandler starts the authentication workflow
 type LoginHandler struct {
 	OAuth2Config config.OAuth2Config
-	LoginStates  oauth.States
-	JWTSecret    config.JWTHMACSecret
+	LoginStates  auth.LoginStates
 }
 
 func (h LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -38,9 +36,9 @@ const TagiJWTCookieName = "tagi-jwt"
 // AuthCodeHandler handles the redirected successful OAuth2 login
 type AuthCodeHandler struct {
 	OAuth2Config   config.OAuth2Config
-	LoginStates    oauth.States
-	SessionStorage oauth.SessionStorage
-	JWTSecret      config.JWTHMACSecret
+	LoginStates    auth.LoginStates
+	SessionStorage auth.SessionStorage
+	AuthCookie     auth.CookieSupport
 }
 
 func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -66,28 +64,18 @@ func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	sessionID := h.SessionStorage.Set(oauthToken)
 
-	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.StandardClaims{
-		Id: sessionID,
-	})
-
-	jwtString, err := jwtToken.SignedString([]byte(h.JWTSecret))
-	if err != nil {
-		http.Error(w, "failed signing JWT: "+err.Error(), http.StatusInternalServerError)
+	if err := h.AuthCookie.SetSessionID(w, sessionID); err != nil {
+		http.Error(w, "failed encoding/setting JWT cookie: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name:     TagiJWTCookieName,
-		Value:    jwtString,
-		SameSite: http.SameSiteLaxMode,
-	})
 	http.Redirect(w, r, loginState.ReturnURL, http.StatusFound)
 }
 
 // LogoutHandler handles logout logic
 type LogoutHandler struct {
-	SessionStorage oauth.SessionStorage
-	JWTSecret      config.JWTHMACSecret
+	SessionStorage auth.SessionStorage
+	AuthCookie     auth.CookieSupport
 }
 
 func (h LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -95,24 +83,10 @@ func (h LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		cookie *http.Cookie
 		err    error
 	)
-	if cookie, err = r.Cookie(TagiJWTCookieName); err != nil {
-		http.Error(w, "could not recover auth cookie: "+err.Error(), http.StatusBadRequest)
-		return
-	}
-	jwtToken, err := jwt.Parse(cookie.Value, func(*jwt.Token) (interface{}, error) {
-		return []byte(h.JWTSecret), nil
-	})
+	sessionID, err := h.AuthCookie.GetSessionID(r)
 	if err != nil {
-		http.Error(w, "could not parse JWT token: "+err.Error(), http.StatusForbidden)
+		http.Error(w, "could not get JWT from cookie: "+err.Error(), http.StatusForbidden)
 		return
-	}
-
-	var sessionID string
-	switch c := jwtToken.Claims.(type) {
-	case jwt.StandardClaims:
-		sessionID = c.Id
-	case jwt.MapClaims:
-		sessionID = c["jti"].(string)
 	}
 
 	h.SessionStorage.Clear(sessionID)

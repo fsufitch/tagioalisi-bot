@@ -17,8 +17,8 @@ import (
 	"github.com/fsufitch/tagialisi-bot/db/connection"
 	"github.com/fsufitch/tagialisi-bot/db/memes-dao"
 	"github.com/fsufitch/tagialisi-bot/log"
-	"github.com/fsufitch/tagialisi-bot/oauth"
 	"github.com/fsufitch/tagialisi-bot/web"
+	"github.com/fsufitch/tagialisi-bot/web/auth"
 )
 
 // Injectors from wire.go:
@@ -116,23 +116,28 @@ func InitializeMain() (Main, func(), error) {
 		Log:       logger,
 	}
 	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
-	states := _wireStatesValue
-	jwthmacSecret := config.ProvideJWTHMACSecretFromEnvironment()
+	loginStates := _wireLoginStatesValue
 	loginHandler := &web.LoginHandler{
 		OAuth2Config: oAuth2Config,
-		LoginStates:  states,
-		JWTSecret:    jwthmacSecret,
+		LoginStates:  loginStates,
 	}
-	memorySessionStorage := oauth.ProvideMemorySessionStorage()
+	memorySessionStorage := auth.ProvideMemorySessionStorage()
+	jwthmacSecret := config.ProvideJWTHMACSecretFromEnvironment()
+	jwtSupport := auth.JWTSupport{
+		JWTSecret: jwthmacSecret,
+	}
+	cookieSupport := auth.CookieSupport{
+		JWT: jwtSupport,
+	}
 	authCodeHandler := &web.AuthCodeHandler{
 		OAuth2Config:   oAuth2Config,
-		LoginStates:    states,
+		LoginStates:    loginStates,
 		SessionStorage: memorySessionStorage,
-		JWTSecret:      jwthmacSecret,
+		AuthCookie:     cookieSupport,
 	}
 	logoutHandler := &web.LogoutHandler{
 		SessionStorage: memorySessionStorage,
-		JWTSecret:      jwthmacSecret,
+		AuthCookie:     cookieSupport,
 	}
 	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler)
 	tagioalisiAPIServer := web.TagioalisiAPIServer{
@@ -153,5 +158,5 @@ func InitializeMain() (Main, func(), error) {
 }
 
 var (
-	_wireStatesValue = oauth.States{}
+	_wireLoginStatesValue = auth.LoginStates{}
 )
