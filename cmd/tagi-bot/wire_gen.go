@@ -103,17 +103,14 @@ func InitializeMain() (Main, func(), error) {
 		cleanup()
 		return Main{}, nil, err
 	}
-	webSecret := config.ProvideWebSecretFromEnvironment()
-	secretBearerAuthorizationWrapper := &web.SecretBearerAuthorizationWrapper{
-		Secret: webSecret,
-		Log:    logger,
-	}
 	helloHandler := &web.HelloHandler{
 		Log: logger,
 	}
+	memorySessionStorage := auth.ProvideMemorySessionStorage()
 	sockpuppetHandler := &web.SockpuppetHandler{
 		BotModule: sockpuppetModule,
 		Log:       logger,
+		Sessions:  memorySessionStorage,
 	}
 	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
 	loginStates := _wireLoginStatesValue
@@ -121,7 +118,6 @@ func InitializeMain() (Main, func(), error) {
 		OAuth2Config: oAuth2Config,
 		LoginStates:  loginStates,
 	}
-	memorySessionStorage := auth.ProvideMemorySessionStorage()
 	authCodeHandler := &web.AuthCodeHandler{
 		OAuth2Config:   oAuth2Config,
 		LoginStates:    loginStates,
@@ -134,7 +130,7 @@ func InitializeMain() (Main, func(), error) {
 		Log:            logger,
 		SessionStorage: memorySessionStorage,
 	}
-	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler, whoAmIHandler)
+	router := web.ProvideRouter(helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler, whoAmIHandler)
 	tagioalisiAPIServer := web.TagioalisiAPIServer{
 		WebPort: webPort,
 		Log:     logger,
