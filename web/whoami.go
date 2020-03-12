@@ -22,21 +22,20 @@ type whoAmIResponse struct {
 type WhoAmIHandler struct {
 	Log            *log.Logger
 	SessionStorage auth.SessionStorage
-	AuthCookie     auth.CookieSupport
 }
 
 func (h WhoAmIHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var user *discordgo.User
-	if sessionID, err := h.AuthCookie.GetSessionID(r); err != nil {
-		http.Error(w, "could not get user session: "+err.Error(), http.StatusUnauthorized)
+	if sessionID := auth.GetSessionID(r); sessionID == "" {
+		http.Error(w, "could not get user session", http.StatusUnauthorized)
 		return
-	} else if token := h.SessionStorage.Get(sessionID); token == nil {
+	} else if session := h.SessionStorage.Get(sessionID); session == nil {
 		http.Error(w, "session is invalid", http.StatusUnauthorized)
 		return
-	} else if session, err := usersession.NewIdentity(token.AccessToken); err != nil {
+	} else if discordSession, err := usersession.NewIdentity(session.OAuth2Token.AccessToken); err != nil {
 		http.Error(w, "could not initialize Discord session: "+err.Error(), http.StatusInternalServerError)
 		return
-	} else if user, err = session.User("@me"); err != nil {
+	} else if user, err = discordSession.User("@me"); err != nil {
 		http.Error(w, "could not query user info: "+err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -122,27 +122,17 @@ func InitializeMain() (Main, func(), error) {
 		LoginStates:  loginStates,
 	}
 	memorySessionStorage := auth.ProvideMemorySessionStorage()
-	jwthmacSecret := config.ProvideJWTHMACSecretFromEnvironment()
-	jwtSupport := auth.JWTSupport{
-		JWTSecret: jwthmacSecret,
-	}
-	cookieSupport := auth.CookieSupport{
-		JWT: jwtSupport,
-	}
 	authCodeHandler := &web.AuthCodeHandler{
 		OAuth2Config:   oAuth2Config,
 		LoginStates:    loginStates,
 		SessionStorage: memorySessionStorage,
-		AuthCookie:     cookieSupport,
 	}
 	logoutHandler := &web.LogoutHandler{
 		SessionStorage: memorySessionStorage,
-		AuthCookie:     cookieSupport,
 	}
 	whoAmIHandler := &web.WhoAmIHandler{
 		Log:            logger,
 		SessionStorage: memorySessionStorage,
-		AuthCookie:     cookieSupport,
 	}
 	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler, whoAmIHandler)
 	tagioalisiAPIServer := web.TagioalisiAPIServer{

@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"net/http"
+	"net/url"
 
 	"github.com/fsufitch/tagialisi-bot/config"
 	"github.com/fsufitch/tagialisi-bot/web/auth"
@@ -35,7 +36,6 @@ type AuthCodeHandler struct {
 	OAuth2Config   config.OAuth2Config
 	LoginStates    auth.LoginStates
 	SessionStorage auth.SessionStorage
-	AuthCookie     auth.CookieSupport
 }
 
 func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -54,44 +54,40 @@ func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	h.LoginStates.Clear(state)
 
-	//session, err := discordgo.New(code)
 	oauthToken, err := (*oauth2.Config)(h.OAuth2Config).Exchange(context.Background(), code)
 	if err != nil {
 		http.Error(w, "failed to start Discord session with OAuth2 Code: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	sessionID := h.SessionStorage.Set(oauthToken)
+	sessionID := h.SessionStorage.New(oauthToken).ID
 
-	if err := h.AuthCookie.SetSessionID(w, sessionID); err != nil {
-		http.Error(w, "failed encoding/setting JWT cookie: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
+	u, _ := url.Parse(loginState.ReturnURL)
+	q, _ := url.ParseQuery(u.RawQuery)
+	q.Set("sid", sessionID)
+	u.RawQuery = q.Encode()
 
-	http.Redirect(w, r, loginState.ReturnURL, http.StatusFound)
+	http.Redirect(w, r, u.String(), http.StatusFound)
 }
 
 // LogoutHandler handles logout logic
 type LogoutHandler struct {
 	SessionStorage auth.SessionStorage
-	AuthCookie     auth.CookieSupport
 }
 
 func (h LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var (
-		cookie *http.Cookie
-		err    error
-	)
-	sessionID, err := h.AuthCookie.GetSessionID(r)
-	if err != nil {
-		http.Error(w, "could not get JWT from cookie: "+err.Error(), http.StatusForbidden)
+	sessionID := auth.GetSessionID(r)
+	if sessionID == "" {
+		http.Error(w, "request contained no session ID", http.StatusUnauthorized)
+		return
+	}
+	session := h.SessionStorage.Get(sessionID)
+	if session == nil {
+		http.Error(w, "could not get session from session ID in request", http.StatusUnauthorized)
 		return
 	}
 
-	h.SessionStorage.Clear(sessionID)
+	h.SessionStorage.Clear(session.ID)
 	// TODO: also revoke the token
 
-	clearedCookie := cookie
-	clearedCookie.Value = ""
-	http.SetCookie(w, clearedCookie)
 	w.WriteHeader(http.StatusNoContent)
 }

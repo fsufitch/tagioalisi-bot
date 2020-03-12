@@ -7,7 +7,6 @@ go 1.14
 
 require (
 	github.com/bwmarrin/discordgo v0.20.2
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/golang-migrate/migrate/v4 v4.9.1
 	github.com/golang/protobuf v1.3.4 // indirect
 	github.com/google/uuid v1.1.1
@@ -17,7 +16,7 @@ require (
 	github.com/lib/pq v1.3.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.5.1
-	github.com/urfave/cli/v2 v2.1.1
+	github.com/urfave/cli/v2 v2.2.0
 	golang.org/x/net v0.0.0-20200301022130-244492dfa37a // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 )
