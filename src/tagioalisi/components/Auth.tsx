@@ -68,7 +68,6 @@ export function Auth(props: {
   return (
     <Fragment>
       <h3> Discord API Authentication </h3>
-      {refreshCounter}
 
       <Inputs
         fields={[
