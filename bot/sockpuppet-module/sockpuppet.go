@@ -29,10 +29,23 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 	return nil
 }
 
+// ErrSendingNotPermitted is an error indicating sending a message is not allowed
+var ErrSendingNotPermitted = errors.New("not allowed to sockpuppet in this channel")
+
+// VerifyCanSend returns an error if the user is not allowed to sockpuppet
+func (m *Module) VerifyCanSend(senderUserID string, channelID string) error {
+	perm, err := m.session.UserChannelPermissions(senderUserID, channelID)
+	if err != nil || perm&0x00002000 == 0 {
+		// Manage Messages required
+		return ErrSendingNotPermitted
+	}
+	return nil
+}
+
 // SendMessage is used to send a message via the sockpuppet
-func (m *Module) SendMessage(channelID string, message string) error {
-	if m.session == nil {
-		return errors.New("No session to send messages through")
+func (m *Module) SendMessage(channelID string, message string, senderUserID string) error {
+	if err := m.VerifyCanSend(senderUserID, channelID); err != nil {
+		return err
 	}
 
 	if _, err := m.session.ChannelMessageSend(channelID, message); err != nil {

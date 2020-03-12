@@ -8,9 +8,10 @@ package main
 import (
 	"github.com/fsufitch/tagialisi-bot/config"
 	"github.com/fsufitch/tagialisi-bot/log"
+)
 
+import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 

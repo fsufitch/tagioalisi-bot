@@ -5,7 +5,7 @@ services:
         env_file: 
             - ".env"
         ports:
-            - "9999:8080"
+            - "8080:80"
         depends_on:
             - "db"
     db:

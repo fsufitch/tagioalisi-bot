@@ -18,6 +18,7 @@ import (
 	"github.com/fsufitch/tagialisi-bot/db/memes-dao"
 	"github.com/fsufitch/tagialisi-bot/log"
 	"github.com/fsufitch/tagialisi-bot/web"
+	"github.com/fsufitch/tagialisi-bot/web/auth"
 )
 
 // Injectors from wire.go:
@@ -102,19 +103,34 @@ func InitializeMain() (Main, func(), error) {
 		cleanup()
 		return Main{}, nil, err
 	}
-	webSecret := config.ProvideWebSecretFromEnvironment()
-	secretBearerAuthorizationWrapper := &web.SecretBearerAuthorizationWrapper{
-		Secret: webSecret,
-		Log:    logger,
-	}
 	helloHandler := &web.HelloHandler{
 		Log: logger,
 	}
+	memorySessionStorage := auth.ProvideMemorySessionStorage()
 	sockpuppetHandler := &web.SockpuppetHandler{
 		BotModule: sockpuppetModule,
 		Log:       logger,
+		Sessions:  memorySessionStorage,
 	}
-	router := web.ProvideRouter(secretBearerAuthorizationWrapper, helloHandler, sockpuppetHandler)
+	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
+	loginStates := _wireLoginStatesValue
+	loginHandler := &web.LoginHandler{
+		OAuth2Config: oAuth2Config,
+		LoginStates:  loginStates,
+	}
+	authCodeHandler := &web.AuthCodeHandler{
+		OAuth2Config:   oAuth2Config,
+		LoginStates:    loginStates,
+		SessionStorage: memorySessionStorage,
+	}
+	logoutHandler := &web.LogoutHandler{
+		SessionStorage: memorySessionStorage,
+	}
+	whoAmIHandler := &web.WhoAmIHandler{
+		Log:            logger,
+		SessionStorage: memorySessionStorage,
+	}
+	router := web.ProvideRouter(helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler, whoAmIHandler)
 	tagioalisiAPIServer := web.TagioalisiAPIServer{
 		WebPort: webPort,
 		Log:     logger,
@@ -131,3 +147,7 @@ func InitializeMain() (Main, func(), error) {
 		cleanup()
 	}, nil
 }
+
+var (
+	_wireLoginStatesValue = auth.LoginStates{}
+)
