@@ -15,8 +15,8 @@ export function Sockpuppet(props: {
       <h2> Sockpuppet Module </h2>
       <p>
         Tagioailisi supports a system for sending custom messages to any of the
-        channels it is in. Actual implementation in the UI is{" "}
-        <strong>coming soon</strong>!
+        channels it is in. Sending a message requires &quot;Manage Messages&quot; permissions
+        in the target channel (be sure to authenticate).
       </p>
       <SendMessageSection
         endpoint={props.endpoint}
