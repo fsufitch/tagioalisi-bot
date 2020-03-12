@@ -1,0 +1,12 @@
+.authMediaActions {
+    text-align: right;
+    button {
+        @extend .m-2;
+    }
+}
+
+.authMediaAvatar {
+    @extend .mr-3;
+    @extend .img-thumbnail;
+    height: 64;
+}

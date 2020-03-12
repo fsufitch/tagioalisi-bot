@@ -5,6 +5,11 @@
     background: darkred;
     color: lightgray;
 
+    h3 {
+        @extend .p-2;
+        @extend .pt-4;
+    }
+
     nav {
         border-top: thin dashed lightgray;
     

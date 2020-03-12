@@ -1,4 +1,7 @@
 import React, { useState, Fragment } from "react";
+
+import styles from "tagioalisi/styles";
+
 import { Inputs } from "./Inputs";
 
 export function Sockpuppet(props: {
@@ -102,7 +105,7 @@ function SendMessageSection(props: {
       ) : (
         <Fragment>
           <p>
-            <button onClick={() => send()}> Send Message </button>
+            <button className={`${styles.btn} ${styles["btn-primary"]}`} onClick={() => send()}> Send Message </button>
           </p>
           {!!resultMessage ? (
             <p>

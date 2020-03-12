@@ -1,13 +1,31 @@
 body {
-    background: $gray-500;
+    background: $discordDark;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .rootContainer {
     @extend .container;
-    background: $gray-100;
+    background: $discordNotQuiteBlack;
 }
 
 .rootContent {
     @extend .col-md-9;
+}
+
+.btnBlurple {
+    @extend .btn;
+
+}
+
+input.form-control {
+    background-color: $discordNotQuiteBlack;
+    color: $discordGreyple;
+    &:active{
+        background-color: $discordNotQuiteBlack;
+        color: #FFF;
+    }
+    &:focus{
+        background-color: $discordNotQuiteBlack;
+        color: #FFF;
+    }
 }

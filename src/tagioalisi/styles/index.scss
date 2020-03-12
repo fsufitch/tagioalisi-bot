@@ -1,4 +1,5 @@
 // Vars
+@import "discord";
 @import "variables";
 
 // Bootstrap Required
@@ -7,8 +8,11 @@
 @import "~bootstrap/scss/mixins";
 
 // Bootstrap Optional
+@import "~bootstrap/scss/buttons";
 @import "~bootstrap/scss/forms";
 @import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/images";
+@import "~bootstrap/scss/media";
 @import "~bootstrap/scss/reboot";
 @import "~bootstrap/scss/type";
 @import "~bootstrap/scss/utilities";
@@ -20,3 +24,4 @@
 @import "sidebar";
 @import "home";
 @import "inputs";
+@import "auth";
