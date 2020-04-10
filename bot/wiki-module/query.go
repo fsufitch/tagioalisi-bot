@@ -39,15 +39,19 @@ var wikiSupport = wikiSupportStruct{
 }
 
 func (m *Module) showOptions(ctx commandContext) error {
-	buf := bytes.NewBufferString(`Options for -w:\n`)
+	buf := bytes.NewBufferString("Options for -w:\n")
 
 	for _, wiki := range wikiSupport.wikis {
 		languageSupport := "no"
 		if wiki.defaultLang != "" {
 			languageSupport = fmt.Sprintf("yes (default: %s)", wiki.defaultLang)
 		}
-		fmt.Fprintf(buf, `%s - %s; Language support: %s\n`, wiki.id, wiki.name, languageSupport)
+		fmt.Fprintf(buf, "%s - %s; Language support: %s\n", wiki.id, wiki.name, languageSupport)
 	}
 
 	return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, buf.String())
+}
+
+func (m *Module) queryWiki(ctx commandContext, wikiID string, lang string, query string) error {
+	return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, fmt.Sprintf("Querying: %s %s -> %s", wikiID, lang, query))
 }

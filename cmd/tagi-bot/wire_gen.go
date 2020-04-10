@@ -12,6 +12,7 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/ping-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module"
 	"github.com/fsufitch/tagioalisi-bot/config"
 	"github.com/fsufitch/tagioalisi-bot/db/acl-dao"
 	"github.com/fsufitch/tagioalisi-bot/db/connection"
@@ -66,12 +67,16 @@ func InitializeMain() (Main, func(), error) {
 		Log:    logger,
 		Prefix: managedGroupPrefix,
 	}
+	wikiModule := &wiki.Module{
+		Log: logger,
+	}
 	modules := bot.Modules{
 		Ping:       module,
 		Log:        logModule,
 		SockPuppet: sockpuppetModule,
 		MemeLink:   memelinkModule,
 		Groups:     groupsModule,
+		Wiki:       wikiModule,
 	}
 	moduleList := bot.ProvideModuleList(modules)
 	botModuleBlacklist := config.ProvideBotModuleBlacklistFromEnvironment()

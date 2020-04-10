@@ -34,7 +34,7 @@ func (m *Module) cliApp(ctx commandContext) (app *cli.App, stdout, stderr *bytes
 			&cli.StringFlag{
 				Name:    "wiki",
 				Aliases: []string{"w"},
-				Value:   "wp",
+				Value:   "w",
 				Usage:   "which wiki to query",
 			},
 			&cli.BoolFlag{
@@ -42,11 +42,29 @@ func (m *Module) cliApp(ctx commandContext) (app *cli.App, stdout, stderr *bytes
 				Usage: "print options for wikis to query",
 			},
 		},
+		ArgsUsage: "[search terms]",
 		Action: func(c *cli.Context) error {
 			if c.Bool("options") {
 				return m.showOptions(ctx)
 			}
-			return nil
+			if c.Args().Len() == 0 {
+				return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, "No search specified. Try: !wiki --help")
+			}
+
+			wikiArg := wikiSupport.defaultWiki
+			if c.String("wiki") != "" {
+				wikiArg = c.String("wiki")
+			}
+			if _, ok := wikiSupport.wikis[wikiArg]; !ok {
+				util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, "Invalid wiki. Try: !wiki --options")
+			}
+
+			langArg := wikiSupport.wikis[wikiArg].defaultLang
+			if c.String("lang") != "" {
+				langArg = c.String("lang")
+			}
+
+			return m.queryWiki(ctx, wikiArg, langArg, strings.Join(c.Args().Slice(), " "))
 		},
 	}
 	m.Log.Debugf("groups: created urfave/cli command for message %v", ctx.messageCreate.ID)

@@ -18,8 +18,7 @@ func (m Module) Name() string { return "wiki" }
 
 // Register adds this module to the Discord session
 func (m *Module) Register(ctx context.Context, session *discordgo.Session) error {
-	//cancel := session.AddHandler(m.handleCommand)
-	cancel := func() {}
+	cancel := session.AddHandler(m.handleCommand)
 	go func() {
 		<-ctx.Done()
 		m.Log.Infof("groups module context done")
