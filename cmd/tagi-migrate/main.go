@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/fsufitch/tagialisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
 type Main struct {

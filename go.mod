@@ -1,7 +1,7 @@
 // +heroku goVersion go1.14
 // +heroku install ./cmd/...
 
-module github.com/fsufitch/tagialisi-bot
+module github.com/fsufitch/tagioalisi-bot
 
 go 1.14
 

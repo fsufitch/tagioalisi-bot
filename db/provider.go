@@ -1,10 +1,10 @@
 package db
 
 import (
-	"github.com/fsufitch/tagialisi-bot/db/acl-dao"
-	"github.com/fsufitch/tagialisi-bot/db/connection"
-	"github.com/fsufitch/tagialisi-bot/db/kv-dao"
-	"github.com/fsufitch/tagialisi-bot/db/memes-dao"
+	"github.com/fsufitch/tagioalisi-bot/db/acl-dao"
+	"github.com/fsufitch/tagioalisi-bot/db/connection"
+	"github.com/fsufitch/tagioalisi-bot/db/kv-dao"
+	"github.com/fsufitch/tagioalisi-bot/db/memes-dao"
 	"github.com/google/wire"
 )
 

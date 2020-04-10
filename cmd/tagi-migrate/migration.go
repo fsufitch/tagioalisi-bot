@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/fsufitch/tagialisi-bot/config"
-	"github.com/fsufitch/tagialisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/config"
+	"github.com/fsufitch/tagioalisi-bot/log"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"

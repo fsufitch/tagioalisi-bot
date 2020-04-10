@@ -3,7 +3,7 @@ package log
 import (
 	"os"
 
-	"github.com/fsufitch/tagialisi-bot/config"
+	"github.com/fsufitch/tagioalisi-bot/config"
 )
 
 // StdOutReceiver is a receiver to print to stdout

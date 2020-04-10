@@ -1,7 +1,7 @@
 package web
 
 import (
-	"github.com/fsufitch/tagialisi-bot/web/auth"
+	"github.com/fsufitch/tagioalisi-bot/web/auth"
 	"github.com/google/wire"
 )
 

@@ -1,7 +1,7 @@
 package acl
 
 import (
-	"github.com/fsufitch/tagialisi-bot/db/connection"
+	"github.com/fsufitch/tagioalisi-bot/db/connection"
 )
 
 // DAO exposes database ACL functionality

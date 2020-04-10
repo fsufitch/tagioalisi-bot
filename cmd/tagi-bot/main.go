@@ -5,9 +5,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/fsufitch/tagialisi-bot/bot"
-	"github.com/fsufitch/tagialisi-bot/config"
-	"github.com/fsufitch/tagialisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/bot"
+	"github.com/fsufitch/tagioalisi-bot/config"
+	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
 var banner = []string{

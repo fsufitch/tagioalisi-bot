@@ -3,7 +3,7 @@ package web
 import (
 	"net/http"
 
-	"github.com/fsufitch/tagialisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
 // HelloHandler is a http.Handler just says hello world

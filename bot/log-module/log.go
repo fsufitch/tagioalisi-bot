@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/tagialisi-bot/config"
-	"github.com/fsufitch/tagialisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/config"
+	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
 // Module is a bot module that outputs log messages

@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/fsufitch/tagialisi-bot/config"
-	"github.com/fsufitch/tagialisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/config"
+	"github.com/fsufitch/tagioalisi-bot/log"
 	_ "github.com/lib/pq" // Inject database driver
 )
 
