@@ -6,6 +6,7 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/ping-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module"
 	"github.com/google/wire"
 )
 
@@ -20,4 +21,5 @@ var ProvideTagioalisiBot = wire.NewSet(
 	memelink.ProvideModule,
 	log.ProvideModule,
 	groups.ProvideModule,
+	wiki.ProvideModule,
 )
