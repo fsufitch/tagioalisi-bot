@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/tagialisi-bot/bot/util"
-	"github.com/fsufitch/tagialisi-bot/db/memes-dao"
+	"github.com/fsufitch/tagioalisi-bot/bot/util"
+	"github.com/fsufitch/tagioalisi-bot/db/memes-dao"
 	"github.com/urfave/cli/v2"
 )
 

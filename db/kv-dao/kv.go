@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/fsufitch/tagialisi-bot/db/connection"
+	"github.com/fsufitch/tagioalisi-bot/db/connection"
 )
 
 // DAO exposes database KV functionality

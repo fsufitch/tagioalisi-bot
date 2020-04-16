@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/tagialisi-bot/log"
-	"github.com/fsufitch/tagialisi-bot/web/auth"
-	"github.com/fsufitch/tagialisi-bot/web/usersession"
+	"github.com/fsufitch/tagioalisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/web/auth"
+	"github.com/fsufitch/tagioalisi-bot/web/usersession"
 )
 
 type whoAmIResponse struct {

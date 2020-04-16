@@ -6,19 +6,21 @@
 package main
 
 import (
-	"github.com/fsufitch/tagialisi-bot/bot"
-	"github.com/fsufitch/tagialisi-bot/bot/groups-module"
-	log2 "github.com/fsufitch/tagialisi-bot/bot/log-module"
-	"github.com/fsufitch/tagialisi-bot/bot/memelink-module"
-	"github.com/fsufitch/tagialisi-bot/bot/ping-module"
-	"github.com/fsufitch/tagialisi-bot/bot/sockpuppet-module"
-	"github.com/fsufitch/tagialisi-bot/config"
-	"github.com/fsufitch/tagialisi-bot/db/acl-dao"
-	"github.com/fsufitch/tagialisi-bot/db/connection"
-	"github.com/fsufitch/tagialisi-bot/db/memes-dao"
-	"github.com/fsufitch/tagialisi-bot/log"
-	"github.com/fsufitch/tagialisi-bot/web"
-	"github.com/fsufitch/tagialisi-bot/web/auth"
+	"github.com/fsufitch/tagioalisi-bot/bot"
+	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
+	log2 "github.com/fsufitch/tagioalisi-bot/bot/log-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/ping-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module/wikisupport"
+	"github.com/fsufitch/tagioalisi-bot/config"
+	"github.com/fsufitch/tagioalisi-bot/db/acl-dao"
+	"github.com/fsufitch/tagioalisi-bot/db/connection"
+	"github.com/fsufitch/tagioalisi-bot/db/memes-dao"
+	"github.com/fsufitch/tagioalisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/web"
+	"github.com/fsufitch/tagioalisi-bot/web/auth"
 )
 
 // Injectors from wire.go:
@@ -66,12 +68,18 @@ func InitializeMain() (Main, func(), error) {
 		Log:    logger,
 		Prefix: managedGroupPrefix,
 	}
+	multi := _wireMultiValue
+	wikiModule := &wiki.Module{
+		Log:         logger,
+		WikiSupport: multi,
+	}
 	modules := bot.Modules{
 		Ping:       module,
 		Log:        logModule,
 		SockPuppet: sockpuppetModule,
 		MemeLink:   memelinkModule,
 		Groups:     groupsModule,
+		Wiki:       wikiModule,
 	}
 	moduleList := bot.ProvideModuleList(modules)
 	botModuleBlacklist := config.ProvideBotModuleBlacklistFromEnvironment()
@@ -149,5 +157,6 @@ func InitializeMain() (Main, func(), error) {
 }
 
 var (
+	_wireMultiValue       = wikisupport.DefaultMultiWikiSupport
 	_wireLoginStatesValue = auth.LoginStates{}
 )

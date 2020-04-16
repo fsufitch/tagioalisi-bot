@@ -5,10 +5,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/fsufitch/tagialisi-bot/bot/sockpuppet-module"
-	"github.com/fsufitch/tagialisi-bot/log"
-	"github.com/fsufitch/tagialisi-bot/web/auth"
-	"github.com/fsufitch/tagialisi-bot/web/usersession"
+	"github.com/fsufitch/tagioalisi-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagioalisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/web/auth"
+	"github.com/fsufitch/tagioalisi-bot/web/usersession"
 	"github.com/pkg/errors"
 )
 

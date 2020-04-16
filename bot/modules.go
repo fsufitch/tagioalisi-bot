@@ -4,11 +4,12 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/tagialisi-bot/bot/groups-module"
-	"github.com/fsufitch/tagialisi-bot/bot/log-module"
-	"github.com/fsufitch/tagialisi-bot/bot/memelink-module"
-	"github.com/fsufitch/tagialisi-bot/bot/ping-module"
-	"github.com/fsufitch/tagialisi-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/log-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/ping-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module"
 )
 
 // Module is a generic interface for a registerable modular piece of bot functionality
@@ -24,6 +25,7 @@ type Modules struct {
 	SockPuppet *sockpuppet.Module
 	MemeLink   *memelink.Module
 	Groups     *groups.Module
+	Wiki       *wiki.Module
 }
 
 // ModuleList is a list containing all the possible implemented modules
@@ -37,5 +39,6 @@ func ProvideModuleList(m Modules) ModuleList {
 		m.SockPuppet,
 		m.MemeLink,
 		m.Groups,
+		m.Wiki,
 	}
 }

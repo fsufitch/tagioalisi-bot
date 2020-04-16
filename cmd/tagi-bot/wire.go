@@ -4,11 +4,11 @@
 package main
 
 import (
-	"github.com/fsufitch/tagialisi-bot/bot"
-	"github.com/fsufitch/tagialisi-bot/config"
-	"github.com/fsufitch/tagialisi-bot/db"
-	"github.com/fsufitch/tagialisi-bot/log"
-	"github.com/fsufitch/tagialisi-bot/web"
+	"github.com/fsufitch/tagioalisi-bot/bot"
+	"github.com/fsufitch/tagioalisi-bot/config"
+	"github.com/fsufitch/tagioalisi-bot/db"
+	"github.com/fsufitch/tagioalisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/web"
 	"github.com/google/wire"
 )
 
