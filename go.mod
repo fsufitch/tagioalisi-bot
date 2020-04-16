@@ -7,6 +7,7 @@ go 1.14
 
 require (
 	cgt.name/pkg/go-mwclient v1.0.3
+	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/antonholmquist/jason v1.0.0
 	github.com/bwmarrin/discordgo v0.20.2
 	github.com/golang-migrate/migrate/v4 v4.9.1
