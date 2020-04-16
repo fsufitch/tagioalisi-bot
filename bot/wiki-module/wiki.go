@@ -5,12 +5,14 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
+	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module/wikisupport"
 	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
 // Module is a bot module that responds to "!wiki" commands
 type Module struct {
-	Log *log.Logger
+	Log         *log.Logger
+	WikiSupport wikisupport.Multi
 }
 
 // Name returns the name of the module, for blacklisting

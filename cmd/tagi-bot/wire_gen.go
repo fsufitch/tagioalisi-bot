@@ -13,6 +13,7 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/bot/ping-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/sockpuppet-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module/wikisupport"
 	"github.com/fsufitch/tagioalisi-bot/config"
 	"github.com/fsufitch/tagioalisi-bot/db/acl-dao"
 	"github.com/fsufitch/tagioalisi-bot/db/connection"
@@ -67,8 +68,10 @@ func InitializeMain() (Main, func(), error) {
 		Log:    logger,
 		Prefix: managedGroupPrefix,
 	}
+	multi := _wireMultiValue
 	wikiModule := &wiki.Module{
-		Log: logger,
+		Log:         logger,
+		WikiSupport: multi,
 	}
 	modules := bot.Modules{
 		Ping:       module,
@@ -154,5 +157,6 @@ func InitializeMain() (Main, func(), error) {
 }
 
 var (
+	_wireMultiValue       = wikisupport.DefaultMultiWikiSupport
 	_wireLoginStatesValue = auth.LoginStates{}
 )

@@ -43,6 +43,7 @@ func (m *Module) cliApp(ctx commandContext) (app *cli.App, stdout, stderr *bytes
 			},
 		},
 		ArgsUsage: "[search terms]",
+		Commands:  []*cli.Command{},
 		Action: func(c *cli.Context) error {
 			if c.Bool("options") {
 				return m.showOptions(ctx)
@@ -51,15 +52,15 @@ func (m *Module) cliApp(ctx commandContext) (app *cli.App, stdout, stderr *bytes
 				return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, "No search specified. Try: !wiki --help")
 			}
 
-			wikiArg := wikiSupport.defaultWiki
+			wikiArg := m.WikiSupport.Default
 			if c.String("wiki") != "" {
 				wikiArg = c.String("wiki")
 			}
-			if _, ok := wikiSupport.wikis[wikiArg]; !ok {
+			if _, ok := m.WikiSupport.Wikis[wikiArg]; !ok {
 				util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, "Invalid wiki. Try: !wiki --options")
 			}
 
-			langArg := wikiSupport.wikis[wikiArg].defaultLang
+			langArg := m.WikiSupport.Wikis[wikiArg].DefaultLang
 			if c.String("lang") != "" {
 				langArg = c.String("lang")
 			}
