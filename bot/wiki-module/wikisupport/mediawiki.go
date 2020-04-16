@@ -46,7 +46,7 @@ func (c MediaWikiClient) Query(title string) (QueryResult, error) {
 		return QueryResult{}, errors.Wrap(err, "error executing query")
 	}
 
-	jsonResult, err := reUnmarshalJason(jasonResult)
+	jsonResult, err := reUnmarshalJasonMediaWiki(jasonResult)
 
 	if len(jsonResult.Query.Pages) < 1 {
 		return QueryResult{Found: false}, nil
@@ -73,18 +73,18 @@ func (c MediaWikiClient) Query(title string) (QueryResult, error) {
 	return result, nil
 }
 
-func reUnmarshalJason(jObj *jason.Object) (queryResult, error) {
+func reUnmarshalJasonMediaWiki(jObj *jason.Object) (mediaWikiQueryResult, error) {
 	data, err := jObj.Marshal()
 	if err != nil {
-		return queryResult{}, err
+		return mediaWikiQueryResult{}, err
 	}
 	println(string(data))
-	obj := queryResult{}
+	obj := mediaWikiQueryResult{}
 	err = json.Unmarshal(data, &obj)
 	return obj, err
 }
 
-type queryResult struct {
+type mediaWikiQueryResult struct {
 	Query struct {
 		Pages []struct {
 			ID        int    `json:"pageid"`

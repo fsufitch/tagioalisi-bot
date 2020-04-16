@@ -1,6 +1,8 @@
 package wikisupport
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Multi is a struct holding configuration for supported wikis
 type Multi struct {
@@ -54,6 +56,29 @@ var DefaultMultiWikiSupport = Multi{
 				return NewMediaWikiClient(fmt.Sprintf("https://%s.wiktionary.org/w/api.php", lang))
 			},
 		},
-		// TODO: add more options?
+		"sw": {
+			ID:      "sw",
+			Name:    "Wookiepedia",
+			IconURL: "https://vignette.wikia.nocookie.net/starwars/images/b/bc/Wiki.png",
+			Client: func(lang string) (Client, error) {
+				return NewFandomClient("https://starwars.fandom.com/api.php")
+			},
+		},
+		"lotr": {
+			ID:      "lotr",
+			Name:    "One Wiki to Rule Them All",
+			IconURL: "https://vignette.wikia.nocookie.net/lotr/images/b/bc/Wiki.png",
+			Client: func(lang string) (Client, error) {
+				return NewFandomClient("https://lotr.fandom.com/api.php")
+			},
+		},
+		"tes": {
+			ID:      "tes",
+			Name:    "The Elder Scrolls Wiki",
+			IconURL: "https://i.imgur.com/mgUlAGQ.jpg",
+			Client: func(lang string) (Client, error) {
+				return NewFandomClient("https://elderscrolls.fandom.com/api.php")
+			},
+		},
 	},
 }
