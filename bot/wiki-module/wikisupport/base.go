@@ -80,7 +80,7 @@ var DefaultMultiWikiSupport = Multi{
 				return NewFandomClient("https://elderscrolls.fandom.com/api.php")
 			},
 		},
-		"tes": {
+		"mtg": {
 			ID:      "mtg",
 			Name:    "Magic: The Gathering Wiki",
 			IconURL: "https://gamepedia.cursecdn.com/mtgsalvation_gamepedia/thumb/c/c8/5Colors.png/120px-5Colors.png",
