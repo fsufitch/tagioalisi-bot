@@ -93,11 +93,14 @@ var ops = map[string]func([]int) ([]int, []DiceRoll, error){
 		x := stack[len(stack)-2]
 		y := stack[len(stack)-1]
 		rest := stack[:len(stack)-2]
-		if x < 1 || x > 200 {
-			return nil, nil, fmt.Errorf("invalid number of dice: %d", x)
+		if x < 1 {
+			return nil, nil, fmt.Errorf("invalid number of dice (less than 1): %d", x)
+		}
+		if x > 10000 {
+			return nil, nil, fmt.Errorf("invalid number of dice (greater than 10,000): %d", x)
 		}
 		if y < 2 {
-			return nil, nil, fmt.Errorf("invalid number of sides for a die: %d", y)
+			return nil, nil, fmt.Errorf("invalid number of sides for a die (less than 2): %d", y)
 		}
 		sum, roll := rollDice(x, y)
 		return append(rest, sum), []DiceRoll{roll}, nil

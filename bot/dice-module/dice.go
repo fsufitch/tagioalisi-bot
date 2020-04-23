@@ -62,7 +62,12 @@ func (m *Module) roll(cmdCtx commandContext, verbose bool, query string) error {
 	if len(result.Rolls) > 0 {
 		fmt.Fprintf(buf, "Actual dice rolled:\n")
 		for _, r := range result.Rolls {
-			fmt.Fprintf(buf, "- %dd%d ⮕ %v\n", r.Count, r.Sides, r.Results)
+			if len(r.Results) > 50 {
+				fmt.Fprintf(buf, "- %dd%d ⮕ (first 50 of %d) %v\n", r.Count, r.Sides, len(r.Results), r.Results[:50])
+
+			} else {
+				fmt.Fprintf(buf, "- %dd%d ⮕ %v\n", r.Count, r.Sides, r.Results)
+			}
 		}
 	}
 
