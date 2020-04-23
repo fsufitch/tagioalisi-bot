@@ -18,14 +18,6 @@ func ProvideWebPortFromEnvironment() (WebPort, error) {
 	return WebPort(port), err
 }
 
-// WebSecret is the secret string for admin control from the web
-type WebSecret string
-
-// ProvideWebSecretFromEnvironment creates a WebSecret from the environment
-func ProvideWebSecretFromEnvironment() WebSecret {
-	return WebSecret(os.Getenv("WEB_SECRET"))
-}
-
 // WebEnabled is whether the web control UI is enabled
 type WebEnabled bool
 
