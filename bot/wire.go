@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"github.com/fsufitch/tagioalisi-bot/bot/dice-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/log-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
@@ -22,4 +23,5 @@ var ProvideTagioalisiBot = wire.NewSet(
 	log.ProvideModule,
 	groups.ProvideModule,
 	wiki.ProvideModule,
+	dice.ProvideModule,
 )

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/fsufitch/tagioalisi-bot/bot/dice-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/log-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
@@ -26,6 +27,7 @@ type Modules struct {
 	MemeLink   *memelink.Module
 	Groups     *groups.Module
 	Wiki       *wiki.Module
+	Dice       *dice.Module
 }
 
 // ModuleList is a list containing all the possible implemented modules
@@ -40,5 +42,6 @@ func ProvideModuleList(m Modules) ModuleList {
 		m.MemeLink,
 		m.Groups,
 		m.Wiki,
+		m.Dice,
 	}
 }

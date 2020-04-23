@@ -23,7 +23,7 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 	cancel := session.AddHandler(m.handleCommand)
 	go func() {
 		<-ctx.Done()
-		m.Log.Infof("groups module context done")
+		m.Log.Infof("wiki module context done")
 		cancel()
 	}()
 	return nil

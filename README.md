@@ -72,7 +72,7 @@ The bot functionality is split up into mostly independent modules that each act 
 | `sockpuppet` | ✅ | hooks allowing for custom messages to be sent via the web UI |
 | `groups` | ✅ | manage a server groups system using special prefixed roles |
 | `wiki` | ✅ | search a variety of wikis |
-| `dice` | ⬜️ | roll dice (e.g. `!roll 1d20+3`) |
+| `dice` | ✅ | roll dice (e.g. `!roll 1d20+3`) |
 | `welcome` | ⬜️ | welcomes new users and points them useful places|
 | `remindme` | ⬜️ | basic reminder system for reminding yourself and others of stuff |
 | `ytplay` | ⬜️ | pipe audio from a YouTube video into an audio channel; as annoying as possible |

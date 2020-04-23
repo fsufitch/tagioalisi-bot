@@ -7,6 +7,8 @@ package main
 
 import (
 	"github.com/fsufitch/tagioalisi-bot/bot"
+	"github.com/fsufitch/tagioalisi-bot/bot/dice-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/dice-module/calc"
 	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
 	log2 "github.com/fsufitch/tagioalisi-bot/bot/log-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
@@ -73,6 +75,13 @@ func InitializeMain() (Main, func(), error) {
 		Log:         logger,
 		WikiSupport: multi,
 	}
+	diceCalculator := calc.DiceCalculator{
+		Log: logger,
+	}
+	diceModule := &dice.Module{
+		Log:        logger,
+		Calculator: diceCalculator,
+	}
 	modules := bot.Modules{
 		Ping:       module,
 		Log:        logModule,
@@ -80,6 +89,7 @@ func InitializeMain() (Main, func(), error) {
 		MemeLink:   memelinkModule,
 		Groups:     groupsModule,
 		Wiki:       wikiModule,
+		Dice:       diceModule,
 	}
 	moduleList := bot.ProvideModuleList(modules)
 	botModuleBlacklist := config.ProvideBotModuleBlacklistFromEnvironment()
