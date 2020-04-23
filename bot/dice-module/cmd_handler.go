@@ -42,6 +42,7 @@ func (m *Module) cliApp(ctx commandContext) (app *cli.App, stdout, stderr *bytes
 
 			return m.roll(ctx, verbose, strings.Join(c.Args().Slice(), " "))
 		},
+		Description: "Supported operators in expressions are: + - * min max. e.g.: (1d20 max 1d20) + 3",
 	}
 	m.Log.Debugf("groups: created urfave/cli command for message %v", ctx.messageCreate.ID)
 
