@@ -195,10 +195,10 @@ export function AuthURLHandling(props: {
   useEffect(() => {
     const u = url.parse(document.location.href);
     const params = new URLSearchParams(u.query || undefined);
-    const sid = params.get("sid");
-    console.log("SID: ", sid);
-    props.onAuthTokenChanged(sid || "");
-    params.delete("sid");
+    const jwt = params.get("jwt");
+    console.log("JWT: ", jwt);
+    props.onAuthTokenChanged(jwt || "");
+    params.delete("jwt");
     u.search = params.toString() ? `?${params.toString()}` : "";
     window.history.replaceState(null, "", url.format(u));
   }, []);
