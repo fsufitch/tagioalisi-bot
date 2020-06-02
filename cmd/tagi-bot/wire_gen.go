@@ -21,6 +21,7 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/db/connection"
 	"github.com/fsufitch/tagioalisi-bot/db/memes-dao"
 	"github.com/fsufitch/tagioalisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/security"
 	"github.com/fsufitch/tagioalisi-bot/web"
 	"github.com/fsufitch/tagioalisi-bot/web/auth"
 )
@@ -124,29 +125,45 @@ func InitializeMain() (Main, func(), error) {
 	helloHandler := &web.HelloHandler{
 		Log: logger,
 	}
-	memorySessionStorage := auth.ProvideMemorySessionStorage()
+	jwthmacSecret := config.ProvideJWTHMACSecretFromEnvironment()
+	aesBlock, err := config.ProvideAESBlockFromEnvironment()
+	if err != nil {
+		cleanup()
+		return Main{}, nil, err
+	}
+	aesSupport := security.AESSupport{
+		Block: aesBlock,
+	}
+	jwtSupport := security.JWTSupport{
+		JWTHMACSecret: jwthmacSecret,
+		AES:           aesSupport,
+	}
 	sockpuppetHandler := &web.SockpuppetHandler{
 		BotModule: sockpuppetModule,
 		Log:       logger,
-		Sessions:  memorySessionStorage,
+		JWT:       jwtSupport,
 	}
 	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
 	loginStates := _wireLoginStatesValue
 	loginHandler := &web.LoginHandler{
 		OAuth2Config: oAuth2Config,
 		LoginStates:  loginStates,
+		AES:          aesSupport,
 	}
+	memorySessionStorage := auth.ProvideMemorySessionStorage()
 	authCodeHandler := &web.AuthCodeHandler{
 		OAuth2Config:   oAuth2Config,
 		LoginStates:    loginStates,
 		SessionStorage: memorySessionStorage,
+		JWT:            jwtSupport,
+		AES:            aesSupport,
 	}
 	logoutHandler := &web.LogoutHandler{
 		SessionStorage: memorySessionStorage,
 	}
 	whoAmIHandler := &web.WhoAmIHandler{
-		Log:            logger,
-		SessionStorage: memorySessionStorage,
+		Log: logger,
+		JWT: jwtSupport,
 	}
 	router := web.ProvideRouter(helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler, whoAmIHandler)
 	tagioalisiAPIServer := web.TagioalisiAPIServer{

@@ -8,6 +8,7 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/config"
 	"github.com/fsufitch/tagioalisi-bot/db"
 	"github.com/fsufitch/tagioalisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/security"
 	"github.com/fsufitch/tagioalisi-bot/web"
 	"github.com/google/wire"
 )
@@ -22,5 +23,6 @@ func InitializeMain() (Main, func(), error) {
 		bot.ProvideTagioalisiBot,
 		db.ProvidePostgresDatabase,
 		web.ProvideWebServer,
+		security.ProvideSecurity,
 	))
 }

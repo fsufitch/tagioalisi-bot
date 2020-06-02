@@ -1,6 +1,9 @@
 package config
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"encoding/base64"
 	"os"
 
 	"golang.org/x/oauth2"
@@ -43,4 +46,23 @@ type JWTHMACSecret []byte
 // ProvideJWTHMACSecretFromEnvironment creates a JWTHMACSecret from the environment
 func ProvideJWTHMACSecretFromEnvironment() JWTHMACSecret {
 	return JWTHMACSecret(os.Getenv("JWT_HMAC_SECRET"))
+}
+
+// AESBlock is an AES cipher block used to encrypt/decrypt data used in authentication
+type AESBlock cipher.Block
+
+// ProvideAESBlockFromEnvironment creates an AESBlock from a key in the environment
+func ProvideAESBlockFromEnvironment() (AESBlock, error) {
+	keyBase64 := os.Getenv("AES_KEY_B64")
+	key, err := base64.StdEncoding.DecodeString(keyBase64)
+	if err != nil {
+		return nil, err
+	}
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	return AESBlock(block), nil
 }

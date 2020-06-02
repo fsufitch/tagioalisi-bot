@@ -2,11 +2,15 @@ package web
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/url"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/fsufitch/tagioalisi-bot/config"
+	"github.com/fsufitch/tagioalisi-bot/security"
 	"github.com/fsufitch/tagioalisi-bot/web/auth"
+	"github.com/fsufitch/tagioalisi-bot/web/usersession"
 	"golang.org/x/oauth2"
 )
 
@@ -14,6 +18,7 @@ import (
 type LoginHandler struct {
 	OAuth2Config config.OAuth2Config
 	LoginStates  auth.LoginStates
+	AES          security.AESSupport
 }
 
 func (h LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -25,9 +30,14 @@ func (h LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loginState := h.LoginStates.New(returnURL)
+	loginState := auth.NewLoginState(returnURL)
+	stateStr, err := loginState.ToStateParam(h.AES)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("unexpected error generating state: %v", err), http.StatusInternalServerError)
+		return
+	}
 
-	redirectURL := (*oauth2.Config)(h.OAuth2Config).AuthCodeURL(loginState.ID)
+	redirectURL := (*oauth2.Config)(h.OAuth2Config).AuthCodeURL(stateStr)
 	http.Redirect(w, r, redirectURL, http.StatusFound)
 }
 
@@ -36,6 +46,8 @@ type AuthCodeHandler struct {
 	OAuth2Config   config.OAuth2Config
 	LoginStates    auth.LoginStates
 	SessionStorage auth.SessionStorage
+	JWT            security.JWTSupport
+	AES            security.AESSupport
 }
 
 func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -47,23 +59,47 @@ func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loginState := h.LoginStates.Get(state)
-	if loginState == nil {
-		http.Error(w, "expired/invalid state; go back and try again", http.StatusForbidden)
+	// Unpack login state from the state param
+	loginState, err := auth.LoginStateFromStateParam(state, h.AES)
+	if err != nil {
+		http.Error(w, "error unpacking state: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-	h.LoginStates.Clear(state)
 
+	// Acquire actual OAuth access token (and more) for this login
 	oauthToken, err := (*oauth2.Config)(h.OAuth2Config).Exchange(context.Background(), code)
 	if err != nil {
 		http.Error(w, "failed to start Discord session with OAuth2 Code: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	sessionID := h.SessionStorage.New(oauthToken).ID
+
+	var user *discordgo.User
+	// Query identity information
+	if discordSession, err := usersession.NewIdentity(oauthToken.AccessToken); err != nil {
+		http.Error(w, "could not initialize Discord session: "+err.Error(), http.StatusInternalServerError)
+		return
+	} else if user, err = discordSession.User("@me"); err != nil {
+		http.Error(w, "could not query user info: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	jwtToken, err := h.JWT.CreateTokenString(security.JWTData{
+		AccessToken: oauthToken.AccessToken,
+		Expiration:  oauthToken.Expiry,
+		SessionID:   loginState.ID,
+		UserID:      user.ID,
+		Username:    user.String(),
+		AvatarURL:   user.AvatarURL(""),
+	})
+
+	if err != nil {
+		http.Error(w, "error assembling jwt: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	u, _ := url.Parse(loginState.ReturnURL)
 	q, _ := url.ParseQuery(u.RawQuery)
-	q.Set("sid", sessionID)
+	q.Set("jwt", jwtToken)
 	u.RawQuery = q.Encode()
 
 	http.Redirect(w, r, u.String(), http.StatusFound)
@@ -75,19 +111,6 @@ type LogoutHandler struct {
 }
 
 func (h LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	sessionID := auth.GetSessionID(r)
-	if sessionID == "" {
-		http.Error(w, "request contained no session ID", http.StatusUnauthorized)
-		return
-	}
-	session := h.SessionStorage.Get(sessionID)
-	if session == nil {
-		http.Error(w, "could not get session from session ID in request", http.StatusUnauthorized)
-		return
-	}
-
-	h.SessionStorage.Clear(session.ID)
-	// TODO: also revoke the token
-
+	// All auth is in the JWT, so nothing to do on server side
 	w.WriteHeader(http.StatusNoContent)
 }
