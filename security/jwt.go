@@ -22,10 +22,9 @@ type JWTData struct {
 }
 
 type claims struct {
-	Username          string `json:"un"`
-	Token             string `json:"tok"`
-	AvatarURL         string `json:"av"`
-	TokenEncryptionIV []byte `json:"iv"`
+	Username  string `json:"un"`
+	Token     string `json:"tok"`
+	AvatarURL string `json:"av"`
 	jwt.StandardClaims
 }
 
@@ -38,7 +37,6 @@ type JWTSupport struct {
 // CreateTokenString encodes the given JWT data into a JWT; the access token is encrypted if a cipher block is available
 func (j JWTSupport) CreateTokenString(data JWTData) (string, error) {
 	token := data.AccessToken
-	var iv []byte
 	if j.AES.Ready() {
 		encToken, err := j.AES.Encrypt([]byte(token))
 		if err != nil {
@@ -48,10 +46,9 @@ func (j JWTSupport) CreateTokenString(data JWTData) (string, error) {
 	}
 
 	c := claims{
-		Username:          data.Username,
-		Token:             token,
-		AvatarURL:         data.AvatarURL,
-		TokenEncryptionIV: iv,
+		Username:  data.Username,
+		Token:     token,
+		AvatarURL: data.AvatarURL,
 		StandardClaims: jwt.StandardClaims{
 			Id:        data.SessionID,
 			Subject:   data.UserID,

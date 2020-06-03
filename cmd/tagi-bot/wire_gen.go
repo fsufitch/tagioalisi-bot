@@ -23,7 +23,6 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/log"
 	"github.com/fsufitch/tagioalisi-bot/security"
 	"github.com/fsufitch/tagioalisi-bot/web"
-	"github.com/fsufitch/tagioalisi-bot/web/auth"
 )
 
 // Injectors from wire.go:
@@ -144,23 +143,16 @@ func InitializeMain() (Main, func(), error) {
 		JWT:       jwtSupport,
 	}
 	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
-	loginStates := _wireLoginStatesValue
 	loginHandler := &web.LoginHandler{
 		OAuth2Config: oAuth2Config,
-		LoginStates:  loginStates,
 		AES:          aesSupport,
 	}
-	memorySessionStorage := auth.ProvideMemorySessionStorage()
 	authCodeHandler := &web.AuthCodeHandler{
-		OAuth2Config:   oAuth2Config,
-		LoginStates:    loginStates,
-		SessionStorage: memorySessionStorage,
-		JWT:            jwtSupport,
-		AES:            aesSupport,
+		OAuth2Config: oAuth2Config,
+		JWT:          jwtSupport,
+		AES:          aesSupport,
 	}
-	logoutHandler := &web.LogoutHandler{
-		SessionStorage: memorySessionStorage,
-	}
+	logoutHandler := &web.LogoutHandler{}
 	whoAmIHandler := &web.WhoAmIHandler{
 		Log: logger,
 		JWT: jwtSupport,
@@ -184,6 +176,5 @@ func InitializeMain() (Main, func(), error) {
 }
 
 var (
-	_wireMultiValue       = wikisupport.DefaultMultiWikiSupport
-	_wireLoginStatesValue = auth.LoginStates{}
+	_wireMultiValue = wikisupport.DefaultMultiWikiSupport
 )

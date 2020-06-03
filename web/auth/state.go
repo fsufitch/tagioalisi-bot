@@ -12,9 +12,6 @@ import (
 
 var stateTimeout = time.Minute * 10
 
-// LoginStates is a map of currently active login attempts
-type LoginStates map[string]LoginState
-
 // LoginState is an active login attempt
 type LoginState struct {
 	ID        string    `json:"id"`
@@ -73,36 +70,4 @@ func (s LoginState) ToStateParam(aes security.AESSupport) (string, error) {
 
 	encoded := base64.StdEncoding.EncodeToString(bytes)
 	return encoded, nil
-}
-
-// ErrLoginStateNotFound is the standard error for when a login state does not exist, or expired
-var ErrLoginStateNotFound = errors.New(`state not found`)
-
-// New creates a new login state
-func (s LoginStates) New(returnURL string) LoginState {
-	state := LoginState{
-		ID:        uuid.New().String(),
-		Time:      time.Now(),
-		ReturnURL: returnURL,
-	}
-
-	s[state.ID] = state
-	return state
-}
-
-// Get retrieves a login state, if possible
-func (s LoginStates) Get(id string) *LoginState {
-	if state, ok := s[id]; !ok {
-		return nil
-	} else if time.Now().Sub(state.Time) > stateTimeout {
-		s.Clear(id)
-		return nil
-	} else {
-		return &state
-	}
-}
-
-// Clear deletes a login state
-func (s LoginStates) Clear(id string) {
-	delete(s, id)
 }

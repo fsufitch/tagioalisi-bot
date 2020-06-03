@@ -17,7 +17,6 @@ import (
 // LoginHandler starts the authentication workflow
 type LoginHandler struct {
 	OAuth2Config config.OAuth2Config
-	LoginStates  auth.LoginStates
 	AES          security.AESSupport
 }
 
@@ -43,11 +42,9 @@ func (h LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // AuthCodeHandler handles the redirected successful OAuth2 login
 type AuthCodeHandler struct {
-	OAuth2Config   config.OAuth2Config
-	LoginStates    auth.LoginStates
-	SessionStorage auth.SessionStorage
-	JWT            security.JWTSupport
-	AES            security.AESSupport
+	OAuth2Config config.OAuth2Config
+	JWT          security.JWTSupport
+	AES          security.AESSupport
 }
 
 func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -106,9 +103,7 @@ func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // LogoutHandler handles logout logic
-type LogoutHandler struct {
-	SessionStorage auth.SessionStorage
-}
+type LogoutHandler struct{}
 
 func (h LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// All auth is in the JWT, so nothing to do on server side
