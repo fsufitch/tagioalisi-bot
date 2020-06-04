@@ -6,12 +6,14 @@
 package main
 
 import (
+	"github.com/fsufitch/tagioalisi-bot/azure"
 	"github.com/fsufitch/tagioalisi-bot/bot"
 	"github.com/fsufitch/tagioalisi-bot/bot/dice-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/dice-module/calc"
 	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
 	log2 "github.com/fsufitch/tagioalisi-bot/bot/log-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/news-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/ping-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/sockpuppet-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module"
@@ -82,6 +84,12 @@ func InitializeMain() (Main, func(), error) {
 		Log:        logger,
 		Calculator: diceCalculator,
 	}
+	azureNewsSearchAPIKey := config.ProvideAzureCredentialsFromEnvironment()
+	onlineNewsSearch := azure.ProvideOnlineNewsSearch(azureNewsSearchAPIKey)
+	newsModule := &news.Module{
+		Log:  logger,
+		News: onlineNewsSearch,
+	}
 	modules := bot.Modules{
 		Ping:       module,
 		Log:        logModule,
@@ -90,6 +98,7 @@ func InitializeMain() (Main, func(), error) {
 		Groups:     groupsModule,
 		Wiki:       wikiModule,
 		Dice:       diceModule,
+		News:       newsModule,
 	}
 	moduleList := bot.ProvideModuleList(modules)
 	botModuleBlacklist := config.ProvideBotModuleBlacklistFromEnvironment()

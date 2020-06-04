@@ -7,6 +7,8 @@ go 1.14
 
 require (
 	cgt.name/pkg/go-mwclient v1.0.3
+	github.com/Azure/azure-sdk-for-go v43.0.0+incompatible
+	github.com/Azure/go-autorest/autorest v0.10.2
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/antonholmquist/jason v1.0.0
 	github.com/bwmarrin/discordgo v0.20.3

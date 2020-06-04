@@ -8,6 +8,7 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/log-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/news-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/ping-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/sockpuppet-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module"
@@ -28,6 +29,7 @@ type Modules struct {
 	Groups     *groups.Module
 	Wiki       *wiki.Module
 	Dice       *dice.Module
+	News       *news.Module
 }
 
 // ModuleList is a list containing all the possible implemented modules
@@ -43,5 +45,6 @@ func ProvideModuleList(m Modules) ModuleList {
 		m.Groups,
 		m.Wiki,
 		m.Dice,
+		m.News,
 	}
 }

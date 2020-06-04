@@ -4,6 +4,7 @@
 package main
 
 import (
+	"github.com/fsufitch/tagioalisi-bot/azure"
 	"github.com/fsufitch/tagioalisi-bot/bot"
 	"github.com/fsufitch/tagioalisi-bot/config"
 	"github.com/fsufitch/tagioalisi-bot/db"
@@ -20,6 +21,7 @@ func InitializeMain() (Main, func(), error) {
 		ProvideWebRunFunc,
 		config.EnvironmentProviderSet,
 		log.CLILoggingProviderSet,
+		azure.AzureProviderSet,
 		bot.ProvideTagioalisiBot,
 		db.ProvidePostgresDatabase,
 		web.ProvideWebServer,
