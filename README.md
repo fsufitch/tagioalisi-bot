@@ -15,7 +15,7 @@ Custom bot for the Sociologic Planning Boar server on Discord. Now in Go!
 
 ## Requirements
 
-* Go 1.12+
+* Go 1.14+
 * Docker and Docker Compose (optional)
 
 ## Build and run instructions
@@ -54,10 +54,13 @@ do differ from the values in `.env.template`.
 | `DISCORD_TOKEN` | **ERROR** | (bot only) used for authenticating the bot to Discord |
 | `BLACKLIST_BOT_MODULES` | (bot only) comma-separated bot modules to not load; see below for details |
 | `DISCORD_LOG_CHANNEL` | | (bot only) ID of channel the bot should use for logging; no channel logs if empty |
-| `GROUP_PREFIX` | `g-` | (bot only) the prefix to use for any bot-managed roles, as part of the `groups` module` |
+| `GROUP_PREFIX` | `g-` | (bot only) the prefix to use for any bot-managed roles, as part of the `groups` module |
+| `AZURE_NEWS_SEARCH_KEY` | **ERROR** | (bot only) the API key to use to contact Azure News Search API |
+| `OAUTH_*` | **ERROR** | (bot only) configuration for allowing users to identify themselves using the [Discord OAuth2 API](https://discord.com/developers/docs/topics/oauth2) |
+| `JWT_HMAC_SECRET` | `supersecret` | (bot only) the secret salt used for signing JWTs; *do not use the default value* |
+| `AES_KEY_B64` | `zvFXk6LbvG5jTG7JlGBQ57MdqUwjdS/wH3gVWXkSOUU=` | (bot only) base-64 encoded random 256-bit AES string to use as an AES encryption key; *do not use the default value* | 
 | `WEB_ENABLED` | false | (bot only) enable the HTTP web API for runtime control of the bot |
-| `WEB_SECRET` | | (bot only) the secret token to use for securing the web API; web API will not launch without this |
-| `PORT` | 9999 | (bot only) the TCP port that the bot HTTP web API listens on |
+| `PORT` | 80 | (bot only) the TCP port that the bot HTTP web API listens on; when running inside Docker, this should always be 80 |
 | `MIGRATION_DIR` | **ERROR** | (migration only) the directory where migration SQL files can be found; see [`./db/migration`](./db/migration) |
 
 ## Modular design
@@ -73,6 +76,7 @@ The bot functionality is split up into mostly independent modules that each act 
 | `groups` | ✅ | manage a server groups system using special prefixed roles |
 | `wiki` | ✅ | search a variety of wikis |
 | `dice` | ✅ | roll dice (e.g. `!roll 1d20+3`) |
+| `news` | ✅ | use the Bing News Search API to look for recent news about some keywords |
 | `welcome` | ⬜️ | welcomes new users and points them useful places|
 | `remindme` | ⬜️ | basic reminder system for reminding yourself and others of stuff |
 | `ytplay` | ⬜️ | pipe audio from a YouTube video into an audio channel; as annoying as possible |
