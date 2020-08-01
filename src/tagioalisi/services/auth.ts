@@ -1,0 +1,125 @@
+import { useEffect, useState } from 'react';
+import url from "url";
+
+import { useAPIEndpoint } from 'tagioalisi/services/api';
+import { useLocalStorage } from 'tagioalisi/services/localStorage';
+
+type AuthenticationToken = string;
+
+const AUTH_LOCALSTORAGE_JWT_KEY = 'tagioalisi.auth.jwt';
+
+export function useAuthentication(): [AuthenticationToken, (val: AuthenticationToken) => void, () => void, () => void] {
+  const [endpoint] = useAPIEndpoint();
+  const [jwt, setJWT] = useLocalStorage<AuthenticationToken>(AUTH_LOCALSTORAGE_JWT_KEY, '', 'useAuthentication');
+
+  const login = () => {
+    window.location.href = `${endpoint}/login?return_url=${encodeURIComponent(window.location.href)}`;
+  }
+
+  const logout = () => {
+    console.log('logout called');
+    fetch(`${endpoint}/logout`);
+    setJWT('');
+    console.log('setJWT ""')
+  }
+
+  const [passthroughJWT, setPassthroughJWT] = useState<AuthenticationToken>('');
+  useEffect(() => {
+    console.log('useAuthentication: jwt updated', jwt);
+    setPassthroughJWT(jwt);
+    
+  }, [jwt]);
+
+  return [ passthroughJWT, setJWT, login, logout ];
+}
+
+export const useOnLoadAuthenticationEffect = () => {
+  const [, setJWT ] = useAuthentication();
+  useEffect(() => {
+    console.log('onload jwt');
+    const u = url.parse(document.location.href);
+    const params = new URLSearchParams(u.query ?? undefined);
+    const jwt = params?.get("jwt") ?? '';
+    if (!jwt) {
+      return;
+    }
+    console.log("Found JWT: ", jwt);
+    setJWT(jwt);
+
+    params.delete("jwt");
+    u.search = params.toString() ? `?${params.toString()}` : "";
+    window.history.replaceState(null, "", url.format(u));
+  }, []);
+}
+
+interface UserData {
+  authenticated: boolean;
+  authPending: boolean;
+  error?: string;
+  id?: string;
+  fullname?: string;
+  avatarUrl?: string;
+}
+
+const AUTH_LOCALSTORAGE_USER_DATA_KEY = 'tagioalisi.auth.user-data';
+
+export function useAuthenticatedUserData(): [UserData, (val: UserData) => void] {
+  const [userData, setUserData] = useLocalStorage<UserData>(AUTH_LOCALSTORAGE_USER_DATA_KEY, { authenticated: false, authPending: false });
+  console.log('useAuthenicatedUserData received:', userData);
+  return [userData, setUserData];
+}
+
+export function useUpdateAuthenticatedUserDataEffect() {
+  const [ jwt ] = useAuthentication();
+  const [, setUserData] = useAuthenticatedUserData();
+  const [endpoint] = useAPIEndpoint();
+
+  useEffect(() => {
+    console.log('useUpdateAuthenticatedUserDataEffect -- jwt updated:', jwt);
+  }, [jwt]);
+
+  useEffect(() => {
+    console.log('update user data effect triggered', { endpoint, jwt });
+    if (!jwt || !endpoint) {
+      setUserData({ authenticated: false, authPending: false });
+      return;
+    }
+
+    console.log(`Authenticating with JWT: ${jwt}`);
+    setUserData({ authPending: true, authenticated: false });
+    (async () => {
+      let response: Response;
+      try {
+        response = await fetch(`${endpoint}/whoami`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`
+          }
+        });
+      } catch (e) {
+        setUserData({
+          authenticated: false,
+          authPending: false,
+          error: `error running user data fetch: ${e}`,
+        })
+        return;
+      }
+
+      if (response.status >= 200 && response.status < 300) {
+        const data = await response.json();
+        setUserData({
+          authenticated: true,
+          authPending: false,
+          id: data.id,
+          fullname: data.fullname,
+          avatarUrl: data.avatar_url,
+        })
+      } else {
+        setUserData({
+          authenticated: false,
+          authPending: false,
+          error: `Error (${response.status}): ${await response.text()}`,
+        });
+      }
+    })();
+  }, [jwt, endpoint]);
+}

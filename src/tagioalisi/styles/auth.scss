@@ -10,3 +10,16 @@
     @extend .img-thumbnail;
     height: 64;
 }
+
+.authSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin: 1em;
+
+    p {
+        margin: 0.5em;
+        padding: 0;
+    }
+}

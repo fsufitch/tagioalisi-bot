@@ -3,13 +3,10 @@ import React, { useState, Fragment } from "react";
 import styles from "tagioalisi/styles";
 
 import { Inputs } from "./Inputs";
+import { useAPIEndpoint } from "tagioalisi/services/api";
+import { useAuthentication } from "tagioalisi/services/auth";
 
-export function Sockpuppet(props: {
-  endpoint: string;
-  onEndpointChanged: (endpoint: string) => void;
-  authToken: string;
-  onAuthTokenChanged: (token: string) => void;
-}) {
+export function Sockpuppet() {
   return (
     <div>
       <h2> Sockpuppet Module </h2>
@@ -18,30 +15,22 @@ export function Sockpuppet(props: {
         channels it is in. Sending a message requires &quot;Manage Messages&quot; permissions
         in the target channel (be sure to authenticate).
       </p>
-      <SendMessageSection
-        endpoint={props.endpoint}
-        onEndpointChanged={props.onEndpointChanged}
-        authToken={props.authToken}
-        onAuthTokenChanged={props.onAuthTokenChanged}
-      />
+      <SendMessageSection />
     </div>
   );
 }
 
-function SendMessageSection(props: {
-  endpoint: string;
-  onEndpointChanged: (endpoint: string) => void;
-  authToken: string;
-  onAuthTokenChanged: (authToken: string) => void;
-}) {
+function SendMessageSection() {
   const [message, setMessage] = useState("");
   const [resultMessage, setResultMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [channelID, setChannelID] = useState("");
+  const [endpoint] = useAPIEndpoint();
+  const [jwt] = useAuthentication();
 
   const send = () => {
-    const url = `${props.endpoint}${
-      props.endpoint.endsWith("/") ? "" : "/"
+    const url = `${endpoint}${
+      endpoint.endsWith("/") ? "" : "/"
     }sockpuppet`;
 
     setLoading(true);
@@ -50,7 +39,7 @@ function SendMessageSection(props: {
       body: JSON.stringify({ channelID, message }),
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${props.authToken}`,
+        "Authorization": `Bearer ${jwt}`,
       }
     })
       .then(
@@ -80,13 +69,11 @@ function SendMessageSection(props: {
         fields={[
           {
             name: "Endpoint",
-            value: props.endpoint,
-            setter: props.onEndpointChanged
+            value: endpoint,
           },
           {
             name: "Auth Token",
-            value: props.authToken,
-            setter: props.onAuthTokenChanged
+            value: jwt,
           },
           {
             name: "Channel ID",

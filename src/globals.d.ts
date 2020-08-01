@@ -9,8 +9,3 @@ declare const VERSION_DATA: {
   createdAt: string;
 };
 
-declare namespace NodeJS {
-  interface ProcessEnv {
-    BOT_BASE_URL: string;
-  }
-}

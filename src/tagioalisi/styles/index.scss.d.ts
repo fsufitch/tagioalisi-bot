@@ -95,6 +95,7 @@ interface CssExports {
   'align-top': string;
   'authMediaActions': string;
   'authMediaAvatar': string;
+  'authSection': string;
   'bg-danger': string;
   'bg-dark': string;
   'bg-info': string;

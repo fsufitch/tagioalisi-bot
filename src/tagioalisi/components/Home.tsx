@@ -3,6 +3,7 @@ import React, { useState, Fragment } from "react";
 import Logo from "tagioalisi/resources/logo.png";
 import styles from "tagioalisi/styles";
 import { Inputs } from "./Inputs";
+import { useAPIEndpoint } from "tagioalisi/services/api";
 
 interface HealthResponse {
   response?: Response;
@@ -57,12 +58,10 @@ function ResponseRender(props: { response: HealthResponse }) {
   );
 }
 
-export function Home(props: {
-  endpoint: string;
-  onEndpointChanged: (endpoint: string) => void;
-}) {
+export function Home() {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<HealthResponse>({ error: "" });
+  const [endpoint] = useAPIEndpoint();
 
   return (
     <div className={styles.home}>
@@ -80,8 +79,7 @@ export function Home(props: {
         fields={[
           {
             name: "Endpoint",
-            value: props.endpoint,
-            setter: props.onEndpointChanged
+            value: endpoint,
           }
         ]}
       />
@@ -92,7 +90,7 @@ export function Home(props: {
           <p>
             <button
               onClick={() =>
-                queryBotHealth(props.endpoint, setLoading, setResponse)
+                queryBotHealth(endpoint, setLoading, setResponse)
               }
             >
               {" "}
