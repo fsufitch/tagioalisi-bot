@@ -19,7 +19,6 @@ function queryBotHealth(
   const url = endpoint + (endpoint.endsWith("/") ? "/" : "") + "";
   fetch(url).then(
     r => {
-      console.log(r);
       setResponse({ response: r, error: "" });
       setLoading(false);
     },

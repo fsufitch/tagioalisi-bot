@@ -7,7 +7,7 @@ interface LocalStorageUpdatedEventDetail<T> {
     newValue: T;
 }
 
-export function useLocalStorage<T>(key: string, defaultValue: T, from?: string): [T, (val: T | (() => T)) => void] {
+export function useLocalStorage<T>(key: string, defaultValue: T): [T, (val: T | (() => T)) => void] {
     const serialize = (val: T) => JSON.stringify(val);
     const deserialize = (val: string | null) => JSON.parse(val ?? 'null') as T;
     const save = (val: T) => window.localStorage.setItem(key, serialize(val));
@@ -29,7 +29,6 @@ export function useLocalStorage<T>(key: string, defaultValue: T, from?: string):
         const newValue = (_newValue instanceof Function) ? _newValue() : _newValue;
         save(newValue);
         setValue(newValue);
-        console.log('storage DIRECT setValue', {from, key, newValue});
         window.dispatchEvent(new CustomEvent(LOCAL_STORAGE_UPDATED_EVENT, {detail: {key, oldValue, newValue} as LocalStorageUpdatedEventDetail<T>}));
     }
 
@@ -43,7 +42,6 @@ export function useLocalStorage<T>(key: string, defaultValue: T, from?: string):
                 return;
             }
             setValue(detail.newValue);
-            console.log('storage EVENT setValue', {from, key, newValue: detail.newValue});
         }
         window.addEventListener(LOCAL_STORAGE_UPDATED_EVENT, handleLocalStorageUpdated);
 

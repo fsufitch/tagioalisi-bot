@@ -26,7 +26,7 @@ function SendMessageSection() {
   const [loading, setLoading] = useState(false);
   const [channelID, setChannelID] = useState("");
   const [endpoint] = useAPIEndpoint();
-  const [jwt] = useAuthentication();
+  const {jwt} = useAuthentication();
 
   const send = () => {
     const url = `${endpoint}/sockpuppet`;

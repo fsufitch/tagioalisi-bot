@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import url from "url";
 
 import { useAPIEndpoint } from 'tagioalisi/services/api';
@@ -8,42 +8,32 @@ type AuthenticationToken = string;
 
 const AUTH_LOCALSTORAGE_JWT_KEY = 'tagioalisi.auth.jwt';
 
-export function useAuthentication(): [AuthenticationToken, (val: AuthenticationToken) => void, () => void, () => void] {
+export function useAuthentication() {
   const [endpoint] = useAPIEndpoint();
-  const [jwt, setJWT] = useLocalStorage<AuthenticationToken>(AUTH_LOCALSTORAGE_JWT_KEY, '', 'useAuthentication');
+  const [jwt, setJWT] = useLocalStorage<AuthenticationToken>(AUTH_LOCALSTORAGE_JWT_KEY, '');
 
   const login = () => {
     window.location.href = `${endpoint}/login?return_url=${encodeURIComponent(window.location.href)}`;
   }
 
   const logout = () => {
-    console.log('logout called');
     fetch(`${endpoint}/logout`);
     setJWT('');
-    console.log('setJWT ""')
   }
 
-  const [passthroughJWT, setPassthroughJWT] = useState<AuthenticationToken>('');
-  useEffect(() => {
-    console.log('useAuthentication: jwt updated', jwt);
-    setPassthroughJWT(jwt);
-    
-  }, [jwt]);
-
-  return [ passthroughJWT, setJWT, login, logout ];
+  return { jwt, setJWT, login, logout };
 }
 
 export const useOnLoadAuthenticationEffect = () => {
-  const [, setJWT ] = useAuthentication();
+  const { setJWT } = useAuthentication();
   useEffect(() => {
-    console.log('onload jwt');
     const u = url.parse(document.location.href);
     const params = new URLSearchParams(u.query ?? undefined);
     const jwt = params?.get("jwt") ?? '';
     if (!jwt) {
       return;
     }
-    console.log("Found JWT: ", jwt);
+    console.log("Found JWT in URL: ", jwt);
     setJWT(jwt);
 
     params.delete("jwt");
@@ -65,27 +55,20 @@ const AUTH_LOCALSTORAGE_USER_DATA_KEY = 'tagioalisi.auth.user-data';
 
 export function useAuthenticatedUserData(): [UserData, (val: UserData) => void] {
   const [userData, setUserData] = useLocalStorage<UserData>(AUTH_LOCALSTORAGE_USER_DATA_KEY, { authenticated: false, authPending: false });
-  console.log('useAuthenicatedUserData received:', userData);
   return [userData, setUserData];
 }
 
 export function useUpdateAuthenticatedUserDataEffect() {
-  const [ jwt ] = useAuthentication();
+  const { jwt } = useAuthentication();
   const [, setUserData] = useAuthenticatedUserData();
   const [endpoint] = useAPIEndpoint();
 
   useEffect(() => {
-    console.log('useUpdateAuthenticatedUserDataEffect -- jwt updated:', jwt);
-  }, [jwt]);
-
-  useEffect(() => {
-    console.log('update user data effect triggered', { endpoint, jwt });
     if (!jwt || !endpoint) {
       setUserData({ authenticated: false, authPending: false });
       return;
     }
 
-    console.log(`Authenticating with JWT: ${jwt}`);
     setUserData({ authPending: true, authenticated: false });
     (async () => {
       let response: Response;
