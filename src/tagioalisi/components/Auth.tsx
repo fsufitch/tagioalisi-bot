@@ -15,7 +15,7 @@ export function Auth() {
   const [userData] = useAuthenticatedUserData();
 
   return (<div className={styles.authSection}>
-    {userData.authenticated ?
+    {userData?.authenticated ?
       <Fragment>
         <p>
           {userData.fullname}
@@ -25,7 +25,7 @@ export function Auth() {
           <button onClick={logout}> Logout </button>
         </p>
       </Fragment>
-      : userData.authPending ?
+      : userData?.authPending ?
         <Fragment>Loading...</Fragment>
         :
         <Fragment>
