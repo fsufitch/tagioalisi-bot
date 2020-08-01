@@ -5,7 +5,6 @@ import styles from "tagioalisi/styles";
 import { Sidebar } from "./Sidebar";
 import { Home } from "./Home";
 import { Sockpuppet } from "./Sockpuppet";
-import { Auth } from "./Auth";
 import { useOnLoadAuthenticationEffect, useUpdateAuthenticatedUserDataEffect } from "tagioalisi/services/auth";
 
 export function Root() {

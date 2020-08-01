@@ -11,7 +11,7 @@ interface WhoAmIData {
 
 
 export function Auth() {
-  const [ jwt,, login, logout ] = useAuthentication();
+  const [,, login, logout ] = useAuthentication();
   const [userData] = useAuthenticatedUserData();
 
   return (<div className={styles.authSection}>

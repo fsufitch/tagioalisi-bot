@@ -29,9 +29,7 @@ function SendMessageSection() {
   const [jwt] = useAuthentication();
 
   const send = () => {
-    const url = `${endpoint}${
-      endpoint.endsWith("/") ? "" : "/"
-    }sockpuppet`;
+    const url = `${endpoint}/sockpuppet`;
 
     setLoading(true);
     fetch(url, {
