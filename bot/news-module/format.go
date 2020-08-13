@@ -14,7 +14,7 @@ func compactFormatter(session *discordgo.Session, channelID string, results azur
 	embed := &discordgo.MessageEmbed{
 		Color: 0xbeefed,
 		Footer: &discordgo.MessageEmbedFooter{
-			Text: "Want full embeds? Try `!news -v`. Want more/less news? Try `!news -n <number>`.",
+			Text: "Want full embeds? Try `!news -v`. Want more/less news? Try `!news -c <count>`.",
 		},
 		Fields: []*discordgo.MessageEmbedField{},
 	}
