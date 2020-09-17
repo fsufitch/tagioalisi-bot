@@ -77,6 +77,7 @@ func (bc BasicClient) SearchCollegiate(word string) ([]types.CollegiateResult, [
 
 	result := []types.CollegiateResult{}
 	suggestions := []string{}
+
 	var err1, err2 error
 	if err1 = json.Unmarshal(body, &result); err1 == nil {
 		return result, nil, nil
