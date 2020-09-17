@@ -16,12 +16,13 @@ type OnlineNewsSearch struct {
 }
 
 // ProvideOnlineNewsSearch creates a NewsSearch based on the available API key
-func ProvideOnlineNewsSearch(key config.AzureNewsSearchAPIKey) *OnlineNewsSearch {
+func ProvideOnlineNewsSearch(key config.AzureNewsSearchAPIKey, userAgent config.UserAgent) *OnlineNewsSearch {
 	ans := OnlineNewsSearch{}
 	if key != "" {
 		client := newssearch.NewNewsClient()
 		client.Authorizer = autorest.NewCognitiveServicesAuthorizer(string(key))
-		client.AddToUserAgent("tagioalisi-bot")
+		client.AddToUserAgent(string(userAgent))
+		client.AddToUserAgent("azure-sdk-for-go/cognitiveservices/newssearch")
 		ans.client = &client
 	}
 	return &ans

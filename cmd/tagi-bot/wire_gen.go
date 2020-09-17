@@ -10,6 +10,7 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/bot"
 	"github.com/fsufitch/tagioalisi-bot/bot/dice-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/dice-module/calc"
+	"github.com/fsufitch/tagioalisi-bot/bot/dictionary-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
 	log2 "github.com/fsufitch/tagioalisi-bot/bot/log-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
@@ -85,10 +86,21 @@ func InitializeMain() (Main, func(), error) {
 		Calculator: diceCalculator,
 	}
 	azureNewsSearchAPIKey := config.ProvideAzureCredentialsFromEnvironment()
-	onlineNewsSearch := azure.ProvideOnlineNewsSearch(azureNewsSearchAPIKey)
+	userAgent := config.ProvideUserAgent()
+	onlineNewsSearch := azure.ProvideOnlineNewsSearch(azureNewsSearchAPIKey, userAgent)
 	newsModule := &news.Module{
 		Log:  logger,
 		News: onlineNewsSearch,
+	}
+	merriamWebsterAPIKey := config.ProvideMerriamWebsterAPIKeyFromEnvironment()
+	basicClient, err := dictionary.NewClient(merriamWebsterAPIKey, userAgent)
+	if err != nil {
+		cleanup()
+		return Main{}, nil, err
+	}
+	dictionaryModule := &dictionary.Module{
+		Log:    logger,
+		Client: basicClient,
 	}
 	modules := bot.Modules{
 		Ping:       module,
@@ -99,6 +111,7 @@ func InitializeMain() (Main, func(), error) {
 		Wiki:       wikiModule,
 		Dice:       diceModule,
 		News:       newsModule,
+		Dictionary: dictionaryModule,
 	}
 	moduleList := bot.ProvideModuleList(modules)
 	botModuleBlacklist := config.ProvideBotModuleBlacklistFromEnvironment()

@@ -25,3 +25,11 @@ type DiscordLogChannel string
 func ProvideDiscordLogChannelFromEnvironment() DiscordLogChannel {
 	return DiscordLogChannel(os.Getenv("DISCORD_LOG_CHANNEL"))
 }
+
+// UserAgent is the user agent the bot should use when making external queries
+type UserAgent string
+
+// ProvideUserAgent creates a basic user agent to use
+func ProvideUserAgent() UserAgent {
+	return "tagioalisi-bot"
+}

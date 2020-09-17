@@ -17,4 +17,6 @@ var EnvironmentProviderSet = wire.NewSet(
 	ProvideOAuth2ConfigFromEnvironment,
 	ProvideWebEnabledFromEnvironment,
 	ProvideWebPortFromEnvironment,
+	ProvideMerriamWebsterAPIKeyFromEnvironment,
+	ProvideUserAgent,
 )
