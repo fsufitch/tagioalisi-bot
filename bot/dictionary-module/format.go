@@ -22,7 +22,14 @@ func collegiateResultFormatter(session *discordgo.Session, channelID string, wor
 		},
 	}
 
-	for i, result := range results {
+	resultsWithShortDefinitions := []types.CollegiateResult{}
+	for _, result := range results {
+		if len(result.ShortDefinitions) > 0 {
+			resultsWithShortDefinitions = append(resultsWithShortDefinitions, result)
+		}
+	}
+
+	for i, result := range resultsWithShortDefinitions {
 		field := &discordgo.MessageEmbedField{}
 
 		nameParts := []string{
