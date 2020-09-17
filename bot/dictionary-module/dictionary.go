@@ -40,12 +40,12 @@ func (m *Module) define(ctx commandContext, word string) error {
 	if len(results) > 0 {
 		if err := collegiateResultFormatter(ctx.session, ctx.messageCreate.ChannelID, word, results); err != nil {
 			m.Log.Errorf("dictionary: error formatting: %v", err)
-			return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ID, err.Error())
+			return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, err.Error())
 		}
 	} else if len(suggestions) > 0 {
 		if err := suggestionFormatter(ctx.session, ctx.messageCreate.ChannelID, word, suggestions); err != nil {
 			m.Log.Errorf("dictionary: error formatting suggestions: %v", err)
-			return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ID, err.Error())
+			return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, err.Error())
 		}
 	} else {
 		return errorFormatter(ctx.session, ctx.messageCreate.ChannelID, word, "No results found", "")
