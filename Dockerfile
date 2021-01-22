@@ -9,7 +9,7 @@ RUN go mod download
 FROM deps
 
 ADD . /bot
-RUN go build ./cmd/tagi-bot
-RUN go build ./cmd/tagi-migrate
+RUN go build -v ./cmd/tagi-bot
+RUN go build -v ./cmd/tagi-migrate
 
 CMD [ "./tagi-bot" ]

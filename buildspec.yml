@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      # Not necessary, we're using docker
+      #golang: 1.15
+  pre_build:
+    commands:
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/a2r0u6x1
+  build:
+    commands:
+      - echo Build started on `date`
+      - docker build -t tagioalisi-bot .
+      - docker tag tagioalisi-bot:latest public.ecr.aws/a2r0u6x1/tagioalisi-bot:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - docker push public.ecr.aws/a2r0u6x1/tagioalisi-bot:latest
