@@ -7,6 +7,9 @@ phases:
   #     #golang: 1.15
   pre_build:
     commands:
+      - 'echo Versions:'
+      - docker version
+      - aws --version
       - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/a2r0u6x1
   build:
     commands:
