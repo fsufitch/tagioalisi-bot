@@ -21,3 +21,48 @@ phases:
     commands:
       - echo Build completed on `date`
       - docker push 370059773792.dkr.ecr.us-east-1.amazonaws.com/tagioalisi-bot:latest
+env:
+  exported-variables:
+    - API_ENDPOINT
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - echo Entered install phase...
+      - pwd
+    finally:
+      - echo Install phase complete.
+
+  pre_build:
+    commands:
+      - echo Entered pre-build phase...
+      - npm install
+      - echo Writing environment to `.env`...
+      - printenv > .env
+    finally:
+      - echo Pre-build phase complete.
+
+  build:
+    commands:
+      - echo Entered build phase...
+      - npm run build
+    finally:
+      - echo Build phase complete.
+
+  post_build:
+    commands:
+      - echo Entered post-build phase...
+      - echo Nothing to do here.
+    finally:
+      - echo Post-build phase complete.
+
+artifacts:
+  files:
+    - dist/*
+  discard-paths: yes
+
+cache:
+  paths:
+    - 'node_modules/**/*'
