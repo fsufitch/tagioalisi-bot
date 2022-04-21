@@ -13,10 +13,10 @@ export function Sidebar() {
       <nav>
         <ul>
         <li>
-            <NavLink exact to="/" activeClassName={styles.active}>Home</NavLink>
+            <NavLink end to="/" className={({isActive}) => isActive ? styles.active : ''}>Home</NavLink>
           </li>
           <li>
-            <NavLink exact to="/sockpuppet" activeClassName={styles.active}>Sockpuppet</NavLink>
+            <NavLink end to="/sockpuppet" className={({isActive}) => isActive ? styles.active : ''}>Sockpuppet</NavLink>
           </li>
         </ul>
       </nav>

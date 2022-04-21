@@ -1,8 +1,6 @@
 .inputs {
     @extend .list-unstyled;
     li {
-        @extend .form-group;
-
         input[type=text] {
             @extend .form-control;
         }

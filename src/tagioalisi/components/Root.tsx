@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 
 import styles from "tagioalisi/styles";
 import { Sidebar } from "./Sidebar";
@@ -18,14 +18,14 @@ export function Root() {
         <div className={styles.row}>
           <Sidebar />
           <div className={styles.rootContent}>
-            <Switch>
+            <Routes>
               <Route path="/sockpuppet">
                 <Sockpuppet />
               </Route>
               <Route path="/">
                 <Home />
               </Route>
-            </Switch>
+            </Routes>
           </div>
         </div>
       </div>

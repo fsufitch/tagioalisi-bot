@@ -1,8 +1,8 @@
 /* eslint-disable */
+const path = require('path');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const DefinePlugin = require('webpack').DefinePlugin;
 const Dotenv = require('dotenv-webpack');
@@ -44,7 +44,7 @@ module.exports = {
     devtool: "source-map",
     entry: "./src/app.tsx",
     output: {
-        filename: "app.bundle.js"
+        path: path.resolve(__dirname, "dist"),
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
@@ -74,12 +74,6 @@ module.exports = {
         new Dotenv({systemvars: true}),
     ],
     optimization: {
-        minimizer: [
-            new UglifyJsPlugin({
-                cache: true,
-                sourceMap: true,
-            }),
-        ],
         splitChunks: {
             chunks: 'all',
         },
