@@ -1,0 +1,6 @@
+[submodule "webui"]
+	path = webui
+	url = git@github.com:fsufitch/tagioalisi-web.git
+[submodule "terraform"]
+	path = terraform
+	url = git@github.com:fsufitch/tagioalisi-terraform.git
