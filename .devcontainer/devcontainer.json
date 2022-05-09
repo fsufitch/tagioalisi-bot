@@ -1,0 +1,38 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/docker-existing-dockerfile
+{
+    "name": "Tagioalisi Devcontainer",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "devcontainer",
+    "runServices": [
+        "db"
+    ],
+    "workspaceFolder": "/home/developer/tagioalisi",
+    "postStartCommand": "bash /home/developer/tagioalisi/.devcontainer/post-start.sh",
+    "overrideCommand": true,
+
+    // Add the IDs of extensions you want installed when the container is created.
+    "extensions": [
+        // General
+        "vinirossa.vscode-gitandgithub-pack",
+        "yzhang.markdown-all-in-one",
+        "redhat.vscode-yaml",
+        "ms-vscode.makefile-tools",
+        "mikestead.dotenv",
+        // Backend
+        "golang.go",
+        // Frontend
+        "sibiraj-s.vscode-scss-formatter",
+        "pmneo.tsimporter",
+        "stringham.move-ts"
+    ],
+
+    // VSCode specific settings for settings.json
+    "settings": {
+        "git.enableCommitSigning": true,
+        "git-graph.repository.commits.showSignatureStatus": true,
+        "git-graph.repository.sign.commits": true,
+        "git-graph.repository.sign.tags": true,
+        "remote.containers.cacheVolume": true // Speeds up extension install
+    }
+}

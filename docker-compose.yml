@@ -1,18 +1,51 @@
 version: '3'
 services:
-    bot:
-        build: .
-        env_file: 
-            - ".env"
-        ports:
-            - "8080:80"
-        depends_on:
-            - "db"
-    db:
-        image: "postgres:12"
-        ports:
-            - "5432:5432"
-        environment: 
-            POSTGRES_USER: tagi
-            POSTGRES_PASSWORD: secret
-            POSTGRES_DB: tagi
+  bot:
+    build: .
+    env_file:
+      - defaults.env
+      - deploy.bot.env
+    ports:
+      - "8080:80"
+    depends_on:
+      - "db"
+  db:
+    image: "postgres:12"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: tagi
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: tagi
+    networks:
+      - tagioalisi
+
+  devcontainer:
+    build: 
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+
+    env_file:
+      - defaults.env
+      - devcontainer.env
+    user: "developer"
+
+    networks:
+      - tagioalisi
+
+    volumes:
+      - .:/home/developer/tagioalisi:cached
+      - $HOME:/home/developer/host_home:cached
+
+      # Uncomment the next line to use Docker from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker-compose for details.
+      # - /var/run/docker.sock:/var/run/docker.sock 
+
+    # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+
+networks:
+  tagioalisi:
+

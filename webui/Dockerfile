@@ -1,5 +1,5 @@
 # ===== Image for building tagi web UI
-FROM node:17-alpine AS ui-builder
+FROM node:lts-alpine AS ui-builder
 
 # Python needed to be sure node-sass works
 RUN apk add python3
