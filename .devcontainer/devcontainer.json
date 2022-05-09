@@ -19,6 +19,7 @@
         "redhat.vscode-yaml",
         "ms-vscode.makefile-tools",
         "mikestead.dotenv",
+        "wdhongtw.gpg-indicator",
         // Backend
         "golang.go",
         // Frontend

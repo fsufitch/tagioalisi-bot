@@ -11,6 +11,7 @@ RUN apt-get update && \
         file \
         git \
         gnupg \
+        inetutils-ping \
         man-db \
         net-tools \
         openssh-client \
@@ -49,6 +50,8 @@ ENV PATH=${PATH}:/home/developer/opt/node/bin
 
 # Install various developer tools
 RUN go install -v golang.org/x/tools/gopls@latest && \
+    go install -v github.com/go-delve/delve/cmd/dlv@latest && \
+    go install -v honnef.co/go/tools/cmd/staticcheck@latest && \
     echo
 
 
