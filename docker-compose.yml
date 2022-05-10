@@ -1,7 +1,9 @@
 version: '3'
 services:
   bot:
-    build: .
+    build: 
+      context: ./bot-server
+      target: bot-runtime
     env_file:
       - defaults.env
       - deploy.bot.env
@@ -9,6 +11,22 @@ services:
       - "8080:80"
     depends_on:
       - "db"
+    networks:
+      - tagioalisi
+
+  bot-migrations:
+    build:
+      context: ./bot-server
+      target: bot-migrations
+    env_file:
+      - defaults.env
+      - deploy.bot.env
+    depends_on:
+      - "db"
+    networks:
+      - tagioalisi
+    command:
+      'echo Not running by default; use: docker-compose run bot-migrations /bot/bin/tagioalisi-migrations'
 
   db:
     image: "postgres:12"
@@ -26,6 +44,7 @@ services:
 
     networks:
       - tagioalisi
+
 
   devcontainer:
     build: 
@@ -52,6 +71,8 @@ services:
       - SYS_PTRACE
     security_opt:
       - seccomp:unconfined
+    command:
+      'echo Not running by default; use VSCode or: docker-compose run devcontainer bash / docker-compose exec devcontainer bash'
 
 networks:
   tagioalisi:

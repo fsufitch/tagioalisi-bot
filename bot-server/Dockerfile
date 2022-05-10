@@ -27,10 +27,10 @@ CMD [ "/bot/bin/tagioalisi-migrations" ]
 
 
 # ===== Image for running tagi
-FROM busybox:glibc AS bot-runtime
+FROM golang:1.18 AS bot-runtime
 
 WORKDIR /bot
-COPY --from=bot-builder /bot/bin/tagi-bot .
+COPY --from=bot-builder /bot/bin/tagioalisi-bot .
 
 ENV DEBUG=false \
     PORT=80 \
@@ -50,4 +50,4 @@ ENV DEBUG=false \
     AZURE_NEWS_SEARCH_KEY= \
     MERRIAM_WEBSTER_DICTIONARY_KEY= 
 
-CMD [ "/bot/bin/tagioalisi-bot" ]
+CMD [ "/bot/tagioalisi-bot" ]
