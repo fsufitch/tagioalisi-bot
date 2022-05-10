@@ -6,29 +6,28 @@ COPY go.mod go.sum ./
 RUN go mod download -x
 
 COPY . .
-# Copied too much!
-RUN rm -rf terraform webui
 
-RUN go build -x -o ./bin/tagi-bot ./cmd/tagi-bot
-RUN go build -x -o ./bin/tagi-migrate ./cmd/tagi-migrate
+RUN make
 
 
 # ===== Image for running tagi database migrations
-FROM busybox:glibc as bot-migrations
+# TODO: eliminate the need on the .sql migration files (bundle?)
+# FROM busybox:glibc as bot-migrations
+
+FROM bot-builder as bot-migrations
 
 WORKDIR /bot
 COPY db/migration migration
-COPY --from=bot-builder /bot/bin/tagi-migrate .
 
-ENV DEBUG=false \
+ENV DEBUG=true \
     DATABASE_URL=postgres://tagi:secret@db:5432/tagi?sslmode=disable \
     MIGRATION_DIR=/bot/migration
 
-CMD [ "/bot/tagi-migrate" ]
+CMD [ "/bot/bin/tagioalisi-migrations" ]
 
 
 # ===== Image for running tagi
-FROM busybox:glibc AS bot-runner
+FROM busybox:glibc AS bot-runtime
 
 WORKDIR /bot
 COPY --from=bot-builder /bot/bin/tagi-bot .
@@ -51,4 +50,4 @@ ENV DEBUG=false \
     AZURE_NEWS_SEARCH_KEY= \
     MERRIAM_WEBSTER_DICTIONARY_KEY= 
 
-CMD [ "/bot/tagi-bot" ]
+CMD [ "/bot/bin/tagioalisi-bot" ]
