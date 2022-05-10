@@ -9,6 +9,7 @@ services:
       - "8080:80"
     depends_on:
       - "db"
+
   db:
     image: "postgres:12"
     ports:
@@ -17,6 +18,12 @@ services:
       POSTGRES_USER: tagi
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: tagi
+      PGDATA: /var/tagioalisi/db/pgdata
+    volumes:
+      - type: bind
+        source: ./var/db
+        target: /var/tagioalisi/db
+
     networks:
       - tagioalisi
 
@@ -48,4 +55,3 @@ services:
 
 networks:
   tagioalisi:
-
