@@ -1,4 +1,5 @@
 .vscode/*
-var/
+var/**/*
 
-devcontainer.env
+*.env
+!defaults.env
