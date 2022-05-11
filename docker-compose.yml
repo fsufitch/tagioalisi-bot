@@ -8,7 +8,7 @@ services:
       - defaults.env
       - deploy.bot.env
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - "db"
     networks:
@@ -27,6 +27,13 @@ services:
       - tagioalisi
     command:
       'echo Not running by default; use: docker-compose run bot-migrations /bot/bin/tagioalisi-migrations'
+
+  ui:
+    build:
+      context: ./webui
+      target: ui-server
+    ports:
+      - "8080:80"
 
   db:
     image: "postgres:12"
