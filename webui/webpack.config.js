@@ -41,7 +41,7 @@ let urlLoader = { loader: 'url-loader', options: {
 }};
 
 module.exports = {
-    devtool: "source-map",
+    devtool: "inline-source-map",
     entry: "./src/app.tsx",
     output: {
         path: path.resolve(__dirname, "dist"),
@@ -55,7 +55,8 @@ module.exports = {
     },
     module: {
         rules: [
-            { test: /\.tsx?$/i, use: [babelLoader, tsLoader] },
+            // { test: /\.tsx?$/i, use: [babelLoader, tsLoader] },
+            { test: /\.tsx?$/i, use: [tsLoader] },
             { test: /\.html$/i, use: [htmlLoader] },
             { test: /\.s[ac]ss/i, use: [miniCssExtractLoader, cssModulesTypescriptLoader, cssLoader, sassLoader] },
             { test: /\.(png|jpe?g|gif)$/i, use: [urlLoader]},

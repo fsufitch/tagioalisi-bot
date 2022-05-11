@@ -66,6 +66,10 @@ services:
     networks:
       - tagioalisi
 
+    ports:
+      - "9091:9001"
+      - "9090:9000"
+
     volumes:
       - .:/home/developer/tagioalisi:cached
       - $HOME:/home/developer/host_home:cached

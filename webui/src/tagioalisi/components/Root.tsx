@@ -19,12 +19,8 @@ export function Root() {
           <Sidebar />
           <div className={styles.rootContent}>
             <Routes>
-              <Route path="/sockpuppet">
-                <Sockpuppet />
-              </Route>
-              <Route path="/">
-                <Home />
-              </Route>
+              <Route path="/sockpuppet" element={<Sockpuppet />} />
+              <Route path="/" element={<Home />} />
             </Routes>
           </div>
         </div>

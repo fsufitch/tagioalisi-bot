@@ -70,7 +70,7 @@ export function useUpdateAuthenticatedUserDataEffect() {
     }
 
     setUserData({ authPending: true, authenticated: false });
-    (async () => {
+    new Promise(async () => {
       let response: Response;
       try {
         response = await fetch(`${endpoint}/whoami`, {
@@ -103,6 +103,6 @@ export function useUpdateAuthenticatedUserDataEffect() {
           error: `Error (${response.status}): ${await response.text()}`,
         });
       }
-    })();
+    });
   }, [jwt, endpoint]);
 }
