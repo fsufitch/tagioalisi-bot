@@ -4,22 +4,26 @@
 // * Babel+Typescript explainer: https://github.com/Microsoft/TypeScript-Babel-Starter
 
 import * as path from 'path';
-import { Configuration } from 'webpack';
+import { Configuration, optimize } from 'webpack';
 
 const configureTypescript = async (prod: boolean): Promise<Configuration> => {
-    const tsLoader = { loader: 'ts-loader', options: {} };  // https://www.npmjs.com/package/ts-loader
+    const tsLoader = { loader: 'ts-loader' };  // https://www.npmjs.com/package/ts-loader
     const babelLoader = {
         // https://www.npmjs.com/package/babel-loader
         loader: 'babel-loader',
         options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
+            cacheDirectory: true,
+            presets: [
+                ['@babel/preset-env', { useBuiltIns: 'entry', corejs: 3 }],
+                '@babel/preset-react'
+            ],
         }
     };
     const sourceMapLoader = { loader: 'source-map-loader' }
 
     const module = {
         rules: [{
-            test: /\.(j|t)sx?$/i, use: [
+            test: /\.tsx?$/i, use: [
                 babelLoader,
                 ...(prod ? [] : [sourceMapLoader]),
                 tsLoader,
@@ -34,34 +38,41 @@ const configureTypescript = async (prod: boolean): Promise<Configuration> => {
         plugins: [new TsconfigPathsPlugin()],
     }
 
-    return { resolve, module };
+    const entry = {
+        'app': path.join(__dirname, 'src', 'app.tsx'),
+    }
+
+
+    return { entry, resolve, module };
 }
 
 const configureStyles = async (prod: boolean): Promise<Configuration> => {
     let sassLoader = { loader: 'sass-loader', options: { sourceMap: true } };
-    let cssLoader = {
-        loader: 'css-loader', options: {
-            sourceMap: true,
-            modules: {
-                localIdentName: '[path][name]__[local]--[hash:base64:5]',
-            }
-        }
-    };
-    let postCssLoader = { loader: 'postcss-loader' }
+    let cssLoader = { loader: 'css-loader', options: { sourceMap: true, modules: true } };
+    let postCssLoader = { loader: 'postcss-loader', options: { sourceMap: true } };
+    let resolveUrlLoader = { loader: 'resolve-url-loader', options: {sourceMap: true}};
 
-    const { default: MiniCssExtractPlugin, loader } = await import('mini-css-extract-plugin');
-    const miniCssExtractPlugin = new MiniCssExtractPlugin();
-    const miniCssExtractLoader = MiniCssExtractPlugin.loader;
+    const { default: MiniCssExtractPlugin, loader: miniCssExtractLoader } = await import('mini-css-extract-plugin');
+    const miniCssExtractPlugin = new MiniCssExtractPlugin({
+        filename: '[name].css',
+    });
 
-    // let cssModulesTypescriptLoader = { loader: 'css-modules-typescript-loader' };
+    const { default: CssMinimizerPlugin } = await import('css-minimizer-webpack-plugin');
+    const cssMinimizerPlugin = new CssMinimizerPlugin();
 
     return {
         module: {
             rules: [
-                { test: /\.s?css$/i, use: [miniCssExtractLoader, cssLoader, postCssLoader, sassLoader] },
+                { test: /\.scss$/i, use: ['style-loader', cssLoader, postCssLoader, resolveUrlLoader, sassLoader] },
             ]
         },
+        resolve: {
+            alias: {
+                'tagioalisi-styles': path.join(__dirname, 'src', 'tagioalisi-styles'),
+            }
+        },
         plugins: [miniCssExtractPlugin],
+        optimization: { minimizer: ['...', cssMinimizerPlugin] }
     };
 }
 
@@ -80,20 +91,28 @@ const configureHTML = async (prod: boolean): Promise<Configuration> => {
 const configureAssets = async (prod: boolean): Promise<Configuration> => ({
     module: {
         rules: [
-          {
-            test: /\.png/,
-            type: 'asset/resource'
-          }
+            {
+                test: /\.png/,
+                type: 'asset/resource'
+            }
         ]
-      },
+    },
 });
 
 const configureBaseWebpack = async (prod: boolean): Promise<Configuration> => ({
     mode: prod ? 'production' : 'development',
     devtool: prod ? 'source-map' : 'source-map', // ???
-    entry: path.join(__dirname, 'src', 'app.tsx'),
     output: {
         path: path.join(__dirname, 'dist'),
+        filename: "[name].bundle.js",
+    },
+    optimization: {
+        splitChunks: {
+            chunks: "all",
+            maxSize: 50000,
+            name: 'vendor',
+        },
+        minimize: true,
     }
 });
 
@@ -113,10 +132,14 @@ const buildConfig = async (env: any, argv: { [key: string]: any }, funcs: Iterab
     return config;
 }
 
-export default async (env: any, argv: any) => await buildConfig(env, argv, [
-    configureBaseWebpack,
-    configureTypescript,
-    configureHTML,
-    configureStyles,
-    configureAssets,
-])
+export default async (env: any, argv: any) => {
+    const config = await buildConfig(env, argv, [
+        configureBaseWebpack,
+        configureTypescript,
+        configureHTML,
+        configureStyles,
+        configureAssets,
+    ])
+    console.log(config);
+    return config;
+}

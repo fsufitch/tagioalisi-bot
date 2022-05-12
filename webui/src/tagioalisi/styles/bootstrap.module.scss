@@ -1,6 +1,3 @@
-// Vars
-@import "discord";
-@import "variables";
 
 // Bootstrap Required
 @import "~bootstrap/scss/functions";
@@ -21,10 +18,3 @@
 @import "~bootstrap/scss/variables";
 
 @import "~bootstrap/scss/bootstrap";
-
-// Styles
-@import "root";
-@import "sidebar";
-@import "home";
-@import "inputs";
-@import "auth";

@@ -1,0 +1,33 @@
+@use '~tagioalisi-styles/vars' as *;
+@import '~tagioalisi-styles/bootstrap';
+@import "~bootstrap/scss/containers";
+@import "~bootstrap/scss/grid";
+
+
+body {
+    background: $discordDark;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.rootContainer {
+    @extend .container;
+    background: $discordNotQuiteBlack;
+}
+
+.rootContent {
+    @extend .col;
+    padding-top: 1em;
+}
+
+input.form-control {
+    background-color: $discordNotQuiteBlack;
+    color: $discordGreyple;
+    &:active{
+        background-color: $discordNotQuiteBlack;
+        color: #FFF;
+    }
+    &:focus{
+        background-color: $discordNotQuiteBlack;
+        color: #FFF;
+    }
+}
