@@ -1,33 +1,70 @@
-@use '~tagioalisi-styles/vars' as *;
-@import '~tagioalisi-styles/bootstrap';
-@import "~bootstrap/scss/containers";
-@import "~bootstrap/scss/grid";
+@use 'tagioalisi/styles/vars';
+@use 'tagioalisi/styles/_responsive.scss';
 
 
 body {
-    background: $discordDark;
+    background: vars.$discordDark;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    margin: 0;
+    background-color: black;
 }
 
-.rootContainer {
-    @extend .container;
-    background: $discordNotQuiteBlack;
-}
 
-.rootContent {
-    @extend .col;
-    padding-top: 1em;
-}
+.page {
+    // Whole page
+    display: flex;
+    flex-direction: row; // Left to right, to center content
+    justify-content: center ; 
+    align-items: flex-start;
 
-input.form-control {
-    background-color: $discordNotQuiteBlack;
-    color: $discordGreyple;
-    &:active{
-        background-color: $discordNotQuiteBlack;
-        color: #FFF;
+    background-color: black;
+    color: vars.$discordFullWhite;
+
+    .appContent {
+        // Center "column" display for content, or whole app if on mobile
+        display: flex;
+        flex-direction: column; // Items within the page are placed vertically
+        justify-content: start;
+        align-items: stretch; // Items span the whole available horizontal space
+        padding: 0;
+
+        background: vars.$discordNotQuiteBlack;
+
+        @include responsive.if-wide-screen {
+            width: 900px;
+        }
+
+        @include responsive.if-narrow-screen {
+            width: 90%;
+        }
+    
+        @include responsive.if-mobile-screen {
+            width: 100%;
+        }
     }
-    &:focus{
-        background-color: $discordNotQuiteBlack;
-        color: #FFF;
-    }
 }
+
+// .rootContainer {
+//     background: vars.$discordNotQuiteBlack;
+// }
+
+// .rootContent {
+//     @extend .col;
+//     padding-top: 1em;
+// }
+
+// input.form-control {
+//     background-color: $discordNotQuiteBlack;
+//     color: $discordGreyple;
+//     &:active{
+//         background-color: $discordNotQuiteBlack;
+//         color: #FFF;
+//     }
+//     &:focus{
+//         background-color: $discordNotQuiteBlack;
+//         color: #FFF;
+//     }
+// }
+
+

@@ -1,7 +1,8 @@
-// import 'jquery';
-// import 'bootstrap';
 import 'core-js';
 import "regenerator-runtime/runtime";
+
+// Roboto font, only import once
+import 'tagioalisi/styles/common.scss';
 
 import React from 'react';
 
@@ -12,6 +13,6 @@ Promise.resolve().then(async () => {
     }
 
     const { createRoot } = await import('react-dom/client');
-    const { Root } = await import('tagioalisi/components/Root');
+    const { Root } = await import('tagioalisi/components/Root.component');
     createRoot(container).render(<Root />);
 });

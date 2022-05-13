@@ -1,0 +1,26 @@
+@use 'tagioalisi/styles/vars';
+@use 'tagioalisi/styles/responsive';
+
+.titleBox {
+    align-items: center;
+    text-align: center;
+    // vertical-align: middle;
+}
+
+.logo {
+    $logoSize: 2.5em;
+
+    display: inline-block;
+    width: $logoSize;
+    height: $logoSize;
+    margin: 0.2em;
+    vertical-align: middle;
+
+    border-radius: 50%;
+    border-style: solid;
+    border-color: white;
+    border-width: 1pt;
+
+    // background-color: vars.$discordDark;
+    background-color: darkred;
+}
