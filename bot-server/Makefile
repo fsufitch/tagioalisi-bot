@@ -20,10 +20,10 @@ tests: ${BIN_TESTS}
 
 
 ${BIN_BOT}: ${SOURCES}
-	go build -x -o ${BIN_BOT} ${GO_PACKAGE}/cmd/tagi-bot
+	go build -v -o ${BIN_BOT} ${GO_PACKAGE}/cmd/tagi-bot
 
 ${BIN_MIGRATIONS}: ${SOURCES}
-	go build -x -o ${BIN_MIGRATIONS} ${GO_PACKAGE}/cmd/tagi-migrate
+	go build -v -o ${BIN_MIGRATIONS} ${GO_PACKAGE}/cmd/tagi-migrate
 
 # === Actions
 
