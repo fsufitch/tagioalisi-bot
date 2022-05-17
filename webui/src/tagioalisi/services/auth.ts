@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import url from "url";
+import * as url from "url";
 
 import { useAPIEndpoint } from 'tagioalisi/services/api';
 import { useLocalStorage } from 'tagioalisi/services/localStorage';
@@ -62,15 +62,17 @@ export function useUpdateAuthenticatedUserDataEffect() {
   const { jwt } = useAuthentication();
   const [, setUserData] = useAuthenticatedUserData();
   const [endpoint] = useAPIEndpoint();
+  console.log('fff');
 
   useEffect(() => {
+    console.log('omg');
     if (!jwt || !endpoint) {
       setUserData({ authenticated: false, authPending: false });
       return;
     }
 
     setUserData({ authPending: true, authenticated: false });
-    (async () => {
+    new Promise(async () => {
       let response: Response;
       try {
         response = await fetch(`${endpoint}/whoami`, {
@@ -103,6 +105,7 @@ export function useUpdateAuthenticatedUserDataEffect() {
           error: `Error (${response.status}): ${await response.text()}`,
         });
       }
-    })();
+    });
+    console.log('wtf');
   }, [jwt, endpoint]);
 }

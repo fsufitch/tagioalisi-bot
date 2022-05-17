@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import process from 'process';
+
 const API_ENDPOINT_UPDATE_EVENT = 'tagioalisi-api-endpoint-update';
 
 const trimEnd = (s: string, suffix: string) => {

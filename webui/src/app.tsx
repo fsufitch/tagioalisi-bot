@@ -1,17 +1,18 @@
-import 'jquery';
-import 'bootstrap';
+import 'core-js';
+import "regenerator-runtime/runtime";
+
+// Roboto font, only import once
+import 'tagioalisi/styles/common.scss';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-import { Root } from 'tagioalisi/components/Root';
+Promise.resolve().then(async () => {
+    const container = document.getElementById('app-wrapper');
+    if (!container) {
+        throw 'Could not find a container component';
+    }
 
-const wrapper = document.getElementById('app-wrapper');
-
-const appPlaceholder = (<Root />);
-
-if (wrapper) {
-    ReactDOM.render(appPlaceholder, wrapper);
-} else {
-    console.error("No wrapper element found");
-}
+    const { createRoot } = await import('react-dom/client');
+    const { ApplicationRoot: Root } = await import('tagioalisi/components/ApplicationRoot');
+    createRoot(container).render(<Root />);
+});
