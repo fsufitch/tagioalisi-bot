@@ -11,7 +11,7 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  build:
+  build_and_push:
     runs-on: ubuntu-latest
     steps:
 
@@ -39,7 +39,11 @@ jobs:
           default_tag=commit_"$(git log -n1 --format='format:%H')"
           docker_tag="${tag:-${default_tag}}"
           echo DOCKER TAG: ${docker_tag}
+          echo wtf user:${DOCKER_USERNAME} pass:${DOCKER_TOKEN}
           echo ::set-output name=docker_tag::${docker_tag}
+        env:
+          DOCKER_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
+          DOCKER_TOKEN: ${{secrets.DOCKERHUB_TOKEN}}
 
       - name: Set Up QEMU
         uses: docker/setup-qemu-action@v1
@@ -53,6 +57,7 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v2 
         with:
+          registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -70,4 +75,4 @@ jobs:
           context: ./webui
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tagioalisi-bot:${{ steps.vars.outputs.docker_tag }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tagioalisi-web:${{ steps.vars.outputs.docker_tag }}
