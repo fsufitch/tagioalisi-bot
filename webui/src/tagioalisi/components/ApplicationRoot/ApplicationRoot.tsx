@@ -1,36 +1,38 @@
-import { AppBar, Box, Button, Container, IconButton, Typography } from "@mui/material";
-import { Menu } from '@mui/icons-material';
+import { Container } from "@mui/material";
 
 import React from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 
-import { TopBar } from "./TopBar.component";
-// import { Home } from "./Home";
-// import { Sockpuppet } from "./Sockpuppet";
-
-import { useOnLoadAuthenticationEffect, useUpdateAuthenticatedUserDataEffect } from "tagioalisi/services/auth";
-import { usePromiseEffect } from 'tagioalisi/services/async';
+import { TopBar } from "tagioalisi/components/ApplicationBar";
+import { ROUTES, asyncLoadRoute } from '../../routes';
+import { usePromiseEffect } from '../../services/async';
 
 
-export function Root() {
+export function ApplicationRoot() {
   // This MUST come first or the onload will not affect it
-  
+
   // useUpdateAuthenticatedUserDataEffect();
   // useOnLoadAuthenticationEffect();
 
-  // const [styles] = usePromiseEffect(() => import('./Root.module.scss').then(m => m.default));
+  const [loadedRoutes] = usePromiseEffect(() => Promise.all(
+    ROUTES.map(route => asyncLoadRoute(route))
+  ))
 
   return (
     <Router>
       <Container maxWidth="md">
         <TopBar />
 
-             <h1>hello world</h1>
-           <p>the quick brown fox jumped over the lazy dog.</p>
-
+        <Routes>
+          {
+            loadedRoutes?.map((route, idx) =>
+              <Route key={idx} path={route.path} element={<route.component />}/>
+            )
+          }
+        </Routes>
       </Container>
     </Router>
-    );
+  );
 
 }
       // {/* <div className={styles?.page}>

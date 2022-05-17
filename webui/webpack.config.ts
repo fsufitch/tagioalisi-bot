@@ -47,7 +47,7 @@ const configureTypescript = async (prod: boolean): Promise<Configuration> => {
 }
 
 const configureStyles = async (prod: boolean): Promise<Configuration> => {
-    let sassLoader = { loader: 'sass-loader', options: { sourceMap: true } };
+    let sassLoader = { loader: 'sass-loader', options: { sourceMap: true, implementation: require('sass')} };
     let cssLoader = { loader: 'css-loader', options: { sourceMap: true, modules: true } };
     let postCssLoader = { loader: 'postcss-loader', options: { sourceMap: true } };
     let resolveUrlLoader = { loader: 'resolve-url-loader', options: {sourceMap: true}};
@@ -56,22 +56,27 @@ const configureStyles = async (prod: boolean): Promise<Configuration> => {
     const miniCssExtractPlugin = new MiniCssExtractPlugin({
         filename: '[name].css',
     });
-
+    const styleLoader = 'style-loader'; // Cannot import it as it's missing type declarations
+    
     const { default: CssMinimizerPlugin } = await import('css-minimizer-webpack-plugin');
     const cssMinimizerPlugin = new CssMinimizerPlugin();
+
+    // Using style-loader in development makes HMR work better
+    const actualStyleLoader = prod ? miniCssExtractLoader : styleLoader;
+    const stylePlugins = prod ? [miniCssExtractPlugin] : [];
 
     return {
         module: {
             rules: [
-                { test: /\.scss$/i, use: ['style-loader', cssLoader, postCssLoader, resolveUrlLoader, sassLoader] },
+                { test: /\.s?css$/i, use: [actualStyleLoader, cssLoader, postCssLoader, resolveUrlLoader, sassLoader] },
             ]
         },
         resolve: {
             alias: {
-                'tagioalisi-styles': path.join(__dirname, 'src', 'tagioalisi-styles'),
+                'tagioalisi': path.join(__dirname, 'src', 'tagioalisi'),
             }
         },
-        plugins: [miniCssExtractPlugin],
+        plugins: stylePlugins,
         optimization: { minimizer: ['...', cssMinimizerPlugin] }
     };
 }

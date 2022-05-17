@@ -5,15 +5,15 @@ import React, { MouseEvent } from "react";
 import { NavLink, Link, Navigate, useNavigate } from "react-router-dom";
 
 import { usePromiseEffect } from 'tagioalisi/services/async';
-import { ROUTES } from '../routes';
+import { ROUTES } from 'tagioalisi/routes';
 
 
 const getStyles = () => {
-  const [styles] = usePromiseEffect(() => import('./TopBar.module.scss').then(m => m.default));
+  const [styles] = usePromiseEffect(() => import('./styles.module.scss').then(m => m.default));
   return styles || {};
 }
 
-export const TopBar = () => {
+export const ApplicationBar = () => {
   const styles = getStyles();
   return (
     <>
@@ -88,7 +88,7 @@ const DropDownNav = () => {
     >
       {
         ROUTES.map((route, idx) =>
-          <MenuItem key={"" + idx} onClick={() => navigateAndClose(route.url)}>
+          <MenuItem key={"" + idx} onClick={() => navigateAndClose(route.path)}>
             <Typography textAlign="center">{route.navText}</Typography>
           </MenuItem>
         )}
