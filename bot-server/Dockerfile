@@ -3,7 +3,7 @@ FROM golang:1.18 AS bot-builder
 
 WORKDIR /bot
 COPY go.mod go.sum ./
-RUN go mod download -x
+RUN go mod download
 
 COPY . .
 
