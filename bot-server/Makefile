@@ -1,7 +1,10 @@
 GO_PACKAGE=github.com/fsufitch/tagioalisi-bot
 BIN_BOT=bin/tagioalisi-bot
 BIN_MIGRATIONS=bin/tagioalisi-migrations
-SOURCES=$(shell git ls-files)
+SOURCES=$(shell find . -type f -a \
+	-not -path './bin/*' -a \
+	-not -path './.gitignore' -a \
+	-not -path './Dockerfile')
 
 # === Phonies
 
