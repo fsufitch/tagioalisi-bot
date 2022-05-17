@@ -6,13 +6,13 @@ RUN apk add python3 && \
     npm config set python /usr/bin/python3
 
 # Use the latest yarn @2+
-RUN corepack enable && \
+RUN corepack enable yarn && \
     yarn set version berry && \
     yarn set version latest
 
 WORKDIR /web
-COPY package.json yarn.lock ./
-RUN yarn
+COPY .yarnrc.yml package.json yarn.lock ./
+RUN yarn install
 
 COPY . .
 
