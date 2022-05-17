@@ -1,7 +1,7 @@
 version: '3'
 services:
   bot:
-    build: 
+    build:
       context: ./bot-server
       target: bot-runtime
     env_file:
@@ -37,8 +37,6 @@ services:
 
   db:
     image: "postgres:12"
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: tagi
       POSTGRES_PASSWORD: secret
