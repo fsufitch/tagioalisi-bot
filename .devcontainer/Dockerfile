@@ -46,7 +46,10 @@ RUN curl -Lo node.tar.xz ${NODE_DOWNLOAD} && \
     rm node.tar.xz && \
     mv node-* node
 ENV PATH=${PATH}:/home/developer/opt/node/bin
-RUN npm i -g npm yarn
+RUN npm i -g npm && \
+    corepack enable yarn && \
+    yarn set version berry && \
+    yarn set version latest
 
 
 # Install various developer tools

@@ -5,6 +5,11 @@ FROM node:lts-alpine AS ui-builder
 RUN apk add python3 && \
     npm config set python /usr/bin/python3
 
+# Use the latest yarn @2+
+RUN corepack enable && \
+    yarn set version berry && \
+    yarn set version latest
+
 WORKDIR /web
 COPY package.json yarn.lock ./
 RUN yarn
