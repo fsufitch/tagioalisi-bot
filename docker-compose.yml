@@ -1,6 +1,7 @@
 version: '3'
 services:
   bot:
+    image: docker.io/fsufitch/tagioalisi-bot
     build:
       context: ./bot-server
       target: bot-runtime
@@ -28,7 +29,8 @@ services:
     command:
       'echo Not running by default; use: docker-compose run bot-migrations /bot/bin/tagioalisi-migrations'
 
-  ui:
+  web:
+    image: docker.io/fsufitch/tagioalisi-web
     build:
       context: ./webui
       target: ui-server
