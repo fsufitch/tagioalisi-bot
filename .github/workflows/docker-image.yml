@@ -7,21 +7,37 @@ on:
   push:
     tags:
       - '.*'
-
+    
+  workflow_dispatch: {}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Get Latest Tag
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF:10}
+      - name: Determine Build Commit
+        id: preclone_vars
+        run: |
+          commit=${GITHUB_REF_NAME:-${GITHUB_SHA}}
+          if [[ -z "${commit}" ]]; then
+            echo "Could not determine commit to build" > /dev/stderr
+            exit 1
+          fi
+          echo ::set-output name=commit::${commit}
 
       - name: Clone Repository
         uses: actions/checkout@v2
         with:
-          ref: ${{ steps.vars.outputs.tag }}
+          ref: ${{ steps.preclone_vars.outputs.commit }}
+
+      # Assemble a Docker tag for this build
+      - name: Assemble Docker Tag
+        id: vars
+        run: |
+          tag="$(git tag --points-at HEAD)"
+          default_tag=commit_"$(git log -n1 --format='format:%H')"
+          docker_tag="${tag:-${default_tag}}"
+          echo ::set-output name=docker_tag::${docker_tag}
 
       - name: Set Up QEMU
         uses: docker/setup-qemu-action@v1
@@ -44,4 +60,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ranking:${{ steps.vars.outputs.tag }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ranking:${{ steps.vars.outputs.docker_tag }}
