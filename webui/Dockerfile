@@ -17,7 +17,9 @@ RUN npx webpack --mode $WEBPACK_MODE
 
 RUN [ "echo", "this shouldn't be run"]
 
-# ===== Simple webserver to run the UI
-FROM nginx:alpine as ui-server
+
+# ===== Image for running a super simple webserver with the UI
+FROM nginx:alpine AS ui-server
 
 COPY --from=ui-builder /web/dist /usr/share/nginx/html
+COPY nginx-default.conf /etc/nginx/conf.d/default.conf
