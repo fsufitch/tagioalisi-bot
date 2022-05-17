@@ -5,6 +5,7 @@
 
 import * as path from 'path';
 import { Configuration, optimize } from 'webpack';
+import 'webpack-dev-server';
 
 const configureTypescript = async (prod: boolean): Promise<Configuration> => {
     const tsLoader = { loader: 'ts-loader' };  // https://www.npmjs.com/package/ts-loader
@@ -118,7 +119,10 @@ const configureBaseWebpack = async (prod: boolean): Promise<Configuration> => ({
             name: 'vendor',
         },
         minimize: true,
-    }
+    },
+    devServer: {
+        historyApiFallback: true,
+    },  
 });
 
 // ===========

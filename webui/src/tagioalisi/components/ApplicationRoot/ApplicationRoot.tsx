@@ -1,7 +1,7 @@
 import { Container } from "@mui/material";
 
 import React from "react";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { TopBar } from "tagioalisi/components/ApplicationBar";
 import { ROUTES, asyncLoadRoute } from '../../routes';
