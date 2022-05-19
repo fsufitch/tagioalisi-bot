@@ -1,0 +1,53 @@
+version: '3'
+services:
+  bot:
+    image: docker.io/fsufitch/tagioalisi-bot
+    build: &bot-build
+      context: .
+      dockerfile: Dockerfile.bot
+      target: bot
+    env_file:
+      - ../runtime.env
+    ports:
+      - "8081:80"
+    depends_on:
+      - "db"
+    networks:
+      - tagioalisi
+
+  migrations: 
+    extends:
+      service: bot
+    image: ""
+    build:
+      target: migrations
+    command: echo Migrations are run as a service; run 'docker-compose run migrations tagioalisi-migrations' instead
+
+  web:
+    image: docker.io/fsufitch/tagioalisi-web
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "8080:80"
+
+  db:
+    image: postgres:alpine
+    env_file:
+      - ../runtime.env
+    environment:
+      # POSTGRES_USER: tagioalisi
+      # POSTGRES_PASSWORD: secret
+      # POSTGRES_DB: tagioalisi
+      PGDATA: /var/tagioalisi/db/pgdata
+    volumes:
+      - type: bind
+        source: ./var/db
+        target: /var/tagioalisi/db
+
+    networks:
+      - tagioalisi
+
+
+networks:
+  tagioalisi:

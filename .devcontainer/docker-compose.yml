@@ -1,0 +1,44 @@
+version: '3'
+services:
+
+  devcontainer:
+    build: 
+      context: .
+
+    env_file:
+      - ../devcontainer.env
+
+    user: "developer"
+
+    networks:
+      - tagioalisi
+
+    ports:
+      - "9091:81"
+      - "9090:80"
+
+    volumes:
+      - ..:/home/developer/tagioalisi:cached
+      - $HOME:/home/developer/host_home:cached
+
+      # Uncomment the next line to use Docker from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker-compose for details.
+      # - /var/run/docker.sock:/var/run/docker.sock 
+
+    # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    command:
+      'echo Not running by default; use VSCode or: docker-compose run devcontainer bash / docker-compose exec devcontainer bash'
+
+  db:
+    extends:
+      file: ../runtime/docker-compose.yml
+      service: db
+    env_file:
+      - ../devcontainer.env
+
+
+networks:
+  tagioalisi:

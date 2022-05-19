@@ -1,0 +1,16 @@
+FROM nginx:alpine AS ui-server
+
+WORKDIR /tagioalisi-web
+
+COPY packages/web.tar.gz .
+
+RUN mkdir -p www && \
+    tar xvvfz -C www web.tar.gz && \
+    rm web.tar.gz && \
+    rm /etc/nginx/conf.d/default.conf
+
+COPY tagioalisi.nginx_template.conf web_entrypoint.sh ./
+
+ENV TAGIOALISI_BOT_BASE_URL http://tagioalisi-bot-base-not-set
+
+CMD [ "bash", "./web-entrypoint.sh" ]

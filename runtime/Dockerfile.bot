@@ -1,0 +1,16 @@
+FROM busybox:glibc AS base
+
+WORKDIR /tagioalisi-bot
+
+COPY packages/bot.tar.gz .
+
+RUN mkdir -p binaries && \
+    tar xvvfz bot.tar.gz -C binaries && \
+    rm bot.tar.gz && \
+    PLATFORM_DIR=$(echo $(uname -s)-$(uname -m) | tr '[:upper:]' '[:lower:]') && \
+    cp binaries/${PLATFORM_DIR}/* . && \
+    rm -rf binaries
+
+ENV PATH /tagioalisi-bot:$PATH
+
+CMD [ "tagioalisi-bot" ]
