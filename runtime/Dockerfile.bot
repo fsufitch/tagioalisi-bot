@@ -2,7 +2,7 @@ FROM busybox:glibc AS base
 
 WORKDIR /tagioalisi-bot
 
-COPY packages/bot.tar.gz .
+COPY binpkg/bot.tar.gz .
 
 RUN mkdir -p binaries && \
     tar xvvfz bot.tar.gz -C binaries && \

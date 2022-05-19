@@ -36,8 +36,8 @@ func (h LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	redirectURL := (*oauth2.Config)(h.OAuth2Config).AuthCodeURL(stateStr)
-	http.Redirect(w, r, redirectURL, http.StatusFound)
+	authCodeURL := (*oauth2.Config)(h.OAuth2Config).AuthCodeURL(stateStr)
+	http.Redirect(w, r, authCodeURL, http.StatusFound)
 }
 
 // AuthCodeHandler handles the redirected successful OAuth2 login

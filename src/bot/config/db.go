@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 )
 
@@ -10,10 +11,24 @@ type DatabaseString string
 
 // ProvideDatabaseStringFromEnvironment creates a DatabaseString from the environment, or errors when it's missing
 func ProvideDatabaseStringFromEnvironment() (DatabaseString, error) {
-	if envValue, ok := os.LookupEnv("DATABASE_URL"); ok {
-		return DatabaseString(envValue), nil
+	// 	POSTGRES_USER=tagioalisi
+	// POSTGRES_PASSWORD=tagi_secret!7461
+	// POSTGRES_DB=tagioalisi
+	var (
+		user, password, db string
+		ok                 bool
+	)
+	if user, ok = os.LookupEnv("POSTGRES_USER"); !ok {
+		return "", errors.New("missing env var: POSTGRES_USER")
 	}
-	return "", errors.New("missing env var: DATABASE_URL")
+	if password, ok = os.LookupEnv("POSTGRES_PASSWORD"); !ok {
+		return "", errors.New("missing env var: POSTGRES_PASSWORD")
+	}
+	if db, ok = os.LookupEnv("POSTGRES_DB"); !ok {
+		return "", errors.New("missing env var: POSTGRES_DB")
+	}
+	databaseURL := fmt.Sprintf("postgres://%s:%s@db/%s?sslmode=disable", user, password, db)
+	return DatabaseString(databaseURL), nil
 
 }
 

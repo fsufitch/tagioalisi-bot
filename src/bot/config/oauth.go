@@ -24,7 +24,7 @@ func ProvideOAuth2ConfigFromEnvironment() OAuth2Config {
 		redirectURL   = os.Getenv("OAUTH_REDIRECT_URL")
 	)
 
-	if clientID == "" || clientSecret == "" || authEndpoint == "" || tokenEndpoint == "" || redirectURL == "" {
+	if clientID == "" || clientSecret == "" || authEndpoint == "" || tokenEndpoint == "" {
 		return nil
 	}
 
