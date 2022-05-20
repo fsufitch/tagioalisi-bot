@@ -20,7 +20,7 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install make
+          sudo apt-get install -y make
 
       - name: Determine Build Commit
         id: preclone_vars
@@ -46,7 +46,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: lts
+          node-version: 16
           cache: yarn
           cache-dependency-path: src/web/yarn.lock
 
