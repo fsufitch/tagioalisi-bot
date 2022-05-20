@@ -6,7 +6,7 @@ SOURCES=.babelrc .eslintrc.js .yarnrc.yml package.json \
 	-not -path './dist/*' -a \
 	-not -path './node_modules/*')
 
-BINARIES=$(shell find ./dist/ -type f)
+BINARIES=./dist $(shell find ./dist/ -type f)
 
 WEBPACK_MODE=production
 
