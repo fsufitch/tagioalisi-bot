@@ -42,8 +42,6 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: src/bot/go.mod
-        run: |
-          go version
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -51,8 +49,6 @@ jobs:
           node-version: lts
           cache: yarn
           cache-dependency-path: src/web/yarn.lock
-        run: |
-          yarn versions
 
       - name: Build Runtime Packages
         run: |
