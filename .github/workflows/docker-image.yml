@@ -43,12 +43,24 @@ jobs:
         with:
           go-version-file: src/bot/go.mod
 
+      - name: Download Go Dependencies
+        working-directory: src/bot
+        run: |
+          go version
+          go mod download -x 
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: yarn
           cache-dependency-path: src/web/yarn.lock
+
+      - name: Install Node Dependencies
+        working-directory: src/web
+        run: |
+          yarn versions
+          yarn install
 
       - name: Build Runtime Packages
         run: |
