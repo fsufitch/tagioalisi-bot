@@ -25,7 +25,7 @@ func (w MigrationWrapper) Run() error {
 	var err error
 
 	// Workaround to use fs.FS with migrate: https://github.com/golang-migrate/migrate/issues/471#issuecomment-782442944
-	source, err := httpfs.New(http.FS(db.MigrationFS), "migrations")
+	source, err := httpfs.New(http.FS(db.MigrationFS), "migration")
 	if err != nil {
 		return err
 	}

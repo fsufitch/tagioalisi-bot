@@ -2,9 +2,12 @@ ROOT=$(shell echo $$(while [ ! -e .root.txt ]; do cd ..; done && pwd))
 GO_PLATFORMS=linux/amd64 linux/arm64
 WEBPACK_MODE=production
 
+BOT_BINARIES=$(shell find ${ROOT}/src/bot/bin -type f)
+WEB_BINARIES=$(shell find ${ROOT}/src/web/dist -type f)
+
 # Phony
 
-.PHONY: check-dependencies clean default binpkg
+.PHONY: bin-bot bin-web check-dependencies clean default binpkg
 
 default: check-dependencies binpkg
 
@@ -19,16 +22,18 @@ clean:
 
 binpkg: binpkg/bot.tar.gz binpkg/web.tar.gz
 
+bin-bot:
+	make -C "${ROOT}/src/bot" ${GO_PLATFORMS}
 
+bin-web:
+	make -C "${ROOT}/src/web"
 
 # Actual targets
 
-binpkg/bot.tar.gz: $(shell find ${ROOT}/src/bot/bin -type f)
-	make -C "${ROOT}/src/bot" clean ${GO_PLATFORMS}
+binpkg/bot.tar.gz: bin-bot
 	tar cfz binpkg/bot.tar.gz -C "${ROOT}/src/bot/bin" $$(cd "${ROOT}/src/bot/bin" && find . -type f)
 	@echo "Created bot bundle in binpkg/bot.tar.gz"
 
-binpkg/web.tar.gz: $(shell find ${ROOT}/src/web/dist -type f)
-	cd "${ROOT}/src/web"; yarn; yarn run webpack --mode ${WEBPACK_MODE}
+binpkg/web.tar.gz: bin-web
 	tar cfz binpkg/web.tar.gz -C "${ROOT}/src/web/dist" $$(cd "${ROOT}/src/web/dist" && find . -type f)
 	@echo "Created web bundle in binpkg/web.tar.gz"
