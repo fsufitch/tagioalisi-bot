@@ -29,6 +29,8 @@ services:
 
   web:
     image: docker.io/fsufitch/tagioalisi-web
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: Dockerfile.web

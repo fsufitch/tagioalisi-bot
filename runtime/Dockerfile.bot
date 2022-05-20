@@ -1,7 +1,11 @@
+FROM alpine as certs
+RUN apk update && apk add ca-certificates
+
 FROM busybox:glibc AS base
 
 WORKDIR /tagioalisi-bot
 
+COPY --from=certs /etc/ssl/certs /etc/ssl/certs
 COPY binpkg/bot.tar.gz .
 
 RUN mkdir -p binaries && \
@@ -9,7 +13,8 @@ RUN mkdir -p binaries && \
     rm bot.tar.gz && \
     PLATFORM_DIR=$(echo $(uname -s)-$(uname -m) | tr '[:upper:]' '[:lower:]') && \
     cp binaries/${PLATFORM_DIR}/* . && \
-    rm -rf binaries
+    rm -rf binaries && \
+    chmod -R a+r .
 
 ENV PATH /tagioalisi-bot:$PATH
 
