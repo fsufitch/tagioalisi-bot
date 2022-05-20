@@ -19,8 +19,8 @@ jobs:
 
       - name: Install System Dependencies
         run: |
-          apt-get update
-          apt-get install make
+          sudo apt-get update
+          sudo apt-get install make
 
       - name: Determine Build Commit
         id: preclone_vars
