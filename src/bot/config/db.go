@@ -31,14 +31,3 @@ func ProvideDatabaseStringFromEnvironment() (DatabaseString, error) {
 	return DatabaseString(databaseURL), nil
 
 }
-
-// MigrationDir is a directory where to find database migrations
-type MigrationDir string
-
-// ProvideMigrationDirFromEnvironment creates a MigrationDir from the environment, or errors when it's missing
-func ProvideMigrationDirFromEnvironment() (MigrationDir, error) {
-	if envValue, ok := os.LookupEnv("MIGRATION_DIR"); ok {
-		return MigrationDir(envValue), nil
-	}
-	return "", errors.New("missing env var: MIGRATION_DIR")
-}

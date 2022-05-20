@@ -13,7 +13,6 @@ var EnvironmentProviderSet = wire.NewSet(
 	ProvideDiscordLogChannelFromEnvironment,
 	ProvideJWTHMACSecretFromEnvironment,
 	ProvideManagedGroupPrefixFromEnvironment,
-	ProvideMigrationDirFromEnvironment,
 	ProvideOAuth2ConfigFromEnvironment,
 	ProvideWebEnabledFromEnvironment,
 	ProvideWebPortFromEnvironment,

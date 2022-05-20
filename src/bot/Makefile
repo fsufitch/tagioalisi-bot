@@ -17,16 +17,29 @@ BIN_MIGRATIONS=bin/${PLATFORM_NAME}/tagioalisi-migrations${EXT}
 
 # === Phonies
 
-.PHONY: all build bot migrations tests
+.PHONY: all build bot migrations tests wire
 all: build
 
-build: bot migrations tests
+build: wire bot migrations tests
 
 bot: ${BIN_BOT}
 
 migrations: ${BIN_MIGRATIONS}
 
-tests: ${BIN_TESTS}
+tests: wire ${BIN_TESTS}
+
+# Use Google Wire to generate compile-time DI code
+wire:
+	@sh -c ' \
+	TARGET_PLATFORM=$$(go env GOOS)/$$(go env GOARCH); \
+	BUILD_PLATFORM=$$(GOOS= GOARCH= go env GOOS)/$$(GOOS= GOARCH= go env GOARCH); \
+	if [ "$${TARGET_PLATFORM}" = "$${BUILD_PLATFORM}" ] ; then \
+		set -x; \
+		go run github.com/google/wire/cmd/wire ./...; \
+	else \
+		echo "WARNING: not running Wire because target platform is not build platform; $${TARGET_PLATFORM} != $${BUILD_PLATFORM}" > /dev/stderr; \
+	fi; \
+	'
 
 # === Platform phonies
 
@@ -47,7 +60,6 @@ windows/amd64:
 
 
 # === Real targets
-
 
 ${BIN_BOT}: ${SOURCES}
 	go build -o ${BIN_BOT} ${GO_PACKAGE}/cmd/tagi-bot

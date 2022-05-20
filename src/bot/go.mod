@@ -1,9 +1,6 @@
-// +heroku goVersion go1.14
-// +heroku install ./cmd/...
-
 module github.com/fsufitch/tagioalisi-bot
 
-go 1.14
+go 1.16
 
 require (
 	cgt.name/pkg/go-mwclient v1.2.0
@@ -16,7 +13,7 @@ require (
 	github.com/fsufitch/seedless-rand v0.0.0-20200226123932-0bb5063608b0
 	github.com/golang-migrate/migrate/v4 v4.12.1
 	github.com/google/uuid v1.1.1
-	github.com/google/wire v0.4.0
+	github.com/google/wire v0.5.0
 	github.com/gorilla/handlers v1.4.2
 	github.com/gorilla/mux v1.7.4
 	github.com/lib/pq v1.8.0
