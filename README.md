@@ -1,6 +1,6 @@
 # Tagioalisi
 
-[![Build and Push Tag Image](https://github.com/fsufitch/tagioalisi-bot/actions/workflows/docker-image.yml/badge.svg?branch=master)](https://github.com/fsufitch/tagioalisi-bot/actions/workflows/docker-image.yml) 
+[![DockerHub CI](https://github.com/fsufitch/tagioalisi-bot/actions/workflows/docker-image.yml/badge.svg)](https://github.com/fsufitch/tagioalisi-bot/actions/workflows/docker-image.yml)
 [![Generic badge](https://img.shields.io/badge/DockerHub-latest-blue.svg)](https://hub.docker.com/r/fsufitch/tagioalisi-bot)
 
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
