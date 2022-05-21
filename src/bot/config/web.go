@@ -17,15 +17,3 @@ func ProvideWebPortFromEnvironment() (WebPort, error) {
 	port, err := strconv.ParseInt(portString, 0, 0)
 	return WebPort(port), err
 }
-
-// WebEnabled is whether the web control UI is enabled
-type WebEnabled bool
-
-// ProvideWebEnabledFromEnvironment creates a WebEnabled from the environment
-func ProvideWebEnabledFromEnvironment() (WebEnabled, error) {
-	if enabledString, ok := os.LookupEnv("WEB_ENABLED"); ok {
-		enabledBool, err := strconv.ParseBool(enabledString)
-		return WebEnabled(enabledBool), err
-	}
-	return false, nil
-}

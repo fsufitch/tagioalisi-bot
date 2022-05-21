@@ -134,11 +134,6 @@ func InitializeMain() (Main, func(), error) {
 		StdOutReceiver: stdOutReceiver,
 		StdErrReceiver: stdErrReceiver,
 	}
-	webEnabled, err := config.ProvideWebEnabledFromEnvironment()
-	if err != nil {
-		cleanup()
-		return Main{}, nil, err
-	}
 	webPort, err := config.ProvideWebPortFromEnvironment()
 	if err != nil {
 		cleanup()
@@ -186,7 +181,7 @@ func InitializeMain() (Main, func(), error) {
 		Log:     logger,
 		Router:  router,
 	}
-	webRunFunc := ProvideWebRunFunc(webEnabled, tagioalisiAPIServer)
+	webRunFunc := ProvideWebRunFunc(tagioalisiAPIServer)
 	mainMain, cleanup2, err := ProvideMain(interruptContext, tagioalisiBot, logger, debugMode, cliLoggingBootstrapper, webRunFunc)
 	if err != nil {
 		cleanup()
