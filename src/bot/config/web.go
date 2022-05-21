@@ -12,7 +12,7 @@ type WebPort int
 func ProvideWebPortFromEnvironment() (WebPort, error) {
 	portString, ok := os.LookupEnv("PORT")
 	if !ok {
-		portString = "9999"
+		portString = "80"
 	}
 	port, err := strconv.ParseInt(portString, 0, 0)
 	return WebPort(port), err
