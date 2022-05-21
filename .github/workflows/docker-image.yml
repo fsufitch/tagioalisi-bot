@@ -1,6 +1,6 @@
 
 # Reference: https://pet2cattle.com/2021/09/build-multiarch-container-github-action
-name: Build and Push Tag Image
+name: DockerHub CI
 
 # Run when a tag is pushed
 on:
