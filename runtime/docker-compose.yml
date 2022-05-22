@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile.bot
     env_file:
-      - .env
+      - ../.env
     ports:
       - "${BOT_EXPOSE_PORT}:${BOT_PORT}"
     depends_on:
@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile.bot
     env_file:
-      - .env
+      - ../.env
     depends_on:
       - "db"
     networks:
@@ -30,7 +30,7 @@ services:
   web:
     image: docker.io/fsufitch/tagioalisi-web
     env_file:
-      - .env
+      - ../.env
     build:
       context: .
       dockerfile: Dockerfile.web
@@ -40,7 +40,7 @@ services:
   db:
     image: postgres:alpine
     env_file:
-      - .env
+      - ../.env
     environment:
       PGDATA: /var/tagioalisi/db/pgdata
     volumes:

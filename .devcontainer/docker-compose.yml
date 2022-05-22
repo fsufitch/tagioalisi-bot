@@ -6,7 +6,7 @@ services:
       context: .
 
     env_file:
-      - .env
+      - ../.env
 
     user: "developer"
 
@@ -37,7 +37,7 @@ services:
       file: ../runtime/docker-compose.yml
       service: db
     env_file:
-      - .env
+      - ../.env
 
 
 networks:
