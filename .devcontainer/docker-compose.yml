@@ -6,7 +6,7 @@ services:
       context: .
 
     env_file:
-      - ../devcontainer.env
+      - .env
 
     user: "developer"
 
@@ -14,8 +14,8 @@ services:
       - tagioalisi
 
     ports:
-      - "9091:81"
-      - "9090:80"
+      - "${BOT_EXPOSE_PORT}:${BOT_PORT}"
+      - "${WEB_EXPOSE_PORT}:${WEBPACK_DEV_PORT}"
 
     volumes:
       - ..:/home/developer/tagioalisi:cached
@@ -37,7 +37,7 @@ services:
       file: ../runtime/docker-compose.yml
       service: db
     env_file:
-      - ../devcontainer.env
+      - .env
 
 
 networks:
