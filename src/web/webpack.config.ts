@@ -121,7 +121,13 @@ const configureBaseWebpack = async (prod: boolean): Promise<Configuration> => ({
         minimize: true,
     },
     devServer: {
+        hot: true,
+        port: process.env.WEBPACK_DEV_PORT || 8080,
         historyApiFallback: true,
+        open: false,
+        headers: {
+            'Set-Cookie': `BOT_EXTERNAL_BASE_URL=${process.env.BOT_EXTERNAL_BASE_URL}`,
+        },
     },  
 });
 
