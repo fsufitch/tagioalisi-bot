@@ -29,10 +29,12 @@ Tagioalisi Bot is created to easily run via a Docker Compose stack. Follow these
 
 ### 1. Create the configuration
 
-    cd runtime
+In the repository root, run:
+
     cp default.env .env
 
 Edit `.env` and follow the instructions there.
+Then, `cd runtime`. The remainder of the instructions depend on that.
 
 ### 2. Get the Docker images
 
