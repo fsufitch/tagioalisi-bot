@@ -7,6 +7,7 @@ var EnvironmentProviderSet = wire.NewSet(
 	ProvideAESBlockFromEnvironment,
 	ProvideAzureCredentialsFromEnvironment,
 	ProvideBotModuleBlacklistFromEnvironment,
+	ProvideBotWebAPIPortFromEnvironment,
 	ProvideDatabaseStringFromEnvironment,
 	ProvideDebugModeFromEnvironment,
 	ProvideDiscordBotTokenFromEnvironment,
@@ -14,7 +15,6 @@ var EnvironmentProviderSet = wire.NewSet(
 	ProvideJWTHMACSecretFromEnvironment,
 	ProvideManagedGroupPrefixFromEnvironment,
 	ProvideOAuth2ConfigFromEnvironment,
-	ProvideWebPortFromEnvironment,
 	ProvideMerriamWebsterAPIKeyFromEnvironment,
 	ProvideUserAgent,
 )

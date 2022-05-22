@@ -134,7 +134,7 @@ func InitializeMain() (Main, func(), error) {
 		StdOutReceiver: stdOutReceiver,
 		StdErrReceiver: stdErrReceiver,
 	}
-	webPort, err := config.ProvideWebPortFromEnvironment()
+	botWebAPIPort, err := config.ProvideBotWebAPIPortFromEnvironment()
 	if err != nil {
 		cleanup()
 		return Main{}, nil, err
@@ -177,9 +177,9 @@ func InitializeMain() (Main, func(), error) {
 	}
 	router := web.ProvideRouter(helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler, whoAmIHandler)
 	tagioalisiAPIServer := web.TagioalisiAPIServer{
-		WebPort: webPort,
-		Log:     logger,
-		Router:  router,
+		Port:   botWebAPIPort,
+		Log:    logger,
+		Router: router,
 	}
 	webRunFunc := ProvideWebRunFunc(tagioalisiAPIServer)
 	mainMain, cleanup2, err := ProvideMain(interruptContext, tagioalisiBot, logger, debugMode, cliLoggingBootstrapper, webRunFunc)

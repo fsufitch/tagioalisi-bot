@@ -35,7 +35,7 @@ func TestWebPort(t *testing.T) {
 	os.Setenv("PORT", "1234")
 
 	// Tested code
-	port, err := ProvideWebPortFromEnvironment()
+	port, err := ProvideBotWebAPIPortFromEnvironment()
 
 	// Asserts
 	assert.Nil(t, err)
@@ -47,7 +47,7 @@ func TestWebPort_Default(t *testing.T) {
 	os.Unsetenv("PORT")
 
 	// Tested code
-	port, err := ProvideWebPortFromEnvironment()
+	port, err := ProvideBotWebAPIPortFromEnvironment()
 
 	// Asserts
 	assert.Nil(t, err)
@@ -59,7 +59,7 @@ func TestWebPort_Invalid(t *testing.T) {
 	os.Setenv("PORT", "Not a real port")
 
 	// Tested code
-	_, err := ProvideWebPortFromEnvironment()
+	_, err := ProvideBotWebAPIPortFromEnvironment()
 
 	// Asserts
 	assert.NotNil(t, err)

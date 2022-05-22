@@ -1,19 +1,21 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 )
 
-// WebPort is the port that the web service will run on
-type WebPort int
+// BotWebAPIPort is what it says on the tin
+type BotWebAPIPort int
 
-// ProvideWebPortFromEnvironment creates a WebPort from the environment, defaulting to 9999 when missing
-func ProvideWebPortFromEnvironment() (WebPort, error) {
-	portString, ok := os.LookupEnv("PORT")
-	if !ok {
-		portString = "80"
+// ProvideBotWebAPIPortFromEnvironment is what it says on the tin
+func ProvideBotWebAPIPortFromEnvironment() (BotWebAPIPort, error) {
+	if port, ok := os.LookupEnv("BOT_PORT"); !ok || port == "" {
+		return BotWebAPIPort(8081), nil
+	} else if portInt, err := strconv.Atoi(port); err != nil {
+		return 0, fmt.Errorf("invalid port in BOT_PORT: %s; %w", port, err)
+	} else {
+		return BotWebAPIPort(portInt), nil
 	}
-	port, err := strconv.ParseInt(portString, 0, 0)
-	return WebPort(port), err
 }

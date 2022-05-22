@@ -10,15 +10,15 @@ import (
 
 // TagioalisiAPIServer is the API webserver of Tagioalisi
 type TagioalisiAPIServer struct {
-	WebPort config.WebPort
-	Log     *log.Logger
-	Router  Router
+	Port   config.BotWebAPIPort
+	Log    *log.Logger
+	Router Router
 }
 
 // Run is a blocking function that starts and serves the web API
 func (s TagioalisiAPIServer) Run() error {
 	serv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", s.WebPort),
+		Addr:    fmt.Sprintf(":%d", s.Port),
 		Handler: s.Router,
 	}
 
