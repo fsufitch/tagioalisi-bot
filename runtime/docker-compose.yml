@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${DOCKER_BOT_PORT}:${BOT_PORT}"
+      - "${BOT_EXPOSE_PORT}:${BOT_PORT}"
     depends_on:
       - "db"
     networks:
@@ -35,7 +35,7 @@ services:
       context: .
       dockerfile: Dockerfile.web
     ports:
-      - "${DOCKER_NGINX_PORT}:${NGINX_PORT}"
+      - "${WEB_EXPOSE_PORT}:${NGINX_PORT}"
 
   db:
     image: postgres:alpine

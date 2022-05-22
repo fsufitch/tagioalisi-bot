@@ -12,5 +12,6 @@ RUN mkdir -p www && \
 COPY tagioalisi.nginx_template.conf web-entrypoint.sh ./
 
 ENV BOT_EXTERNAL_BASE_URL http://tagioalisi-bot-base-not-set
+ENV NGINX_PORT 80
 
 CMD [ "sh", "./web-entrypoint.sh" ]
