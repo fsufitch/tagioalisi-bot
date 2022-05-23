@@ -8,7 +8,7 @@ interface usePromiseState<T> {
     error?: any,
 }
 
-export function usePromiseEffect<T>(func: PromiseFunction<T>): [T | undefined, boolean, any] {
+export function usePromiseEffect<T>(func: PromiseFunction<T>) {
     const [{ result, done, error }, setState] = useState<usePromiseState<T>>({ done: false });
 
     useEffect(() => {
@@ -16,6 +16,6 @@ export function usePromiseEffect<T>(func: PromiseFunction<T>): [T | undefined, b
             .then(value => setState({ done: true, result: value }))
             .catch(reason => setState({ done: true, error: reason || 'unknown failure'}))
     }, []);
-    return [result, done, error];
+    return [result, done, error] as [T | undefined, boolean, any];
 
 }

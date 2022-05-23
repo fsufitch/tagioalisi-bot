@@ -2,10 +2,10 @@ import { AppBar, Box, Button, IconButton, Typography, Toolbar, Menu, MenuItem } 
 import { Menu as MenuIcon } from '@mui/icons-material';
 import React, { MouseEvent } from "react";
 
-import { NavLink, Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { usePromiseEffect } from 'tagioalisi/services/async';
-import { ROUTES } from 'tagioalisi/routes';
+import { getRoute } from 'tagioalisi/routes';
 
 
 const getStyles = () => {
@@ -48,6 +48,11 @@ const Title = () => {
   );
 }
 
+const DROP_DOWN_NAV_LINKS: {routeId: string, text: string}[] = [
+  {routeId: 'home', text: 'Home'},
+  {routeId: 'config', text: 'API Configuration'},
+]
+
 const DropDownNav = () => {
   const [navAnchor, setNavAnchor] = React.useState<null | HTMLElement>(null);
 
@@ -55,10 +60,15 @@ const DropDownNav = () => {
   const closeNav = () => setNavAnchor(null);
 
   const navigate = useNavigate();
-  const navigateAndClose = (location: string) => {
+  const navigateAndClose = (routeId: string) => {
     closeNav();
-    navigate(location);
+    navigate(getRoute(routeId).path);
   }
+
+  const NavLink = (props: {routeId: string, text: string}) =>           
+    <MenuItem onClick={() => navigateAndClose(props.routeId)}>
+     <Typography textAlign="center">{props.text}</Typography>
+   </MenuItem>;
 
   return <Box sx={{ flexGrow: 1}}>
     <IconButton
@@ -87,11 +97,8 @@ const DropDownNav = () => {
       onClose={closeNav}
     >
       {
-        ROUTES.map((route, idx) =>
-          <MenuItem key={"" + idx} onClick={() => navigateAndClose(route.path)}>
-            <Typography textAlign="center">{route.navText}</Typography>
-          </MenuItem>
-        )}
+        DROP_DOWN_NAV_LINKS.map(({routeId, text}) => <NavLink key={routeId} routeId={routeId} text={text} />)
+      }
     </Menu>
   </Box>
 

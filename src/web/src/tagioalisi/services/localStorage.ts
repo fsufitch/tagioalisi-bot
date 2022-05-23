@@ -7,11 +7,15 @@ interface LocalStorageUpdatedEventDetail<T> {
     newValue: T;
 }
 
-export function useLocalStorage<T>(key: string, defaultValue: T): [T, (val: T | (() => T)) => void] {
+export type SetterFunc<T> = (val: T | (() => T)) => void;
+
+export function useLocalStorage<T>(key: string, defaultValue: T): [T, SetterFunc<T>] {
     const serialize = (val: T) => JSON.stringify(val);
     const deserialize = (val: string | null) => JSON.parse(val ?? 'null') as T;
     const save = (val: T) => window.localStorage.setItem(key, serialize(val));
     const load = () => deserialize(window.localStorage.getItem(key));
+
+    const initialValue = load() || defaultValue;
 
     const [value, setValue] = useState<T>(() => {
         let initialValue = defaultValue;

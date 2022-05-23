@@ -1,16 +1,31 @@
+import { Homepage } from './components/Homepage/Homepage';
+import { Configuration } from './components/Configuration/Configuration';
+
 interface Route {
     title: string,
-    navText: string,
     path: string,
     isHome?: boolean,
-    loadComponent: () => Promise<() => JSX.Element>,  // use as: FooComponent = await route.loadComponent(); return <FooComponent />
+    component: () => JSX.Element, 
 }
 
-export const ROUTES: Route[] = [
-    {title: 'Home', navText: 'Home', path: '/', isHome: true, loadComponent: () => import('tagioalisi/components/Homepage').then(({Homepage}) => Homepage)},
-    {title: 'Configuration', navText: 'Configuration', path: '/config', loadComponent: () => import('tagioalisi/components/Configuration').then(({Configuration}) => Configuration)},
-];
+export const ROUTES: {[id: string]: Route} = {
+    id: {
+        title: 'Home', 
+        path: '/', 
+        isHome: true,
+        component: Homepage,
+    },
+    config: {
+        title: 'Configuration', 
+        path: '/config', 
+        component: Configuration,
+    },
+};
 
-export const asyncLoadRoute = async (route: Route) => {
-    return {...route, component: await route.loadComponent()};
+export const getRoute = (id: string) => {
+    if (!!ROUTES[id]) {
+        return ROUTES[id];
+    }
+    console.error(`No route with id: ${id}`)
+    return {title: "INVALID ROUTE", path:"INVALID", component: () => null}
 }

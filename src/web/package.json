@@ -78,6 +78,7 @@
     "lorem-ipsum": "^2.0.4",
     "popper.js": "^1.16.1",
     "react": "^18.0.0",
+    "react-cookie": "^4.1.1",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0",
     "url": "^0.11.0"
