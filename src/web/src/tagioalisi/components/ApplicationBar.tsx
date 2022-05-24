@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, IconButton, Typography, Toolbar, Menu, MenuItem } from "@mui/material";
+import { AppBar, Box, Button, IconButton, Typography, Toolbar, Menu, MenuItem, Avatar } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import React, { MouseEvent } from "react";
 
@@ -8,13 +8,7 @@ import { usePromiseEffect } from 'tagioalisi/services/async';
 import { getRoute } from 'tagioalisi/routes';
 
 
-const getStyles = () => {
-  const [styles] = usePromiseEffect(() => import('./styles.module.scss').then(m => m.default));
-  return styles || {};
-}
-
 export const ApplicationBar = () => {
-  const styles = getStyles();
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -31,18 +25,17 @@ export const ApplicationBar = () => {
 }
 
 const Title = () => {
-  const styles = getStyles();
   const [logo] = usePromiseEffect(() => import('tagioalisi/resources/cicada-avatar.png').then(it => it.default))
   return (<>
-    <Typography variant="h6" component="div" className={styles?.titleBox} sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+    <Typography variant="h6" component="div" sx={{ alignItems: 'center', textAlign: 'center', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
       {/* Show a wide title when the screen is wide */}
-      <span>Tagioalisi</span>
-      <img src={logo} className={styles?.logo} />
-      <span>Discord Bot</span>
+      Tagioalisi
+      <Avatar src={logo} sx={{bgcolor: 'darkred', margin: 1, width: '2.5em', height: '2.5em'}}/>
+      Discord Bot
     </Typography>
-    <Typography variant="h6" component="div" className={styles?.titleBox} sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+    <Typography variant="h6" component="div" sx={{ alignItems: 'center', textAlign: 'center',flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
       {/* Show a wide title when the screen is wide */}
-      <img src={logo} className={styles?.logo} alt="Tagioalisi - Discord Bot" />
+      <Avatar src={logo} sx={{bgcolor: 'darkred', margin: 1, width: '2.5em', height: '2.5em'}} alt='Tagioalisi - Discord Bot'/>
     </Typography>
   </>
   );
