@@ -1,8 +1,9 @@
-import { Input, TextField, Box, Typography, Button, Paper, Stack, List, ListItem, ListItemText, ListItemIcon, ListItemAvatar, Avatar, ListItemSecondaryAction, IconButton, FormControl, OutlinedInput, InputLabel, InputAdornment, Tooltip } from '@mui/material';
 import React from 'react';
-import { useAPIConnection, useDefaultAPIEndpoint, APIConnection } from '../../services/api';
-import ApiIcon from '@mui/icons-material/Api';
-import UndoIcon from '@mui/icons-material/Undo';
+
+import { Box, Typography, Button, Paper, Stack, Avatar, IconButton, FormControl, OutlinedInput, InputLabel, InputAdornment, Tooltip } from '@mui/material';
+import { Api as ApiIcon, Undo as UndoIcon } from '@mui/icons-material';
+
+import { useAPIConnection, useDefaultAPIEndpoint } from 'tagioalisi/services/api';
 
 export const Configuration = () => {
     return (
@@ -45,7 +46,6 @@ const EditableConfiguration = () => {
         setApiConnection({ ...apiConnection, baseUrl });
         setEditMode(false);
     }
-
 
     return <Paper sx={{ p: 1, display: 'flex', flexDirection: 'column', alignContent: 'space-between' }}>
         <FormControl variant='outlined' sx={{ m: 1 }}>

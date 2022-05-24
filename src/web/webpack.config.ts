@@ -3,9 +3,14 @@
 // * Why use Babel? https://stackoverflow.com/a/49624611
 // * Babel+Typescript explainer: https://github.com/Microsoft/TypeScript-Babel-Starter
 
-import * as path from 'path';
-import { Configuration, optimize } from 'webpack';
 import 'webpack-dev-server';
+import * as path from 'path';
+import { Configuration } from 'webpack';
+import { fileURLToPath } from 'url';
+
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const configureTypescript = async (prod: boolean): Promise<Configuration> => {
     const tsLoader = { loader: 'ts-loader' };  // https://www.npmjs.com/package/ts-loader
@@ -16,9 +21,10 @@ const configureTypescript = async (prod: boolean): Promise<Configuration> => {
             cacheDirectory: true,
             presets: [
                 ['@babel/preset-env', { useBuiltIns: 'entry', corejs: 3 }],
-                '@babel/preset-react'
+                '@babel/preset-react',
             ],
-        }
+            plugins: [],
+        },
     };
     const sourceMapLoader = { loader: 'source-map-loader' }
 
@@ -43,27 +49,26 @@ const configureTypescript = async (prod: boolean): Promise<Configuration> => {
         'app': path.join(__dirname, 'src', 'app.tsx'),
     }
 
-
     return { entry, resolve, module };
 }
 
 const configureStyles = async (prod: boolean): Promise<Configuration> => {
-    let sassLoader = { loader: 'sass-loader', options: { sourceMap: true, implementation: require('sass')} };
+    let sassLoader = { loader: 'sass-loader', options: { sourceMap: true, implementation: 'sass' } };
     let cssLoader = { loader: 'css-loader', options: { sourceMap: true, modules: true } };
     let postCssLoader = { loader: 'postcss-loader', options: { sourceMap: true } };
-    let resolveUrlLoader = { loader: 'resolve-url-loader', options: {sourceMap: true}};
+    let resolveUrlLoader = { loader: 'resolve-url-loader', options: { sourceMap: true } };
 
-    const { default: MiniCssExtractPlugin, loader: miniCssExtractLoader } = await import('mini-css-extract-plugin');
+    const { default: MiniCssExtractPlugin } = await import('mini-css-extract-plugin');
     const miniCssExtractPlugin = new MiniCssExtractPlugin({
         filename: '[name].css',
     });
     const styleLoader = 'style-loader'; // Cannot import it as it's missing type declarations
-    
+
     const { default: CssMinimizerPlugin } = await import('css-minimizer-webpack-plugin');
     const cssMinimizerPlugin = new CssMinimizerPlugin();
 
     // Using style-loader in development makes HMR work better
-    const actualStyleLoader = prod ? miniCssExtractLoader : styleLoader;
+    const actualStyleLoader = prod ? MiniCssExtractPlugin.loader : styleLoader;
     const stylePlugins = prod ? [miniCssExtractPlugin] : [];
 
     return {
@@ -78,14 +83,15 @@ const configureStyles = async (prod: boolean): Promise<Configuration> => {
             }
         },
         plugins: stylePlugins,
-        optimization: { minimizer: ['...', cssMinimizerPlugin] }
+        optimization: {
+            minimizer: ['...', cssMinimizerPlugin],
+        }
     };
 }
 
 
 const configureHTML = async (prod: boolean): Promise<Configuration> => {
-    const HtmlWebpackPlugin = await import('html-webpack-plugin');
-    const htmlWebpackPlugin = new HtmlWebpackPlugin.default({
+    const htmlWebpackPlugin = new HtmlWebpackPlugin({
         template: path.join(__dirname, "src", "index.html"),
         xhtml: true,
         minify: prod,
@@ -105,31 +111,37 @@ const configureAssets = async (prod: boolean): Promise<Configuration> => ({
     },
 });
 
-const configureBaseWebpack = async (prod: boolean): Promise<Configuration> => ({
-    mode: prod ? 'production' : 'development',
-    devtool: prod ? 'source-map' : 'source-map', // ???
-    output: {
-        path: path.join(__dirname, 'dist'),
-        filename: "[name].bundle.js",
-    },
-    optimization: {
-        splitChunks: {
-            chunks: "all",
-            maxSize: 50000,
-            name: 'vendor',
+
+const configureBaseWebpack = async (prod: boolean): Promise<Configuration> => {
+    const { BundleAnalyzerPlugin } = await import('webpack-bundle-analyzer');  // https://github.com/webpack-contrib/webpack-bundle-analyzer
+    return ({
+        mode: prod ? 'production' : 'development',
+        devtool: prod ? false : 'eval-cheap-module-source-map', // https://webpack.js.org/configuration/devtool/
+        output: {
+            path: path.join(__dirname, 'dist'),
+            filename: "[name].bundle.js",
         },
-        minimize: true,
-    },
-    devServer: {
-        hot: true,
-        port: process.env.WEBPACK_DEV_PORT || 8080,
-        historyApiFallback: true,
-        open: false,
-        headers: {
-            'Set-Cookie': `BOT_EXTERNAL_BASE_URL=${process.env.BOT_EXTERNAL_BASE_URL}`,
+        optimization: {
+            minimize: prod,
+            splitChunks: {
+                chunks: "all",
+                name: 'vendor',
+            },
         },
-    },  
-});
+        plugins: [
+            ...(!!process.env.WEBPACK_ANALYZER ? [new BundleAnalyzerPlugin()] : []),
+        ],
+        devServer: {
+            liveReload: true,
+            port: process.env.WEBPACK_DEV_PORT || 8080,
+            historyApiFallback: true,
+            open: false,
+            headers: {
+                'Set-Cookie': `BOT_EXTERNAL_BASE_URL=${process.env.BOT_EXTERNAL_BASE_URL}`,
+            },
+        },
+    })
+};
 
 // ===========
 
@@ -137,6 +149,10 @@ type ConfigurationFunction = (prod: boolean) => Promise<Configuration>;
 
 const buildConfig = async (env: any, argv: { [key: string]: any }, funcs: Iterable<ConfigurationFunction>) => {
     const prod = argv.mode == 'production';
+
+    // Set the env var as well, to inform Babel
+    process.env.NODE_ENV = prod ? 'production' : 'development';
+
     const { merge } = await import('webpack-merge');
 
     let config: Configuration = {};

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { ROUTES } from '../routes';
+import { ROUTES } from 'tagioalisi/routes';
 
 
 export const TagioalisiRoutes = () => <Routes>

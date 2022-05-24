@@ -1,15 +1,19 @@
 {
   "name": "tagioalisi-web",
   "version": "1.0.0",
+  "type": "module",
   "description": "Web UI for the Tagioalisi Bot",
-  "main": "index.js",
   "scripts": {
-    "build": "npm run build:prod",
-    "build:dev": "webpack --mode development",
-    "build:prod": "webpack --mode production",
-    "start": "npm run start:dev",
-    "start:prod": "webpack-dev-server --mode production",
-    "start:dev": "webpack-dev-server --mode development"
+    "webpack:esm": "ts-node-esm node_modules/.bin/webpack-cli",
+    "webpack-dev-server:esm": "ts-node-esm node_modules/.bin/webpack-dev-server",
+    "build": "yarn run build:prod",
+    "build:dev": "yarn run webpack:esm --mode development",
+    "build:prod": "yarn run webpack:esm --mode production",
+    "start": "yarn run start:dev",
+    "start:prod": "yarn run webpack-dev-server:esm --mode production",
+    "start:dev": "yarn run webpack-dev-server:esm --mode development",
+    "analyze:dev": "WEBPACK_ANALYZER=1 yarn run webpack:esm --mode development",
+    "analyze:prod": "WEBPACK_ANALYZER=1 yarn run webpack:esm --mode production"
   },
   "repository": {
     "type": "git",
@@ -32,9 +36,12 @@
     "@types/react": "^18.0.5",
     "@types/react-dom": "^18.0.1",
     "@types/react-router-dom": "^5.3.3",
+    "@types/webpack-bundle-analyzer": "^4.4.1",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.20.0",
     "babel-loader": "^8.2.5",
+    "babel-plugin-direct-import": "^1.0.0",
+    "babel-plugin-import": "^1.13.5",
     "babel-plugin-react-css-modules": "^5.2.6",
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^3.4.1",
@@ -63,6 +70,7 @@
     "typescript-plugin-css-modules": "^3.4.0",
     "url-loader": "^4.1.1",
     "webpack": "^5.72.0",
+    "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.8.1",
     "webpack-merge": "^5.8.0"

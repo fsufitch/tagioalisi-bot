@@ -26,6 +26,6 @@ export const getRoute = (id: string) => {
     if (!!ROUTES[id]) {
         return ROUTES[id];
     }
-    console.error(`No route with id: ${id}`)
+    console.error(`No route with id: ${id}`);
     return {title: "INVALID ROUTE", path:"INVALID", component: () => null}
 }

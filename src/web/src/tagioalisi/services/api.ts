@@ -1,6 +1,5 @@
 import { useCookies } from 'react-cookie';
-import { useLocalStorage, SetterFunc } from './localStorage';
-import { useSynchronizedJSONState } from './state';
+import { useSynchronizedJSONState } from 'tagioalisi/services/state';
 
 
 export const useDefaultAPIEndpoint = () => {
