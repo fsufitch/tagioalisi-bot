@@ -5,7 +5,7 @@ import { Api as ApiIcon, Undo as UndoIcon } from '@mui/icons-material';
 
 import { useAPIConnection, useDefaultAPIEndpoint } from 'tagioalisi/services/api';
 
-export const Configuration = () => {
+export default () => {
     return (
         <Box sx={{ padding: 3 }}>
             <Stack direction='row' alignItems='flex-end'>

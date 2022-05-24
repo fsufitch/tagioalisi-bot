@@ -8,21 +8,16 @@ import { usePromiseEffect } from 'tagioalisi/services/async';
 import { getRoute } from 'tagioalisi/routes';
 
 
-export const ApplicationBar = () => {
-  return (
-    <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="sticky">
-          <Toolbar>
-            <DropDownNav />
-            <Title />
-            <AuthSegment />
-          </Toolbar>
-        </AppBar>
-      </Box>
-    </>
-  );
-}
+export default () =>
+  <Box sx={{ flexGrow: 1 }}>
+    <AppBar position="sticky">
+      <Toolbar>
+        <DropDownNav />
+        <Title />
+        <AuthSegment />
+      </Toolbar>
+    </AppBar>
+  </Box>
 
 const Title = () => {
   const [logo] = usePromiseEffect(() => import('tagioalisi/resources/cicada-avatar.png').then(it => it.default))
@@ -30,20 +25,20 @@ const Title = () => {
     <Typography variant="h6" component="div" sx={{ alignItems: 'center', textAlign: 'center', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
       {/* Show a wide title when the screen is wide */}
       Tagioalisi
-      <Avatar src={logo} sx={{bgcolor: 'darkred', margin: 1, width: '2.5em', height: '2.5em'}}/>
+      <Avatar src={logo} sx={{ bgcolor: 'darkred', margin: 1, width: '2.5em', height: '2.5em' }} />
       Discord Bot
     </Typography>
-    <Typography variant="h6" component="div" sx={{ alignItems: 'center', textAlign: 'center',flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+    <Typography variant="h6" component="div" sx={{ alignItems: 'center', textAlign: 'center', flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
       {/* Show a wide title when the screen is wide */}
-      <Avatar src={logo} sx={{bgcolor: 'darkred', margin: 1, width: '2.5em', height: '2.5em'}} alt='Tagioalisi - Discord Bot'/>
+      <Avatar src={logo} sx={{ bgcolor: 'darkred', margin: 1, width: '2.5em', height: '2.5em' }} alt='Tagioalisi - Discord Bot' />
     </Typography>
   </>
   );
 }
 
-const DROP_DOWN_NAV_LINKS: {routeId: string, text: string}[] = [
-  {routeId: 'home', text: 'Home'},
-  {routeId: 'config', text: 'API Configuration'},
+const DROP_DOWN_NAV_LINKS: { routeId: string, text: string }[] = [
+  { routeId: 'home', text: 'Home' },
+  { routeId: 'config', text: 'API Configuration' },
 ]
 
 const DropDownNav = () => {
@@ -58,12 +53,12 @@ const DropDownNav = () => {
     navigate(getRoute(routeId).path);
   }
 
-  const NavLink = (props: {routeId: string, text: string}) =>           
+  const NavLink = (props: { routeId: string, text: string }) =>
     <MenuItem onClick={() => navigateAndClose(props.routeId)}>
-     <Typography textAlign="center">{props.text}</Typography>
-   </MenuItem>;
+      <Typography textAlign="center">{props.text}</Typography>
+    </MenuItem>;
 
-  return <Box sx={{ flexGrow: 1}}>
+  return <Box sx={{ flexGrow: 1 }}>
     <IconButton
       size="large"
       aria-label="application menu"
@@ -90,7 +85,7 @@ const DropDownNav = () => {
       onClose={closeNav}
     >
       {
-        DROP_DOWN_NAV_LINKS.map(({routeId, text}) => <NavLink key={routeId} routeId={routeId} text={text} />)
+        DROP_DOWN_NAV_LINKS.map(({ routeId, text }) => <NavLink key={routeId} routeId={routeId} text={text} />)
       }
     </Menu>
   </Box>

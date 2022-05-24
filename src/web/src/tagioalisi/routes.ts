@@ -1,5 +1,5 @@
-import { Homepage } from './components/Homepage';
-import { Configuration } from './components/Configuration';
+import Homepage from './components/Homepage';
+import Configuration from './components/Configuration';
 
 interface Route {
     title: string,

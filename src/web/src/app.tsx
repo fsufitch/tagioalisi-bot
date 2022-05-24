@@ -10,6 +10,7 @@ Promise.resolve().then(async () => {
     }
 
     const { createRoot } = await import('react-dom/client');
-    const { ApplicationRoot: Root } = await import('tagioalisi/components/ApplicationRoot');
-    createRoot(container).render(<Root />);
+    const { lazy } = await import('react');
+    const ApplicationRoot = lazy(() => import('tagioalisi/components/ApplicationRoot'));
+    createRoot(container).render(<ApplicationRoot />);
 });

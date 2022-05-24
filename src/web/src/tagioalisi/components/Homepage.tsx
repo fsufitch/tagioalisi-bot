@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Homepage = () => {
+export default () => {
     return (<p>
     Hello world homepage!
     </p>)
