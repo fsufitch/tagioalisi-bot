@@ -9,7 +9,7 @@ interface Route {
 }
 
 export const ROUTES: {[id: string]: Route} = {
-    id: {
+    home: {
         title: 'Home', 
         path: '/', 
         isHome: true,

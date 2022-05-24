@@ -1,6 +1,4 @@
-import "regenerator-runtime/runtime";
-
-// Roboto font, only import once
+// Common styles/fonts, only import once
 import 'tagioalisi/styles/common.scss';
 
 import React from 'react';
