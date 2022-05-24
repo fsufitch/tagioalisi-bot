@@ -1,4 +1,3 @@
-import 'core-js';
 import "regenerator-runtime/runtime";
 
 // Roboto font, only import once
