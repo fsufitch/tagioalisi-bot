@@ -132,12 +132,13 @@ const configureBaseWebpack = async (prod: boolean): Promise<Configuration> => {
             ...(!!process.env.WEBPACK_ANALYZER ? [new BundleAnalyzerPlugin()] : []),
         ],
         devServer: {
+            hot: false,  // React is not setup for this
             liveReload: true,
             port: process.env.WEBPACK_DEV_PORT || 8080,
             historyApiFallback: true,
             open: false,
             headers: {
-                'Set-Cookie': `BOT_EXTERNAL_BASE_URL=${process.env.BOT_EXTERNAL_BASE_URL}`,
+                'Set-Cookie': `BOT_EXTERNAL_BASE_URL=${process.env.BOT_EXTERNAL_BASE_URL}; SameSite=Lax`,
             },
         },
     })

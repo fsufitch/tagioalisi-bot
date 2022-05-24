@@ -1,11 +1,10 @@
-import Homepage from './components/Homepage';
-import Configuration from './components/Configuration';
+import React from 'react';
 
 interface Route {
     title: string,
     path: string,
     isHome?: boolean,
-    component: () => JSX.Element, 
+    component: React.ExoticComponent, 
 }
 
 export const ROUTES: {[id: string]: Route} = {
@@ -13,12 +12,12 @@ export const ROUTES: {[id: string]: Route} = {
         title: 'Home', 
         path: '/', 
         isHome: true,
-        component: Homepage,
+        component: React.lazy(() => import('tagioalisi/components/Homepage')),
     },
     config: {
         title: 'Configuration', 
         path: '/config', 
-        component: Configuration,
+        component: React.lazy(() => import('tagioalisi/components/Configuration')),
     },
 };
 
