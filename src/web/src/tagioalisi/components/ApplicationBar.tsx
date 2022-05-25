@@ -1,11 +1,12 @@
-import { AppBar, Box, Button, IconButton, Typography, Toolbar, Menu, MenuItem, Avatar } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { AppBar, Box, Button, IconButton, Typography, Toolbar, Menu, MenuItem, Avatar, Tooltip } from '@mui/material';
+import { Menu as MenuIcon, Logout as LogoutIcon } from '@mui/icons-material';
 import React, { MouseEvent } from "react";
 
 import { useNavigate } from "react-router-dom";
 
 import { usePromiseEffect } from 'tagioalisi/services/async';
 import { getRoute } from 'tagioalisi/routes';
+import { useAuthentication } from 'tagioalisi/services/auth';
 
 
 export default () =>
@@ -20,7 +21,7 @@ export default () =>
   </Box>
 
 const Title = () => {
-  const [logo] = usePromiseEffect(() => import('tagioalisi/resources/cicada-avatar.png').then(it => it.default))
+  const [logo] = usePromiseEffect(() => import('tagioalisi/resources/cicada-avatar.png').then(it => it.default), [])
   return (<>
     <Typography variant="h6" component="div" sx={{ alignItems: 'center', textAlign: 'center', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
       {/* Show a wide title when the screen is wide */}
@@ -93,7 +94,18 @@ const DropDownNav = () => {
 }
 
 const AuthSegment = () => {
-  return <>
-    <Button color="inherit">Login</Button>
-  </>;
+  const [auth, login, logout] = useAuthentication();
+
+  React.useEffect(() => console.log(auth), [auth]);
+  return !auth.id ?
+    <Button color="inherit" onClick={() => login()}>Login</Button>
+    :
+    <>
+        <Tooltip title={auth.fullname ?? ''}>
+          <Avatar src={auth.avatarUrl}/>
+        </Tooltip>
+        <IconButton onClick={() => logout()}>
+          <LogoutIcon />
+        </IconButton>
+    </>;
 }

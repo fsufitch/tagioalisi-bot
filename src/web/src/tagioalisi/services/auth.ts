@@ -1,111 +1,70 @@
-import { useEffect } from 'react';
-import * as url from "url";
-
-import { useAPIEndpoint } from 'tagioalisi/services/api';
-import { useLocalStorage } from 'tagioalisi/services/localStorage';
+import { useAPIConnection } from './api';
+import { useSynchronizedJSONState } from './state';
+import { usePromiseEffect } from './async';
+import { useState, useEffect } from 'react';
 
 type AuthenticationToken = string;
 
 const AUTH_LOCALSTORAGE_JWT_KEY = 'tagioalisi.auth.jwt';
 
-export function useAuthentication() {
-  const [endpoint] = useAPIEndpoint();
-  const [jwt, setJWT] = useLocalStorage<AuthenticationToken>(AUTH_LOCALSTORAGE_JWT_KEY, '');
-
-  const login = () => {
-    window.location.href = `${endpoint}/login?return_url=${encodeURIComponent(window.location.href)}`;
-  }
-
-  const logout = () => {
-    fetch(`${endpoint}/logout`);
-    setJWT('');
-  }
-
-  return { jwt, setJWT, login, logout };
+interface AuthData {
+  jwt?: string;
+  id?: string;
+  fullname?: string;
+  avatarUrl?: string;
+  error?: string;
 }
 
-export const useOnLoadAuthenticationEffect = () => {
-  const { setJWT } = useAuthentication();
-  useEffect(() => {
-    const u = url.parse(document.location.href);
-    const params = new URLSearchParams(u.query ?? undefined);
-    const jwt = params?.get("jwt") ?? '';
+
+export function useAuthentication() {
+  const [endpoint] = useAPIConnection();
+
+  const [authData, setAuthData] = useSynchronizedJSONState<AuthData>(AUTH_LOCALSTORAGE_JWT_KEY, {});
+  usePromiseEffect(async () => {
+    const jwt = extractJWT();
     if (!jwt) {
       return;
     }
     console.log("Found JWT in URL: ", jwt);
-    setJWT(jwt);
 
-    params.delete("jwt");
-    u.search = params.toString() ? `?${params.toString()}` : "";
-    window.history.replaceState(null, "", url.format(u));
-  }, []);
-}
-
-interface UserData {
-  authenticated: boolean;
-  authPending: boolean;
-  error?: string;
-  id?: string;
-  fullname?: string;
-  avatarUrl?: string;
-}
-
-const AUTH_LOCALSTORAGE_USER_DATA_KEY = 'tagioalisi.auth.user-data';
-
-export function useAuthenticatedUserData(): [UserData, (val: UserData) => void] {
-  const [userData, setUserData] = useLocalStorage<UserData>(AUTH_LOCALSTORAGE_USER_DATA_KEY, { authenticated: false, authPending: false });
-  return [userData, setUserData];
-}
-
-export function useUpdateAuthenticatedUserDataEffect() {
-  const { jwt } = useAuthentication();
-  const [, setUserData] = useAuthenticatedUserData();
-  const [endpoint] = useAPIEndpoint();
-  console.log('fff');
-
-  useEffect(() => {
-    console.log('omg');
-    if (!jwt || !endpoint) {
-      setUserData({ authenticated: false, authPending: false });
-      return;
+    try {
+      const whoamiResponse = await fetch(`${endpoint.baseUrl}/whoami`, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      });
+      const { id, fullname, avatar_url: avatarUrl } = await whoamiResponse.json();
+      console.log("Logged in:", { jwt, id, fullname, avatarUrl });
+      setAuthData({ jwt, id, fullname, avatarUrl });
     }
+    catch (err) {
+      setAuthData({ error: `${err}` });
+    }
+  }, []);
 
-    setUserData({ authPending: true, authenticated: false });
-    new Promise(async () => {
-      let response: Response;
-      try {
-        response = await fetch(`${endpoint}/whoami`, {
-          headers: {
-            Authorization: `Bearer ${jwt}`
-          }
-        });
-      } catch (e) {
-        setUserData({
-          authenticated: false,
-          authPending: false,
-          error: `error running user data fetch: ${e}`,
-        })
-        return;
-      }
+  const login = () => {
+    window.location.href = `${endpoint.baseUrl}/login?return_url=${encodeURIComponent(window.location.href)}`;
+  }
 
-      if (response.status >= 200 && response.status < 300) {
-        const data = await response.json();
-        setUserData({
-          authenticated: true,
-          authPending: false,
-          id: data.id,
-          fullname: data.fullname,
-          avatarUrl: data.avatar_url,
-        })
-      } else {
-        setUserData({
-          authenticated: false,
-          authPending: false,
-          error: `Error (${response.status}): ${await response.text()}`,
-        });
-      }
-    });
-    console.log('wtf');
-  }, [jwt, endpoint]);
+  // Logout processing requires an effect to update state properly. Yucky, but React is React.
+  const [triggerLogout, setTriggerLogout] = useState<boolean>(false);
+  useEffect(() => {
+    if (triggerLogout) {
+      fetch(`${endpoint.baseUrl}/logout`)
+      setAuthData({});
+      setTriggerLogout(false);
+    }
+  })
+
+  const logout = () => setTriggerLogout(true);
+
+  return [authData, login, logout] as [AuthData, () => void, () => void];
+}
+
+
+const extractJWT = () => {
+  const u = new URL(document.location.href);
+  const jwt = u.searchParams.get("jwt") ?? '';
+  if (!jwt) { return '' };
+  u.searchParams.delete("jwt");
+  window.history.replaceState(null, "", u);
+  return jwt;
 }
