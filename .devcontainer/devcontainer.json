@@ -4,6 +4,7 @@
     "name": "Tagioalisi Devcontainer",
     "dockerComposeFile": "docker-compose.yml",
     "service": "devcontainer",
+    "runServices": ["db"],
     "workspaceFolder": "/home/developer/tagioalisi",
     "postStartCommand": "bash /home/developer/tagioalisi/.devcontainer/post-start.sh",
     "overrideCommand": true,

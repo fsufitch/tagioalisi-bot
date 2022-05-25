@@ -139,8 +139,13 @@ func InitializeMain() (Main, func(), error) {
 		cleanup()
 		return Main{}, nil, err
 	}
+	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
 	helloHandler := &web.HelloHandler{
-		Log: logger,
+		Log:                logger,
+		DebugMode:          debugMode,
+		BotModuleBlacklist: botModuleBlacklist,
+		ManagedGroupPrefix: managedGroupPrefix,
+		OAuth2Config:       oAuth2Config,
 	}
 	jwthmacSecret := config.ProvideJWTHMACSecretFromEnvironment()
 	aesBlock, err := config.ProvideAESBlockFromEnvironment()
@@ -160,7 +165,6 @@ func InitializeMain() (Main, func(), error) {
 		Log:       logger,
 		JWT:       jwtSupport,
 	}
-	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
 	loginHandler := &web.LoginHandler{
 		OAuth2Config: oAuth2Config,
 		AES:          aesSupport,

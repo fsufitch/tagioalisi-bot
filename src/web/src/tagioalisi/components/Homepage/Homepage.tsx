@@ -1,7 +1,10 @@
 import React from 'react';
 import { Avatar, Box, Grid, type SxProps, Typography, Theme, Stack, Icon } from '@mui/material';
-import { usePromiseEffect } from '../services/async';
-import { InlineOpenInNewIcon } from '../services/styleUtils';
+import { usePromiseEffect } from 'tagioalisi/services/async';
+import { InlineOpenInNewIcon } from 'tagioalisi/services/styleUtils';
+import { useHelloQuery } from 'tagioalisi/services/endpoints/hello';
+import AddToServerBanner from './AddToServerBanner';
+
 const sxLogo: SxProps<Theme> = {
     width: {
         xs: '25vw',
@@ -11,8 +14,11 @@ const sxLogo: SxProps<Theme> = {
 };
 
 export default () => {
-    const [tagiLogo] = usePromiseEffect(() => import('tagioalisi/resources/cicada-avatar.png').then(it => it.default), [])
-    const [discordLogo] = usePromiseEffect(() => import('tagioalisi/resources/discord-color.svg').then(it => it.default), [])
+    const [tagiLogo] = usePromiseEffect(() => import('tagioalisi/resources/cicada-avatar.png').then(it => it.default), []);
+    const [discordLogo] = usePromiseEffect(() => import('tagioalisi/resources/discord-color.svg').then(it => it.default), []);
+
+    const helloData = useHelloQuery();
+
     return (
         <Grid container>
             <Grid item xs={12} md={9}>
@@ -35,16 +41,18 @@ export default () => {
                     <Typography variant='body1'>
                         Go on, let <em>Tagioalisi</em> into your life (and your Discord server).
                     </Typography>
+
+                    <AddToServerBanner helloData={helloData} />
                 </Stack>
             </Grid>
 
-            <Grid item xs={12} md={3}>
-                <Stack direction={{ xs: 'row', md: 'column' }} spacing={2} sx={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
+            <Grid item xs={12} md={3} display="flex">
+                <Stack direction={{ xs: 'row', md: 'column' }} spacing={2} sx={{ flexGrow: 1, alignItems: 'center', justifyContent: 'space-evenly' }}>
                     <Avatar src={tagiLogo} sx={{ ...sxLogo }} />
                     <Box component='img' src={discordLogo} sx={{ ...sxLogo }} />
                 </Stack>
             </Grid>
 
         </Grid>
-    )
+        )
 }
