@@ -22,5 +22,5 @@ clean:
 ##### Real targets
 
 ${BINARIES}: ${SOURCES}
-	yarn run webpack --mode ${WEBPACK_MODE}
+	yarn run webpack:esm --mode ${WEBPACK_MODE}
 	find dist | xargs touch
