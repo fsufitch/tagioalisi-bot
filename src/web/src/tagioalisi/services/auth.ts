@@ -40,9 +40,10 @@ export function useAuthentication() {
     }
   }, []);
 
-  const login = () => {
+  const [triggerLogin, setTriggerLogin] = useState<boolean>(false);
+  useEffect(() => {
     window.location.href = `${endpoint.baseUrl}/login?return_url=${encodeURIComponent(window.location.href)}`;
-  }
+  }, [triggerLogin]);
 
   // Logout processing requires an effect to update state properly. Yucky, but React is React.
   const [triggerLogout, setTriggerLogout] = useState<boolean>(false);
@@ -54,6 +55,7 @@ export function useAuthentication() {
     }
   })
 
+  const login = () => setTriggerLogin(true);
   const logout = () => setTriggerLogout(true);
 
   return [authData, login, logout] as [AuthData, () => void, () => void];
