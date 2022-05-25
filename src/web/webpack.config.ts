@@ -103,10 +103,8 @@ const configureHTML = async (prod: boolean): Promise<Configuration> => {
 const configureAssets = async (prod: boolean): Promise<Configuration> => ({
     module: {
         rules: [
-            {
-                test: /\.png/,
-                type: 'asset/resource'
-            }
+            { test: /\.png/i, type: 'asset/resource' },
+            { test: /\.svg/i, type: 'asset/resource' },
         ]
     },
 });

@@ -10,7 +10,7 @@ import { useAuthentication } from 'tagioalisi/services/auth';
 
 
 export default () =>
-  <Box sx={{ flexGrow: 1 }}>
+  <Box>
     <AppBar position="sticky">
       <Toolbar>
         <DropDownNav />
