@@ -1,8 +1,4 @@
 GO_PACKAGE=github.com/fsufitch/tagioalisi-bot
-SOURCES=$(shell find . -type f -a \
-	-not -path './bin/*' -a \
-	-not -path './.gitignore' -a \
-	-not -path './Dockerfile')
 
 PLATFORM_NAME=$(shell echo $$(uname -s)-$$(uname -m) | tr '[:upper:]' '[:lower:]')
 
@@ -14,32 +10,32 @@ endif
 BIN_BOT=bin/${PLATFORM_NAME}/tagioalisi-bot${EXT}
 BIN_MIGRATIONS=bin/${PLATFORM_NAME}/tagioalisi-migrations${EXT}
 
+SOURCES=$(shell find . -type f -a \
+	-not -path './bin/*' -a \
+	-not -path './.gitignore' -a \
+	-not -path './Dockerfile')
+SOURCES_MANUAL=$(shell for s in ${SOURCES}; do echo $$s | grep -v '_gen.go'; done)
+SOURCES_GENERATED=$(shell for s in ${SOURCES}; do echo $$s | grep '_gen.go'; done)
 
 # === Phonies
 
-.PHONY: all build bot migrations tests wire
-all: build
+.PHONY: all build bot generate proto migrations tests
+all: proto generate build
 
-build: wire bot migrations tests
+build: bot migrations tests
 
 bot: ${BIN_BOT}
 
+generate: ${SOURCES_GENERATED}
+
 migrations: ${BIN_MIGRATIONS}
 
-tests: wire ${BIN_TESTS}
+tests: ${BIN_TESTS}
 
-# Use Google Wire to generate compile-time DI code
-wire:
-	@sh -c ' \
-	TARGET_PLATFORM=$$(go env GOOS)/$$(go env GOARCH); \
-	BUILD_PLATFORM=$$(GOOS= GOARCH= go env GOOS)/$$(GOOS= GOARCH= go env GOARCH); \
-	if [ "$${TARGET_PLATFORM}" = "$${BUILD_PLATFORM}" ] ; then \
-		set -x; \
-		go run github.com/google/wire/cmd/wire ./...; \
-	else \
-		echo "WARNING: not running Wire because target platform is not build platform; $${TARGET_PLATFORM} != $${BUILD_PLATFORM}" > /dev/stderr; \
-	fi; \
-	'
+# Use Protoc to create the Go Protobuf/GRPC stubs
+proto:
+	make -C proto
+
 
 # === Platform phonies
 
@@ -58,7 +54,6 @@ windows/amd64:
 	make GOOS=windows GOARCH=amd64 PLATFORM_NAME=windows-x86_64 build
 
 
-
 # === Real targets
 
 ${BIN_BOT}: ${SOURCES}
@@ -66,6 +61,11 @@ ${BIN_BOT}: ${SOURCES}
 
 ${BIN_MIGRATIONS}: ${SOURCES}
 	go build -o ${BIN_MIGRATIONS} ${GO_PACKAGE}/cmd/tagi-migrate
+
+${SOURCES_GENERATED}: ${SOURCES_MANUAL}
+	@echo Ignoring GOOS/GOARCH setting since code generation should be platform-independent
+	GOOS= GOARCH= go generate ./...    
+
 
 # === Actions
 

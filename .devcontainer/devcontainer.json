@@ -22,7 +22,9 @@
         // "michelemelluso.code-beautifier",  // css/sass/scss/less
         // "mrmlnc.vscode-scss",
         "pmneo.tsimporter",
-        "stringham.move-ts"
+        "stringham.move-ts",
+        // Proto
+        "zxh404.vscode-proto3"
     ],
     "remoteEnv": {
         "SASS_PATH": "${containerWorkspaceFolder}/webui/node_modules:${containerWorkspaceFolder}/webui/src"
