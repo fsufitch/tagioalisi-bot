@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, IconButton, Typography, Toolbar, Menu, MenuItem, Avatar, Tooltip } from '@mui/material';
+import { AppBar, Box, Button, IconButton, Typography, Toolbar, Menu, MenuItem, Avatar, Tooltip, Switch } from '@mui/material';
 import { Menu as MenuIcon, Logout as LogoutIcon } from '@mui/icons-material';
 import React, { MouseEvent } from "react";
 
@@ -7,7 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { usePromiseEffect } from 'tagioalisi/services/async';
 import { getRoute } from 'tagioalisi/routes';
 import { useAuthentication } from 'tagioalisi/services/auth';
+import { useSynchronizedState } from 'tagioalisi/services/state';
 
+import { ColorModeContext } from 'tagioalisi/Theme';
 
 export default () =>
   <Box>
@@ -86,8 +88,11 @@ const DropDownNav = () => {
       onClose={closeNav}
     >
       {
-        DROP_DOWN_NAV_LINKS.map(({ routeId, text }) => <NavLink key={routeId} routeId={routeId} text={text} />)
+        DROP_DOWN_NAV_LINKS.map(({ routeId, text }) =>
+          <NavLink key={routeId} routeId={routeId} text={text} />
+        )
       }
+      <DisplayModeToggle />
     </Menu>
   </Box>
 
@@ -101,11 +106,28 @@ const AuthSegment = () => {
     <Button color="inherit" onClick={() => login()}>Login</Button>
     :
     <>
-        <Tooltip title={auth.fullname ?? ''}>
-          <Avatar src={auth.avatarUrl}/>
-        </Tooltip>
-        <IconButton onClick={() => logout()}>
-          <LogoutIcon />
-        </IconButton>
+      <Tooltip title={auth.fullname ?? ''}>
+        <Avatar src={auth.avatarUrl} />
+      </Tooltip>
+      <IconButton onClick={() => logout()}>
+        <LogoutIcon />
+      </IconButton>
     </>;
+}
+
+const DisplayModeToggle = () => {
+  const colorModeContext = React.useContext(ColorModeContext);
+  const colorMode = colorModeContext.getColorMode();
+  const toggleMode = () => colorMode == 'light' ? colorModeContext.setColorMode('dark') : colorModeContext.setColorMode('light');
+
+  return <MenuItem onClick={toggleMode}>
+    <Typography textAlign="center">
+      <Switch checked={colorMode == 'dark'} />
+      {
+        colorMode == 'light' ? "Light mode" :
+          colorMode == 'dark' ? "Dark mode" :
+            "Default mode"
+      }
+    </Typography>
+  </MenuItem>;
 }
