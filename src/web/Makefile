@@ -12,8 +12,11 @@ WEBPACK_MODE=production
 
 ##### Phonies
 
-.PHONY: build clean
+.PHONY: proto build clean
 build: ${BINARIES}
+
+proto:
+	make -C src/tagioalisi/proto
 
 clean:
 	rm -rf dist
