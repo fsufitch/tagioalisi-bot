@@ -2,8 +2,9 @@ import React from 'react';
 import { useAuthentication } from '../auth';
 import { usePromiseEffect } from '../async';
 import { useAPIConnection } from '../api';
+import { useSynchronizedState } from '../state';
+import { appendFileSync } from 'fs';
 
-// {"debug_mode":true,"discord_client_id":"674763618008694795","bot_module_blacklist":[""],"group_prefix":"g-"}
 
 export interface HelloResponse {
     pending: boolean;
@@ -14,34 +15,58 @@ export interface HelloResponse {
         discordClientId: string;
         botModuleBlacklist: string[];
         groupPrefix: string;
+        uptimeSeconds: number;
     }
     error?: string;
 }
 
-export const useHelloQuery = (deps: React.DependencyList = []) => {
-    const [response, setResponse] = React.useState<HelloResponse>({
-        pending: false, done: false, ok: false,
-    });
+interface CachedHelloResponse {
+    timeUnixMillis: number,
+    ttlMillis: number,
+    response?: HelloResponse,
+}
 
+const CACHE_KEY = 'tagioalisi/api/hello/cache';
+const CACHE_TTL_MS = 1000;
+
+export const useHelloQuery = (deps: React.DependencyList = []) => {
+    const [cachedResponse, setCachedResponse] = useSynchronizedState<CachedHelloResponse>(CACHE_KEY, { timeUnixMillis: 0, ttlMillis: 0 }, JSON.stringify, JSON.parse);
     const [api] = useAPIConnection();
+
+    // XXX: improve multi-query on page load? idk lol.
+    
     React.useEffect(() => {
-        setResponse({ pending: true, done: false, ok: false });
+        const nowUnixMillis = Date.now();
+        if (nowUnixMillis - cachedResponse.timeUnixMillis < cachedResponse.ttlMillis) {
+            return; // cache hit, nothing to do
+        }
+        console.log(`CACHE MISS @ ${nowUnixMillis}`, cachedResponse);
+        setCachedResponse({ timeUnixMillis: nowUnixMillis, ttlMillis: 5000, response: { pending: true, done: false, ok: false } });
         fetch(`${api.baseUrl}`)
             .then(response => response.json())
-            .then(responseJSON => setResponse({
-                pending: false, done: true, ok: true,
-                result: {
-                    debugMode: !!responseJSON.debug_mode,
-                    discordClientId: `${responseJSON.discord_client_id}`,
-                    botModuleBlacklist: responseJSON.bot_module_blacklist || [],
-                    groupPrefix: `${responseJSON.group_prefix}`,
+            .then(responseJSON => setCachedResponse({
+                timeUnixMillis: nowUnixMillis,
+                ttlMillis: CACHE_TTL_MS,
+                response: {
+                    pending: false, done: true, ok: true,
+                    result: {
+                        debugMode: !!responseJSON.debug_mode,
+                        discordClientId: `${responseJSON.discord_client_id}`,
+                        botModuleBlacklist: responseJSON.bot_module_blacklist || [],
+                        groupPrefix: `${responseJSON.group_prefix}`,
+                        uptimeSeconds: responseJSON.uptime_seconds || 0.0,
+                    },
                 },
             }))
-            .catch(err => setResponse({
-                pending: false, done: true, ok: false, error: `${err}`,
+            .catch(err => setCachedResponse({
+                timeUnixMillis: nowUnixMillis,
+                ttlMillis: CACHE_TTL_MS,
+                response: {
+                    pending: false, done: true, ok: false, error: `${err}`,
+                },
             }));
 
     }, [api, ...deps]);
 
-    return response;
+    return cachedResponse.response ?? { done: false, ok: false, pending: false };
 }

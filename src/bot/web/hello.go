@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/fsufitch/tagioalisi-bot/config"
 	"github.com/fsufitch/tagioalisi-bot/log"
@@ -13,6 +14,7 @@ type HelloHandler struct {
 	Log *log.Logger
 
 	DebugMode          config.DebugMode
+	LaunchTime         config.LaunchTime
 	BotModuleBlacklist config.BotModuleBlacklist
 	ManagedGroupPrefix config.ManagedGroupPrefix
 	OAuth2Config       config.OAuth2Config
@@ -24,6 +26,7 @@ type HelloResponse struct {
 	DiscordClientID    string   `json:"discord_client_id"`
 	BotModuleBlacklist []string `json:"bot_module_blacklist"`
 	GroupPrefix        string   `json:"group_prefix"`
+	UptimeSeconds      float64  `json:"uptime_seconds"`
 }
 
 // ServeHTTP just says hello world
@@ -32,6 +35,7 @@ func (h HelloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		DebugMode:       bool(h.DebugMode),
 		DiscordClientID: h.OAuth2Config.ClientID,
 		GroupPrefix:     string(h.ManagedGroupPrefix),
+		UptimeSeconds:   time.Since(time.Time(h.LaunchTime)).Seconds(),
 	}
 
 	botModuleBlacklist := []string{}

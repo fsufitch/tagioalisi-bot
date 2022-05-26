@@ -139,10 +139,12 @@ func InitializeMain() (Main, func(), error) {
 		cleanup()
 		return Main{}, nil, err
 	}
+	launchTime := config.ProvideLaunchTime()
 	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
 	helloHandler := &web.HelloHandler{
 		Log:                logger,
 		DebugMode:          debugMode,
+		LaunchTime:         launchTime,
 		BotModuleBlacklist: botModuleBlacklist,
 		ManagedGroupPrefix: managedGroupPrefix,
 		OAuth2Config:       oAuth2Config,

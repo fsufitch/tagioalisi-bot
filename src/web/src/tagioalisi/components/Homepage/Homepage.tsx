@@ -4,6 +4,8 @@ import { usePromiseEffect } from 'tagioalisi/services/async';
 import { InlineOpenInNewIcon } from 'tagioalisi/services/styleUtils';
 import { useHelloQuery } from 'tagioalisi/services/endpoints/hello';
 import AddToServerBanner from './AddToServerBanner';
+import YourServers from './YourServers';
+import TechDetails from './TechDetails';
 
 const sxLogo: SxProps<Theme> = {
     width: {
@@ -42,7 +44,7 @@ export default () => {
                         Go on, let <em>Tagioalisi</em> into your life (and your Discord server).
                     </Typography>
 
-                    <AddToServerBanner helloData={helloData} />
+                    <AddToServerBanner />
                 </Stack>
             </Grid>
 
@@ -51,6 +53,13 @@ export default () => {
                     <Avatar src={tagiLogo} sx={{ ...sxLogo }} />
                     <Box component='img' src={discordLogo} sx={{ ...sxLogo }} />
                 </Stack>
+            </Grid>
+
+            <Grid item xs={12} md={6} padding={2}>
+                <YourServers />
+            </Grid>
+            <Grid item xs={12} md={6} padding={2}>
+                <TechDetails />
             </Grid>
 
         </Grid>

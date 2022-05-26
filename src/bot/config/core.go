@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"strconv"
+	"time"
 )
 
 // DebugMode is whether a debug state is set
@@ -32,4 +33,11 @@ type UserAgent string
 // ProvideUserAgent creates a basic user agent to use
 func ProvideUserAgent() UserAgent {
 	return "tagioalisi-bot"
+}
+
+// LaunchTime is the time.Time when the bot was launched
+type LaunchTime time.Time
+
+func ProvideLaunchTime() LaunchTime {
+	return LaunchTime(time.Now())
 }

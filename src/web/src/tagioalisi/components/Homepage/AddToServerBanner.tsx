@@ -1,16 +1,18 @@
 import React from 'react';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import { HelloResponse } from 'tagioalisi/services/endpoints/hello';
-import { InlineOpenInNewIcon } from '../../services/styleUtils';
+import { InlineOpenInNewIcon } from 'tagioalisi/services/styleUtils';
+import { useHelloQuery } from 'tagioalisi/services/endpoints/hello';
 
 const BOT_PERMISSIONS = "275149741136";
 
-export default (props: { helloData: HelloResponse }) => {
+export default () => {
+    const helloData = useHelloQuery();
     const [linkURL, setLinkURL] = React.useState<string>("");
     const [hoverMessage, setHoverMessage] = React.useState<string>("");
 
     React.useEffect(() => {
-        const clientID = props.helloData.result?.discordClientId ?? "";
+        const clientID = helloData.result?.discordClientId ?? "";
         if (!!clientID) {
             const addToServerURL = new URL("https://discord.com/api/oauth2/authorize");
             addToServerURL.searchParams.set("scope", "bot applications.commands");
@@ -21,11 +23,11 @@ export default (props: { helloData: HelloResponse }) => {
             return;
         }
         setLinkURL("");
-        if (props.helloData.pending) {
+        if (helloData.pending) {
             setHoverMessage("Looking up bot details...");
-        } else if (props.helloData.done && props.helloData.error) {
-            setHoverMessage(`Error: ${props.helloData.error}`);
-            console.error(props.helloData.error);
+        } else if (helloData.done && helloData.error) {
+            setHoverMessage(`Error: ${helloData.error}`);
+            console.error(helloData.error);
         } else {
             setHoverMessage(`Error: invalid state`);
         }
@@ -35,12 +37,14 @@ export default (props: { helloData: HelloResponse }) => {
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center', padding: 3 }}>
             <Tooltip title={hoverMessage}>
+                <span> {/* span required to be able to trigger the tooltip*/}
                 <Button variant='contained' color='success' disabled={!linkURL} href={linkURL} target="_blank" >
                     <Typography variant='h5'>
                         Install Tagioalisi
                         <InlineOpenInNewIcon />
                     </Typography>
                 </Button>
+                </span>
             </Tooltip>
         </Box>);
 }

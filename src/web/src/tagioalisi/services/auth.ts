@@ -7,7 +7,7 @@ type AuthenticationToken = string;
 
 const AUTH_LOCALSTORAGE_JWT_KEY = 'tagioalisi.auth.jwt';
 
-interface AuthData {
+export interface AuthData {
   jwt?: string;
   id?: string;
   fullname?: string;
