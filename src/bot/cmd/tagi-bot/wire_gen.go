@@ -24,7 +24,9 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/db/acl-dao"
 	"github.com/fsufitch/tagioalisi-bot/db/connection"
 	"github.com/fsufitch/tagioalisi-bot/db/memes-dao"
+	"github.com/fsufitch/tagioalisi-bot/grpc"
 	"github.com/fsufitch/tagioalisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/proto"
 	"github.com/fsufitch/tagioalisi-bot/security"
 	"github.com/fsufitch/tagioalisi-bot/web"
 )
@@ -188,7 +190,22 @@ func InitializeMain() (Main, func(), error) {
 		Router: router,
 	}
 	webRunFunc := ProvideWebRunFunc(tagioalisiAPIServer)
-	mainMain, cleanup2, err := ProvideMain(interruptContext, tagioalisiBot, logger, debugMode, cliLoggingBootstrapper, webRunFunc)
+	grpcPort, err := config.ProvideGRPCPortFromEnvironment()
+	if err != nil {
+		cleanup()
+		return Main{}, nil, err
+	}
+	unimplementedGreeterServer := proto.UnimplementedGreeterServer{}
+	greeterServer := grpc.GreeterServer{
+		UnimplementedGreeterServer: unimplementedGreeterServer,
+		Log:                        logger,
+	}
+	tagioalisiGRPCServer := grpc.TagioalisiGRPCServer{
+		Port:          grpcPort,
+		Log:           logger,
+		GreeterServer: greeterServer,
+	}
+	mainMain, cleanup2, err := ProvideMain(interruptContext, tagioalisiBot, logger, debugMode, cliLoggingBootstrapper, webRunFunc, tagioalisiGRPCServer)
 	if err != nil {
 		cleanup()
 		return Main{}, nil, err

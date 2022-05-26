@@ -7,6 +7,7 @@ import (
 
 	"github.com/fsufitch/tagioalisi-bot/bot"
 	"github.com/fsufitch/tagioalisi-bot/config"
+	"github.com/fsufitch/tagioalisi-bot/grpc"
 	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
@@ -18,10 +19,11 @@ var banner = []string{
 
 // Main is an initialized runtime with all necessary dependencies injected
 type Main struct {
-	context context.Context
-	log     *log.Logger
-	bot     bot.Bot
-	webRun  WebRunFunc
+	context    context.Context
+	log        *log.Logger
+	bot        bot.Bot
+	webRun     WebRunFunc
+	grpcServer grpc.TagioalisiGRPCServer
 }
 
 // Main is what it says on the tin
@@ -40,6 +42,11 @@ func (m Main) Main() int {
 		}
 	}()
 
+	grpcError := make(chan error)
+	go func() {
+		grpcError <- m.grpcServer.Run()
+	}()
+
 	select {
 	case err := <-botError:
 		m.log.Criticalf("critical bot error: %v", err)
@@ -54,13 +61,21 @@ func (m Main) Main() int {
 }
 
 // ProvideMain initializes the main process
-func ProvideMain(ctx InterruptContext, bot bot.Bot, log *log.Logger, debugMode config.DebugMode, cliBS log.CLILoggingBootstrapper, webRun WebRunFunc) (Main, func(), error) {
+func ProvideMain(
+	ctx InterruptContext,
+	bot bot.Bot,
+	log *log.Logger,
+	debugMode config.DebugMode,
+	cliBS log.CLILoggingBootstrapper,
+	webRun WebRunFunc,
+	grpcServer grpc.TagioalisiGRPCServer,
+) (Main, func(), error) {
 	cliBS.Start()
 	for _, line := range banner {
 		log.Infof(line)
 	}
 	log.Infof("Debug mode: %v", debugMode)
-	return Main{ctx, log, bot, webRun}, func() { cliBS.Stop() }, nil
+	return Main{ctx, log, bot, webRun, grpcServer}, func() { cliBS.Stop() }, nil
 }
 
 func main() {
