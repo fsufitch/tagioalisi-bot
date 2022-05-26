@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/fsufitch/pimote/protos";
+option go_package = "github.com/fsufitch/tagioalisi-bot/proto";
 package tagioalisi;
 
 // The request message containing the user's name.

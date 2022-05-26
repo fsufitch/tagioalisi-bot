@@ -9,6 +9,7 @@ services:
       - ../.env
     ports:
       - "${BOT_EXPOSE_PORT}:${BOT_PORT}"
+      - "${BOT_GRPC_EXPOSE_PORT}:${BOT_GRPC_PORT}"
     depends_on:
       - "db"
     networks:
