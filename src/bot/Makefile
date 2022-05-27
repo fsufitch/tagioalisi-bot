@@ -64,7 +64,8 @@ ${BIN_MIGRATIONS}: ${SOURCES}
 
 ${SOURCES_GENERATED}: ${SOURCES_MANUAL}
 	@echo Ignoring GOOS/GOARCH setting since code generation should be platform-independent
-	GOOS= GOARCH= go run github.com/google/wire/cmd/wire@latest ./...    
+	GOOS= GOARCH= go get -u github.com/google/wire/cmd/wire@latest
+	GOOS= GOARCH= go run github.com/google/wire/cmd/wire ./...    
 
 
 # === Actions
