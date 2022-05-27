@@ -72,8 +72,12 @@ func patchGoogExportsToCjs(file string) bool {
 		}
 	}
 
-	editedContent := bytes.Join(editedLines, []byte{'\n'})
-	if err := ioutil.WriteFile(file, editedContent, 0); err != nil {
+	editedContent := bytes.Buffer{}
+	for _, line := range editedLines {
+		editedContent.Write(line)
+		editedContent.WriteByte('\n')
+	}
+	if err := ioutil.WriteFile(file, editedContent.Bytes(), 0); err != nil {
 		logError.Printf("failed to write %s: %v", file, err)
 		return false
 	}
