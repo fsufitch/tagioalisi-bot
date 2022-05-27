@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 
 type AuthenticationToken = string;
 
-const AUTH_LOCALSTORAGE_JWT_KEY = 'tagioalisi.auth.jwt';
+const AUTH_LOCALSTORAGE_JWT_KEY = 'tagioalisi/auth/jwt';
 
 export interface AuthData {
   jwt?: string;

@@ -11,6 +11,10 @@ import {
 } from '@mui/icons-material';
 import { useHelloQuery } from '../../services/endpoints/hello';
 import { InlineOpenInNewIcon } from '../../services/styleUtils';
+import { useGreeterClient } from '../../services/grpc';
+import { HelloRequest } from 'tagioalisi/proto/hello_pb';
+
+import { BrowserHeaders } from 'browser-headers';
 
 const GITHUB_URL = 'https://github.com/fsufitch/tagioalisi-bot';
 
@@ -29,7 +33,23 @@ export default () => {
         }
     }, [helloData]);
 
-
+    const [greeterMessage, setGreeterMessage] = React.useState<string>('');
+    const greeterClient = useGreeterClient();
+    React.useEffect(() => {
+        const req = new HelloRequest();
+        req.setName("froobar frontend");
+        greeterClient.sayHello(req, new BrowserHeaders(), (err, reply) => {
+            if (!!err) {
+                console.error(err);
+                return;
+            }
+            if (!reply) {
+                console.error('empty reply');
+                return;
+            }
+            setGreeterMessage(reply.getMessage());
+        });
+    }, [])
 
     return <Paper>
         <List>
@@ -82,6 +102,12 @@ export default () => {
                             <BugIcon />
                         </ListItemIcon>
                         <ListItemText> Debug mode: {helloData.result.debugMode ? "on" : "off"} </ListItemText>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemIcon>
+                            <BugIcon />
+                        </ListItemIcon>
+                        <ListItemText> greeter message: {greeterMessage} </ListItemText>
                     </ListItem>
                 </>
             }

@@ -49,6 +49,12 @@ const configureTypescript = async (prod: boolean): Promise<Configuration> => {
         'app': path.join(__dirname, 'src', 'app.tsx'),
     }
 
+    // const { default: ForkTsCheckerWebpackPlugin } = await import('fork-ts-checker-webpack-plugin');
+
+    // const plugins = [
+    //     new ForkTsCheckerWebpackPlugin()
+    // ]
+
     return { entry, resolve, module };
 }
 
@@ -170,6 +176,6 @@ export default async (env: any, argv: any) => {
         configureStyles,
         configureAssets,
     ])
-    console.log(config);
+    // console.log(config);
     return config;
 }
