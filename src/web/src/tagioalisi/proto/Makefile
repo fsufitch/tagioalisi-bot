@@ -34,12 +34,13 @@ build: ${OUTPUTS}
 #
 # May TC39 have mercy on my soul.
 ${OUTPUTS}: ${PROTO_SRC_DIR}/*.proto
+	mkdir -p _cjs _esm
 	protoc \
 	    --plugin="protoc-gen-ts=$(shell yarn bin)/protoc-gen-ts" \
-		--js_out="import_style=commonjs:." \
-		--ts_out="service=grpc-web:." \
+		--js_out="import_style=commonjs:_cjs" \
+		--ts_out="service=grpc-web:_cjs" \
 		-I=${PROTO_SRC_DIR} ${PROTO_SRC_DIR}/*.proto
-	go run goog_to_cjs_export.go *.js
-	set -x; for commonjs_src in *.js; do npx cjstoesm $$commonjs_src converted; done
-	mv converted/* .
-	rm -r converted
+	go run goog_to_cjs_export.go _cjs/*.js
+	set -x; for commonjs_src in *.js; do npx cjstoesm $$commonjs_src _esm; done
+	mv _esm/* .
+	rm -r _cjs _esm

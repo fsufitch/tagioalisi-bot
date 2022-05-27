@@ -184,28 +184,21 @@ func InitializeMain() (Main, func(), error) {
 		JWT: jwtSupport,
 	}
 	router := web.ProvideRouter(helloHandler, sockpuppetHandler, loginHandler, authCodeHandler, logoutHandler, whoAmIHandler)
-	tagioalisiAPIServer := web.TagioalisiAPIServer{
-		Port:   botWebAPIPort,
-		Log:    logger,
-		Router: router,
-	}
-	webRunFunc := ProvideWebRunFunc(tagioalisiAPIServer)
-	grpcPort, err := config.ProvideGRPCPortFromEnvironment()
-	if err != nil {
-		cleanup()
-		return Main{}, nil, err
-	}
 	unimplementedGreeterServer := proto.UnimplementedGreeterServer{}
-	greeterServer := grpc.GreeterServer{
+	greeterServer := &grpc.GreeterServer{
 		UnimplementedGreeterServer: unimplementedGreeterServer,
 		Log:                        logger,
 	}
-	tagioalisiGRPCServer := grpc.TagioalisiGRPCServer{
-		Port:          grpcPort,
-		Log:           logger,
-		GreeterServer: greeterServer,
+	tagioalisiGRPC := grpc.ProvideTagioalisiGRPC(logger, greeterServer)
+	wrapGRPCWebsocketFunc := grpc.ProvideWrapGRPCWebsocketFunc(tagioalisiGRPC)
+	tagioalisiAPIServer := web.TagioalisiAPIServer{
+		Port:            botWebAPIPort,
+		Log:             logger,
+		Router:          router,
+		GRPCWrapperFunc: wrapGRPCWebsocketFunc,
 	}
-	mainMain, cleanup2, err := ProvideMain(interruptContext, tagioalisiBot, logger, debugMode, cliLoggingBootstrapper, webRunFunc, tagioalisiGRPCServer)
+	webRunFunc := ProvideWebRunFunc(tagioalisiAPIServer)
+	mainMain, cleanup2, err := ProvideMain(interruptContext, tagioalisiBot, logger, debugMode, cliLoggingBootstrapper, webRunFunc)
 	if err != nil {
 		cleanup()
 		return Main{}, nil, err

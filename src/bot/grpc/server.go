@@ -1,38 +1,47 @@
 package grpc
 
 import (
-	"fmt"
-	"net"
+	"net/http"
 
-	"github.com/fsufitch/tagioalisi-bot/config"
 	"github.com/fsufitch/tagioalisi-bot/log"
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"google.golang.org/grpc"
 
 	pb "github.com/fsufitch/tagioalisi-bot/proto"
 )
 
-// TagioalisiGRPCServer is a struct describing a Tagioalisi gRPC interface
-type TagioalisiGRPCServer struct {
-	Port          config.GRPCPort
-	Log           *log.Logger
-	GreeterServer GreeterServer
-}
+type TagioalisiGRPC *grpc.Server
 
-// Run is a blocking function that starts and serves the gRPC server
-func (s TagioalisiGRPCServer) Run() error {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", s.Port))
-	if err != nil {
-		s.Log.Errorf("failed to listen: %v", err)
-		return fmt.Errorf("failed to listen: %w", err)
-	}
-
+func ProvideTagioalisiGRPC(
+	log *log.Logger,
+	// Add other GRPC services here, as they become supported
+	GreeterServer *GreeterServer,
+) TagioalisiGRPC {
 	serv := grpc.NewServer()
 
-	pb.RegisterGreeterServer(serv, &s.GreeterServer)
-	s.Log.Infof("grpc server listening at %v", lis.Addr())
-	if err := serv.Serve(lis); err != nil {
-		s.Log.Errorf("failed to serve: %v", err)
-		return fmt.Errorf("failed to serve: %w", err)
+	// Add other GRPC services here, as they become supported
+	pb.RegisterGreeterServer(serv, GreeterServer)
+
+	return TagioalisiGRPC(serv)
+}
+
+type WrapGRPCWebsocketFunc func(inner http.Handler) http.Handler
+
+func ProvideWrapGRPCWebsocketFunc(serv TagioalisiGRPC) WrapGRPCWebsocketFunc {
+	webserv := grpcweb.WrapServer(serv,
+		grpcweb.WithOriginFunc(func(string) bool { return true }),
+		grpcweb.WithAllowNonRootResource(true),
+		grpcweb.WithWebsockets(true),
+		grpcweb.WithWebsocketOriginFunc(func(*http.Request) bool { return true }), // TODO: Tighten this?
+	)
+
+	return func(inner http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if webserv.IsGrpcWebSocketRequest(r) {
+				webserv.HandleGrpcWebsocketRequest(w, r)
+				return
+			}
+			inner.ServeHTTP(w, r)
+		})
 	}
-	return fmt.Errorf("grpc server shut down with no error")
 }

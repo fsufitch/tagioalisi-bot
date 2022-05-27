@@ -8,10 +8,11 @@ import {
     LocalFireDepartment as FireIcon,
     People as PeopleIcon,
     Refresh as RefreshIcon,
+    Webhook as WebhookIcon,
 } from '@mui/icons-material';
-import { useHelloQuery } from '../../services/endpoints/hello';
-import { InlineOpenInNewIcon } from '../../services/styleUtils';
-import { useGreeterClient } from '../../services/grpc';
+import { useHelloQuery } from 'tagioalisi/services/endpoints/hello';
+import { InlineOpenInNewIcon } from 'tagioalisi/services/styleUtils';
+import { useGreeterClient } from 'tagioalisi/services/grpc';
 import { HelloRequest } from 'tagioalisi/proto/hello_pb';
 
 import { BrowserHeaders } from 'browser-headers';
@@ -33,23 +34,25 @@ export default () => {
         }
     }, [helloData]);
 
-    const [greeterMessage, setGreeterMessage] = React.useState<string>('');
+    const [grpcWorks, setGrpcWorks] = React.useState<boolean>(false);
     const greeterClient = useGreeterClient();
     React.useEffect(() => {
         const req = new HelloRequest();
-        req.setName("froobar frontend");
+        req.setName("TEST GREETER");
         greeterClient.sayHello(req, new BrowserHeaders(), (err, reply) => {
             if (!!err) {
                 console.error(err);
+                setGrpcWorks(false);
                 return;
             }
-            if (!reply) {
-                console.error('empty reply');
+            if (!reply || !reply.getMessage().includes("TEST GREETER")) {
+                console.error('wrong message');
+                setGrpcWorks(false);
                 return;
             }
-            setGreeterMessage(reply.getMessage());
+            setGrpcWorks(true);
         });
-    }, [])
+    }, [helloTriggerCounter])
 
     return <Paper>
         <List>
@@ -62,6 +65,12 @@ export default () => {
                         <RefreshIcon />
                     </IconButton>
                 </ListItemSecondaryAction>
+            </ListItem>
+            <ListItem>
+                <ListItemIcon>
+                    <WebhookIcon />
+                </ListItemIcon>
+                <ListItemText> Websocket gRPC-Web connection: {grpcWorks ? 'online' : 'offline'} </ListItemText>
             </ListItem>
             {!helloData.result ?
                 <ListItem>
@@ -103,12 +112,7 @@ export default () => {
                         </ListItemIcon>
                         <ListItemText> Debug mode: {helloData.result.debugMode ? "on" : "off"} </ListItemText>
                     </ListItem>
-                    <ListItem>
-                        <ListItemIcon>
-                            <BugIcon />
-                        </ListItemIcon>
-                        <ListItemText> greeter message: {greeterMessage} </ListItemText>
-                    </ListItem>
+
                 </>
             }
             <ListItem>

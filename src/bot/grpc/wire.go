@@ -10,5 +10,6 @@ var GRPCProviderSet = wire.NewSet(
 	wire.Struct(new(GreeterServer), "*"),
 	wire.Struct(new(proto.UnimplementedGreeterServer), "*"),
 
-	wire.Struct(new(TagioalisiGRPCServer), "*"),
+	ProvideTagioalisiGRPC,
+	ProvideWrapGRPCWebsocketFunc,
 )

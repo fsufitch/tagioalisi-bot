@@ -16,6 +16,7 @@ RUN apt-get update && \
         net-tools \
         openssh-client \
         python3 \
+        protobuf-compiler \
         sudo \
         vim \
         xz-utils
@@ -59,6 +60,19 @@ RUN go install -v golang.org/x/tools/gopls@latest && \
     go install -v google.golang.org/protobuf/cmd/protoc-gen-go@latest && \
     go install -v google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest && \
     echo
+
+# Install the client-side GRPC code generator (protoc-gen-grpc-web)
+RUN mkdir -p /home/developer/opt/bin && \
+    os=$(uname -s | tr '[:upper:]' '[:lower:]') && \
+    arch=$(uname -m | tr '[:upper:]' '[:lower:]' ) && \
+    curl -L \
+       -o /home/developer/opt/bin/protoc-gen-grpc-web \
+       https://github.com/grpc/grpc-web/releases/download/1.3.1/protoc-gen-grpc-web-1.3.1-${os}-${arch} \
+       && \
+    chmod a+x /home/developer/opt/bin/protoc-gen-grpc-web && \
+    echo
+ENV PATH=${PATH}:/home/developer/opt/bin
+
 
 # Runtime
 WORKDIR /home/developer
