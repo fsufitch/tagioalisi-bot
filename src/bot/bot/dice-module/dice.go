@@ -10,6 +10,7 @@ import (
 
 	"github.com/fsufitch/tagioalisi-bot/bot/dice-module/calc"
 	"github.com/fsufitch/tagioalisi-bot/bot/util"
+	"github.com/fsufitch/tagioalisi-bot/config"
 	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
@@ -17,6 +18,7 @@ import (
 type Module struct {
 	Log        *log.Logger
 	Calculator calc.DiceCalculator
+	AppID      config.ApplicationID
 }
 
 // Name returns the name of the module, for blacklisting
@@ -24,6 +26,9 @@ func (m Module) Name() string { return "dice" }
 
 // Register adds this module to the Discord session
 func (m *Module) Register(ctx context.Context, session *discordgo.Session) error {
+	if err := m.RegisterApplicationCommand(ctx, session); err != nil {
+		return err
+	}
 	cancel := session.AddHandler(m.handleCommand)
 	go func() {
 		<-ctx.Done()
@@ -36,7 +41,7 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 func (m *Module) roll(cmdCtx commandContext, verbose bool, query string) error {
 	result, err := m.Calculator.Calculate(query)
 	if err != nil {
-		return util.DiscordMessageSendRawBlock(cmdCtx.session, cmdCtx.messageCreate.ChannelID, fmt.Sprintf("calculator error: %v", err))
+		return util.DiscordMessageSendRawBlock(cmdCtx.session, cmdCtx.channelID, fmt.Sprintf("calculator error: %v", err))
 	}
 
 	buf := &bytes.Buffer{}
@@ -71,6 +76,6 @@ func (m *Module) roll(cmdCtx commandContext, verbose bool, query string) error {
 		}
 	}
 
-	_, err = cmdCtx.session.ChannelMessageSend(cmdCtx.messageCreate.ChannelID, buf.String())
+	_, err = cmdCtx.session.ChannelMessageSend(cmdCtx.channelID, buf.String())
 	return err
 }

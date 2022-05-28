@@ -84,9 +84,12 @@ func InitializeMain() (Main, func(), error) {
 	diceCalculator := calc.DiceCalculator{
 		Log: logger,
 	}
+	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
+	applicationID := config.ProvideApplicationIDFromOAuth2Config(oAuth2Config)
 	diceModule := &dice.Module{
 		Log:        logger,
 		Calculator: diceCalculator,
+		AppID:      applicationID,
 	}
 	azureNewsSearchAPIKey := config.ProvideAzureCredentialsFromEnvironment()
 	userAgent := config.ProvideUserAgent()
@@ -142,7 +145,6 @@ func InitializeMain() (Main, func(), error) {
 		return Main{}, nil, err
 	}
 	launchTime := config.ProvideLaunchTime()
-	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
 	helloHandler := &web.HelloHandler{
 		Log:                logger,
 		DebugMode:          debugMode,

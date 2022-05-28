@@ -35,7 +35,7 @@ func (m *Module) cliApp(ctx commandContext) (app *cli.App, stdout, stderr *bytes
 		},
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() == 0 {
-				return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, "No dice specified. Try: !roll --help")
+				return util.DiscordMessageSendRawBlock(ctx.session, ctx.channelID, "No dice specified. Try: !roll --help")
 			}
 
 			verbose := c.Bool("verbose")
@@ -44,14 +44,13 @@ func (m *Module) cliApp(ctx commandContext) (app *cli.App, stdout, stderr *bytes
 		},
 		Description: "Supported operators in expressions are: + - * min max. e.g.: (1d20 max 1d20) + 3",
 	}
-	m.Log.Debugf("groups: created urfave/cli command for message %v", ctx.messageCreate.ID)
 
 	return
 }
 
 type commandContext struct {
-	session       *discordgo.Session
-	messageCreate *discordgo.MessageCreate
+	session   *discordgo.Session
+	channelID string
 }
 
 func (m Module) handleCommand(s *discordgo.Session, event *discordgo.MessageCreate) {
@@ -67,7 +66,7 @@ func (m Module) handleCommand(s *discordgo.Session, event *discordgo.MessageCrea
 		return
 	}
 
-	cmd, stdout, stderr := m.cliApp(commandContext{s, event})
+	cmd, stdout, stderr := m.cliApp(commandContext{s, event.ChannelID})
 	if err := cmd.Run(fields); err != nil {
 		m.Log.Errorf("dice: message %v error while running cli: %v", event.ID, err)
 	}

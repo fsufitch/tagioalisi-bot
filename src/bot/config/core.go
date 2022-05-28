@@ -41,3 +41,11 @@ type LaunchTime time.Time
 func ProvideLaunchTime() LaunchTime {
 	return LaunchTime(time.Now())
 }
+
+// ApplicationID is the bot's general ID, as needed by application commands
+type ApplicationID string
+
+// The ApplicationID is the same as the OAuth2 client ID; why set it twice?
+func ProvideApplicationIDFromOAuth2Config(oauth OAuth2Config) ApplicationID {
+	return ApplicationID(oauth.ClientID)
+}
