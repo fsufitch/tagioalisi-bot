@@ -30,7 +30,7 @@ func (m *Module) RegisterApplicationCommand(ctx context.Context, session *discor
 		},
 	}
 
-	_, err := session.ApplicationCommandCreate(string(m.AppID), "327526752203177984", &cmd)
+	_, err := session.ApplicationCommandCreate(string(m.AppID), "", &cmd)
 	if err != nil {
 		return err
 	}
