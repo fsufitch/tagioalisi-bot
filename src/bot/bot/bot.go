@@ -30,22 +30,26 @@ func (b TagioalisiBot) Run(ctx context.Context) error {
 	}
 	defer session.Close()
 
-	for _, module := range b.Modules {
-		if _, ok := b.ModuleBlacklist[module.Name()]; ok {
-			b.Log.Infof("not registering blacklisted module `%s`", module.Name())
-			continue
+	session.AddHandlerOnce(func(s *discordgo.Session, event *discordgo.Ready) {
+		for _, module := range b.Modules {
+			if _, ok := b.ModuleBlacklist[module.Name()]; ok {
+				b.Log.Infof("not registering blacklisted module `%s`", module.Name())
+				continue
+			}
+			if err = module.Register(ctx, session); err != nil {
+				b.Log.Errorf("error registering bot module: %s -- %s", module.Name(), err)
+			} else {
+				b.Log.Infof("registered module `%s`", module.Name())
+			}
 		}
-		if err = module.Register(ctx, session); err != nil {
-			return errors.Wrap(err, "error registering bot module: "+module.Name())
-		}
-		b.Log.Infof("registered module `%s`", module.Name())
-	}
+	})
 
 	err = session.Open()
 	if err != nil {
 		return errors.Wrap(err, "could not open communication to Discord server")
 	}
 	b.Log.Infof("bot initialized and listening")
+
 	<-ctx.Done()
 	b.Log.Infof("bot context canceled, shutting down")
 	return session.Close()
