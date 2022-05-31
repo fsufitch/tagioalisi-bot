@@ -19,6 +19,12 @@ export const ROUTES: {[id: string]: Route} = {
         path: '/config', 
         component: React.lazy(() => import('tagioalisi/components/Configuration')),
     },
+    sockpuppet: {
+        title: 'Sockpuppet', 
+        path: '/sockpuppet', 
+        component: React.lazy(() => import('tagioalisi/components/Sockpuppet')),
+    },
+
 };
 
 export const getRoute = (id: string) => {

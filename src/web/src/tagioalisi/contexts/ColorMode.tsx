@@ -3,7 +3,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
-import { useSynchronizedState } from './services/state';
+import { useSynchronizedState } from '../services/state';
 
 
 type ColorMode = 'dark' | 'light';

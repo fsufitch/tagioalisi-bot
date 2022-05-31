@@ -2,6 +2,7 @@ package sockpuppet
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/fsufitch/tagioalisi-bot/log"
@@ -45,11 +46,13 @@ func (m *Module) VerifyCanSend(senderUserID string, channelID string) error {
 // SendMessage is used to send a message via the sockpuppet
 func (m *Module) SendMessage(channelID string, message string, senderUserID string) error {
 	if err := m.VerifyCanSend(senderUserID, channelID); err != nil {
-		return err
+		return fmt.Errorf("sockpuppet: forbidden: %w", err)
 	}
 
+	m.Log.Infof("Sending sockpuppet message; user=%s channel=%s message=%s", senderUserID, channelID, message)
+
 	if _, err := m.session.ChannelMessageSend(channelID, message); err != nil {
-		return errors.Wrap(err, "sockpuppet: could not send message")
+		return fmt.Errorf("sockpuppet: could not send message: %w", err)
 	}
 	return nil
 }

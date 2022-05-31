@@ -41,6 +41,7 @@ ${OUTPUTS}: ${PROTO_SRC_DIR}/*.proto
 		--ts_out="service=grpc-web:_cjs" \
 		-I=${PROTO_SRC_DIR} ${PROTO_SRC_DIR}/*.proto
 	go run goog_to_cjs_export.go _cjs/*.js
-	set -x; for commonjs_src in *.js; do npx cjstoesm $$commonjs_src _esm; done
+	set -x; cd _cjs; for commonjs_src in *.js; do npx cjstoesm $$commonjs_src ../_esm; done
+	cp _cjs/*.ts .
 	mv _esm/* .
 	rm -r _cjs _esm

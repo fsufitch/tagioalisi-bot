@@ -9,7 +9,7 @@ import { getRoute } from 'tagioalisi/routes';
 import { useAuthentication } from 'tagioalisi/services/auth';
 import { useSynchronizedState } from 'tagioalisi/services/state';
 
-import { ColorModeContext } from 'tagioalisi/Theme';
+import { ColorModeContext } from 'tagioalisi/contexts/ColorMode';
 
 export default () =>
   <Box>
@@ -42,6 +42,7 @@ const Title = () => {
 const DROP_DOWN_NAV_LINKS: { routeId: string, text: string }[] = [
   { routeId: 'home', text: 'Home' },
   { routeId: 'config', text: 'API Configuration' },
+  { routeId: 'sockpuppet', text: 'Sockpuppet' },
 ]
 
 const DropDownNav = () => {

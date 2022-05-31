@@ -3,6 +3,7 @@ import { useAuthentication } from './auth';
 import {grpc} from '@improbable-eng/grpc-web';
 
 import { GreeterClient } from 'tagioalisi/proto/hello_pb_service';
+import { SockpuppetClient } from 'tagioalisi/proto/sockpuppet_pb_service';
 import { useAPIConnection } from './api';
 
 export const useGreeterClient = () => {
@@ -13,4 +14,15 @@ export const useGreeterClient = () => {
     const client = React.useMemo(() => new GreeterClient(api.baseUrl, {transport}), [api, authData]);
     
     return client;
+}
+
+export const useSockpuppetClient = () => {
+    const [api] = useAPIConnection();
+    const [authData] = useAuthentication();
+    
+    const transport = grpc.WebsocketTransport();
+    const client = React.useMemo(() => new SockpuppetClient(api.baseUrl, {transport}), [api, authData]);
+    
+    return client;
+
 }
