@@ -6,10 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 import { usePromiseEffect } from 'tagioalisi/services/async';
 import { getRoute } from 'tagioalisi/routes';
-import { useAuthentication } from 'tagioalisi/services/auth';
-import { useSynchronizedState } from 'tagioalisi/services/state';
 
 import { ColorModeContext } from 'tagioalisi/contexts/ColorMode';
+import { AuthenticationContext } from 'tagioalisi/contexts/Authentication';
 
 export default () =>
   <Box>
@@ -100,15 +99,14 @@ const DropDownNav = () => {
 }
 
 const AuthSegment = () => {
-  const [auth, login, logout] = useAuthentication();
+  const {authentication, login, logout} = React.useContext(AuthenticationContext);
 
-  React.useEffect(() => console.log(auth), [auth]);
-  return !auth.id ?
+  return !authentication.id ?
     <Button color="inherit" onClick={() => login()}>Login</Button>
     :
     <>
-      <Tooltip title={auth.fullname ?? ''}>
-        <Avatar src={auth.avatarUrl} />
+      <Tooltip title={authentication.fullname ?? ''}>
+        <Avatar src={authentication.avatarUrl} />
       </Tooltip>
       <IconButton onClick={() => logout()}>
         <LogoutIcon />
@@ -118,8 +116,13 @@ const AuthSegment = () => {
 
 const DisplayModeToggle = () => {
   const colorModeContext = React.useContext(ColorModeContext);
-  const colorMode = colorModeContext.getColorMode();
-  const toggleMode = () => colorMode == 'light' ? colorModeContext.setColorMode('dark') : colorModeContext.setColorMode('light');
+  const colorMode = colorModeContext.colorMode || 'light';
+  const toggleMode = () => {
+    if (!colorModeContext.setColorMode) {
+      return;
+    }
+    colorModeContext.setColorMode(colorMode == 'light' ? 'dark' : 'light');
+  };
 
   return <MenuItem onClick={toggleMode}>
     <Typography textAlign="center">

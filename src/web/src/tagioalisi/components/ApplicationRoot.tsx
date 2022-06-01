@@ -5,19 +5,19 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 import ApplicationBar from "tagioalisi/components/ApplicationBar";
 import TagioalisiRoutes from 'tagioalisi/components/TagioalisiRoutes';
-import TagioalisiContexts from "tagioalisi/contexts/TagioalisiContexts";
+import TagioalisiContextProvider from "tagioalisi/contexts";
 
 
 export default () => {
 
   return (
-    <TagioalisiContexts>
+    <TagioalisiContextProvider>
       <Router>
         <Container maxWidth="md">
           <ApplicationBar />
           <TagioalisiRoutes />
         </Container>
       </Router>
-    </TagioalisiContexts>
+    </TagioalisiContextProvider>
   );
 }

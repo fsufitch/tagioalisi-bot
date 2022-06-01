@@ -3,50 +3,36 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
-import { useSynchronizedState } from '../services/state';
+import { StorageContext } from './Storage';
 
 
 type ColorMode = 'dark' | 'light';
 
 interface ColorModeContextValue {
-    getColorMode: () => ColorMode,
-    setColorMode: (m: ColorMode) => void,
+    colorMode?: ColorMode;
+    setColorMode?: (m: ColorMode) => void;
 }
 
-export const ColorModeContext = React.createContext<ColorModeContextValue>({
-    getColorMode: () => 'light',
-    setColorMode: (m: ColorMode) => { },
-});
-
+export const ColorModeContext = React.createContext<ColorModeContextValue>({});
 
 
 export default (props: {children: ReactNode}) => {
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-    const defaultMode = prefersDarkMode ? 'dark' : 'light';
-    const [mode, setMode] = useSynchronizedState<'light' | 'dark'>(
-        'color-mode', 
-        defaultMode,
-        s => s,
-        s => s === 'dark' ? s : s === 'light' ? s : defaultMode)
-
-    React.useEffect(() => {
-        setMode('dark');
-    }, [prefersDarkMode]);
-
-    const colorModeContextProviderValue: ColorModeContextValue = {
-        setColorMode: (m: ColorMode) => setMode(m),
-        getColorMode: () => mode,
-    }
+    const defaultMode = useMediaQuery('(prefers-color-scheme: dark)') ? 'dark': 'light';
+    const { state } = React.useContext(StorageContext);
+    const [storedColorMode, setStoredColorMode] = state?.useJSON<'light' | 'dark' | 'default'>('color-mode') || [];
+    const actualColorMode = React.useMemo(() => (
+        {light: 'light', dark: 'dark', default: defaultMode}[storedColorMode || 'default'] as 'light' | 'dark'
+    ), [storedColorMode]);
 
     const theme = React.useMemo(() => createTheme({
         palette: {
-            mode: mode,
+            mode: actualColorMode,
         },
-    }), [mode]);
+    }), [actualColorMode]);
 
 
     return (
-        <ColorModeContext.Provider value={colorModeContextProviderValue}>
+        <ColorModeContext.Provider value={{colorMode: actualColorMode, setColorMode: setStoredColorMode}}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 {props.children}

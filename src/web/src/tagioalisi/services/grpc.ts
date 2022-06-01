@@ -1,27 +1,27 @@
 import React from 'react';
-import { useAuthentication } from './auth';
 import {grpc} from '@improbable-eng/grpc-web';
 
 import { GreeterClient } from 'tagioalisi/proto/hello_pb_service';
 import { SockpuppetClient } from 'tagioalisi/proto/sockpuppet_pb_service';
-import { useAPIConnection } from './api';
+import { AuthenticationContext } from 'tagioalisi/contexts/Authentication';
+import { APIConfigurationContext } from 'tagioalisi/contexts/APIConfiguration';
 
 export const useGreeterClient = () => {
-    const [api] = useAPIConnection();
-    const [authData] = useAuthentication();
+    const { configuration } = React.useContext(APIConfigurationContext)
+    const { authentication } = React.useContext(AuthenticationContext);
     
     const transport = grpc.WebsocketTransport();
-    const client = React.useMemo(() => new GreeterClient(api.baseUrl, {transport}), [api, authData]);
+    const client = React.useMemo(() => new GreeterClient(configuration.baseURL ?? '', {transport}), [configuration, authentication]);
     
     return client;
 }
 
 export const useSockpuppetClient = () => {
-    const [api] = useAPIConnection();
-    const [authData] = useAuthentication();
+    const { configuration } = React.useContext(APIConfigurationContext)
+    const { authentication } = React.useContext(AuthenticationContext);
     
     const transport = grpc.WebsocketTransport();
-    const client = React.useMemo(() => new SockpuppetClient(api.baseUrl, {transport}), [api, authData]);
+    const client = React.useMemo(() => new SockpuppetClient(configuration.baseURL ?? '', {transport}), [configuration, authentication]);
     
     return client;
 

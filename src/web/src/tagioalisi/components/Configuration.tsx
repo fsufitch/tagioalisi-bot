@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Typography, Button, Paper, Stack, Avatar, IconButton, FormControl, OutlinedInput, InputLabel, InputAdornment, Tooltip } from '@mui/material';
 import { Api as ApiIcon, Undo as UndoIcon } from '@mui/icons-material';
 
-import { useAPIConnection, useDefaultAPIEndpoint } from 'tagioalisi/services/api';
+import { APIConfigurationContext, useDefaultBaseURL } from 'tagioalisi/contexts/APIConfiguration';
 
 export default () => {
     return (
@@ -18,32 +18,26 @@ export default () => {
                     </Typography>
                 </Box>
             </Stack>
-
             <EditableConfiguration />
-
         </Box>
     );
 }
 
 const EditableConfiguration = () => {
-    const defaultAPIEndpoint = useDefaultAPIEndpoint();
-
-    const [apiConnection, setApiConnection] = useAPIConnection();
-
+    const defaultBaseURL = useDefaultBaseURL();
+    const {configuration, setBaseURL} = React.useContext(APIConfigurationContext);
     const [editMode, setEditMode] = React.useState<boolean>(false);
-    const [baseUrl, setBaseUrl] = React.useState<string>('');
-    React.useEffect(() => setBaseUrl(apiConnection.baseUrl), [apiConnection.baseUrl]);
+    const [formBaseUrl, setFormBaseUrl] = React.useState<string>(configuration?.baseURL ?? '');
 
     const startEdit = () => {
         setEditMode(true);
-        setBaseUrl(apiConnection.baseUrl);
+        setFormBaseUrl(configuration?.baseURL ?? '');
     }
     const discardEdit = () => {
         setEditMode(false);
-        setBaseUrl(apiConnection.baseUrl);
     }
     const saveEdit = () => {
-        setApiConnection({ ...apiConnection, baseUrl });
+        setBaseURL(formBaseUrl);
         setEditMode(false);
     }
 
@@ -52,8 +46,8 @@ const EditableConfiguration = () => {
             <InputLabel htmlFor='base-api-url'>Base API URL</InputLabel>
             <OutlinedInput
                 label='Base API URL'
-                value={baseUrl}
-                onChange={(e) => editMode ? setBaseUrl(e.target.value) : null}
+                value={formBaseUrl}
+                onChange={(e) => editMode ? setFormBaseUrl(e.target.value) : null}
                 startAdornment={
                     <InputAdornment position='start'>
                         <Avatar><ApiIcon /></Avatar>
@@ -62,7 +56,7 @@ const EditableConfiguration = () => {
                 endAdornment={!editMode ? <></> :
                     <InputAdornment position='end'>
                         <Tooltip title="Reset to default">
-                            <IconButton onClick={() => setBaseUrl(defaultAPIEndpoint)}><UndoIcon /></IconButton>
+                            <IconButton onClick={() => setFormBaseUrl(defaultBaseURL)}><UndoIcon /></IconButton>
                         </Tooltip>
                     </InputAdornment>
                 }

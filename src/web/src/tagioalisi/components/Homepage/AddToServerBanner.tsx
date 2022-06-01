@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
-import { HelloResponse } from 'tagioalisi/services/endpoints/hello';
 import { InlineOpenInNewIcon } from 'tagioalisi/services/styleUtils';
 import { useHelloQuery } from 'tagioalisi/services/endpoints/hello';
 

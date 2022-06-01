@@ -1,14 +1,15 @@
 import React from 'react';
-import { Box, Paper, Typography, Stack, Link } from '@mui/material';
-import { useAuthentication, AuthData } from 'tagioalisi/services/auth';
+import { Paper, Typography, Link } from '@mui/material';
+import { AuthenticationContext } from 'tagioalisi/contexts/Authentication';
+import { Authentication } from 'tagioalisi/contexts/Authentication';
 
 export default () => {
-    const [auth, login] = useAuthentication();
+    const { authentication, login} = React.useContext(AuthenticationContext);
     return <Paper sx={{ padding: 2 }}>
         <Typography variant="h5">Your Servers</Typography>
         {
-            !!auth.id ?
-                <AuthenticatedYourServers auth={auth} />
+            !!authentication.id ?
+                <AuthenticatedYourServers auth={authentication} />
                 :
                 <Typography>
                     <Link href="#" onClick={() => login()}>Log in</Link> to Tagioalisi to see your servers that support it.
@@ -17,7 +18,7 @@ export default () => {
     </Paper>
 }
 
-const AuthenticatedYourServers = (props: { auth: AuthData }) => {
+const AuthenticatedYourServers = (props: { auth: Authentication }) => {
     return <Typography>
         Hello, <em>{props.auth.fullname}</em>! This section is under construction for now. Come back soon!
     </Typography>;

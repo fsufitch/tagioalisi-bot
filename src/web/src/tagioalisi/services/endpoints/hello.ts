@@ -1,9 +1,6 @@
 import React from 'react';
-import { useAuthentication } from '../auth';
-import { usePromiseEffect } from '../async';
-import { useAPIConnection } from '../api';
-import { useSynchronizedState } from '../state';
-import { appendFileSync } from 'fs';
+import { APIConfigurationContext } from '../../contexts/APIConfiguration';
+import { StorageContext } from '../../contexts/Storage';
 
 
 export interface HelloResponse {
@@ -26,23 +23,27 @@ interface CachedHelloResponse {
     response?: HelloResponse,
 }
 
-const CACHE_KEY = 'tagioalisi/api/hello/cache';
+const CACHE_KEY = 'hello/cache';
 const CACHE_TTL_MS = 1000;
 
 export const useHelloQuery = (deps: React.DependencyList = []) => {
-    const [cachedResponse, setCachedResponse] = useSynchronizedState<CachedHelloResponse>(CACHE_KEY, { timeUnixMillis: 0, ttlMillis: 0 }, JSON.stringify, JSON.parse);
-    const [api] = useAPIConnection();
+    const { state } = React.useContext(StorageContext);
+    const [ cachedResponse, setCachedResponse ]  = state?.useJSON<CachedHelloResponse>(CACHE_KEY) ?? [null, () => {}];
+    const { configuration } = React.useContext(APIConfigurationContext);
 
     // XXX: improve multi-query on page load? idk lol.
     
     React.useEffect(() => {
-        const nowUnixMillis = Date.now();
-        if (nowUnixMillis - cachedResponse.timeUnixMillis < cachedResponse.ttlMillis) {
+        if (!setCachedResponse) return;
+        const cacheTimeUnixMillis = cachedResponse?.timeUnixMillis || 0;
+        const cacheTTLMillis = cachedResponse?.ttlMillis || 0;
+        const nowUnixMillis = Date.now()
+        if (nowUnixMillis - cacheTimeUnixMillis < cacheTTLMillis) {
             return; // cache hit, nothing to do
         }
         console.log(`CACHE MISS @ ${nowUnixMillis}`, cachedResponse);
         setCachedResponse({ timeUnixMillis: nowUnixMillis, ttlMillis: 5000, response: { pending: true, done: false, ok: false } });
-        fetch(`${api.baseUrl}`)
+        fetch(`${configuration.baseURL}`)
             .then(response => response.json())
             .then(responseJSON => setCachedResponse({
                 timeUnixMillis: nowUnixMillis,
@@ -66,7 +67,7 @@ export const useHelloQuery = (deps: React.DependencyList = []) => {
                 },
             }));
 
-    }, [api, ...deps]);
+    }, [configuration, ...deps]);
 
-    return cachedResponse.response ?? { done: false, ok: false, pending: false };
+    return cachedResponse?.response ?? { done: false, ok: false, pending: false };
 }

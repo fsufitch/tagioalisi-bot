@@ -2,10 +2,10 @@ import React from 'react';
 import { Typography, Stack, Paper, Alert } from '@mui/material';
 
 import { useSockpuppetClient } from 'tagioalisi/services/grpc';
-import { useAuthentication } from 'tagioalisi/services/auth';
+import { AuthenticationContext } from '../contexts/Authentication';
 
 export default () => {
-    const [authData] = useAuthentication();
+    const { authentication } = React.useContext(AuthenticationContext);
     
     return (
         <Stack spacing={2}>
@@ -27,7 +27,7 @@ export default () => {
             </Typography>
             <Paper sx={{padding: 2}}>
                 {
-                    !authData.jwt
+                    !authentication.jwt
                         ? <Alert severity='error'>
                             You must be logged in to use the Sockpuppet module.
                         </Alert>
@@ -40,7 +40,7 @@ export default () => {
 }
 
 const SockpuppetForm = () => {
-    const [authData] = useAuthentication();
+    const { authentication } = React.useContext(AuthenticationContext);
     const client = useSockpuppetClient();
 
 

@@ -1,8 +1,15 @@
 import React, { ReactNode } from "react";
-import ColorMode from './ColorMode';
+import ColorModeProvider from './ColorMode';
+import AuthenticationProvider from './Authentication';
+import APIConfigurationProvider from './APIConfiguration';
+import StorageProvider from './Storage';
 
+// List of contexts to create providers for, in reverse order of nesting (innermost first)
 const CONTEXT_NODE_LIST: ((props: {children: ReactNode}) => JSX.Element)[] = [
-    ColorMode,
+    AuthenticationProvider,
+    ColorModeProvider,
+    APIConfigurationProvider,
+    StorageProvider,
 ]
 
 export default (props: {children: ReactNode}) => {
@@ -11,7 +18,7 @@ export default (props: {children: ReactNode}) => {
     let inner = <>{props.children}</>;
 
     for (const contextElement of CONTEXT_NODE_LIST) {
-        inner = contextElement({children: inner});
+        inner = React.createElement(contextElement, {children: inner});
     }
 
     return <>{inner}</>;

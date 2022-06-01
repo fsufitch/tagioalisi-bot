@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Box, Grid, type SxProps, Typography, Theme, Stack, Icon } from '@mui/material';
+import { Avatar, Box, Grid, type SxProps, Typography, Theme, Stack } from '@mui/material';
 import { usePromiseEffect } from 'tagioalisi/services/async';
 import { InlineOpenInNewIcon } from 'tagioalisi/services/styleUtils';
 import { useHelloQuery } from 'tagioalisi/services/endpoints/hello';
