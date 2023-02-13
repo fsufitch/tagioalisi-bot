@@ -6,16 +6,27 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "proto": "npx -c 'protoc --ts_proto_out=./src/proto -I ../proto ../proto/*'"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@fontsource/roboto": "^4.5.8",
+    "@improbable-eng/grpc-web": "^0.15.0",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.8",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-cookie": "^4.1.1",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^3.1.0",
+    "sass": "^1.58.0",
+    "ts-proto": "^1.139.0",
     "typescript": "^4.9.3",
     "vite": "^4.1.0"
   }
