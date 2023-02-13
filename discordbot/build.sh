@@ -16,7 +16,7 @@ fi
 
 echo "Platform: '${PLATFORM_NAME}' Extension: '${EXT}'"
 
-PROTO_SRC_DIR=${SCRIPT_DIR}/../proto-src
+PROTO_SRC_DIR=${SCRIPT_DIR}/../proto
 PROTO_GEN_DIR=${SCRIPT_DIR}/proto
 
 BIN_DIR=${SCRIPT_DIR}/bin

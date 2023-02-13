@@ -46,11 +46,11 @@ USER developer
 ##########
 FROM devcontainer AS build
 
-COPY ./web /home/developer/tagioalisi-bot/web
-WORKDIR /home/developer/tagioalisi-bot/web
+COPY ./webapp /home/developer/tagioalisi-bot/webapp
+WORKDIR /home/developer/tagioalisi-bot/webapp
 RUN npm run webpack:esm --mode production
-RUN sudo mkdir -p /dist/web && \
-    sudo cp -r dist/* /dist/web
+RUN sudo mkdir -p /dist/webapp && \
+    sudo cp -r dist/* /dist/webapp
 
 ##########
 # RUNTIME
@@ -63,8 +63,8 @@ RUN apk add nodejs npm && \
 
 ENV WEBAPP_PORT=8080
 
-COPY --from=build /dist/web /web
-WORKDIR /web
+COPY --from=build /dist/webapp /webapp
+WORKDIR /webapp
 
 # Needed for single page apps
 RUN ln -s index.html 404.html

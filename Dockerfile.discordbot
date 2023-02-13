@@ -45,11 +45,11 @@ USER developer
 FROM devcontainer AS build
 
 USER developer
-COPY bot /home/developer/tagioalisi-bot/bot
-WORKDIR /home/developer/tagioalisi-bot/bot
+COPY discordbot /home/developer/tagioalisi-bot/discordbot
+WORKDIR /home/developer/tagioalisi-bot/discordbot
 RUN ./build.sh
 RUN sudo mkdir -p /dist/bin && \
-    sudo cp -r bin/* /dist/bin
+    sudo cp -r bin /dist/bin
 
 ##########
 # TEST IMAGE
@@ -57,9 +57,8 @@ RUN sudo mkdir -p /dist/bin && \
 ##########
 FROM build AS test
 
-WORKDIR /home/developer/tagioalisi-bot
-ENTRYPOINT ["./test.sh"]
-CMD []
+WORKDIR /home/developer/tagioalisi-bot/discordbot
+CMD ["go", "test", "./..."]
 
 ##########
 # RUNTIME
