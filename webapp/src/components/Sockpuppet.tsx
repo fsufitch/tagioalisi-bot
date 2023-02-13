@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Stack, Paper, Alert } from '@mui/material';
 
-import { useSockpuppetClient } from '@tagioalisi/services/grpc';
+// import { useSockpuppetClient } from '@tagioalisi/services/grpc';
 import { AuthenticationContext } from '../contexts/Authentication';
 
 export default () => {
@@ -41,8 +41,7 @@ export default () => {
 
 const SockpuppetForm = () => {
     const { authentication } = React.useContext(AuthenticationContext);
-    const client = useSockpuppetClient();
-
+    // const client = useSockpuppetClient();
 
     return <> form goes here </>;
 }

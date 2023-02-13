@@ -12,7 +12,7 @@ import {
 } from '@mui/icons-material';
 import { useHelloQuery } from '@tagioalisi/services/endpoints/hello';
 import { InlineOpenInNewIcon } from '@tagioalisi/services/styleUtils';
-import { useGreeterClient } from '@tagioalisi/services/grpc';
+// import { useGreeterClient } from '@tagioalisi/services/grpc';
 import { HelloRequest } from '@tagioalisi/proto/hello';
 
 import { BrowserHeaders } from 'browser-headers';
@@ -35,22 +35,23 @@ export default () => {
     }, [helloData]);
 
     const [grpcWorks, setGrpcWorks] = React.useState<boolean>(false);
-    const greeterClient = useGreeterClient();
+    // const greeterClient = useGreeterClient();
     React.useEffect(() => {
         const req: HelloRequest = {name: "TEST GREETER"};
-        greeterClient.sayHello(req, new BrowserHeaders(), (err, reply) => {
-            if (!!err) {
-                console.error(err);
-                setGrpcWorks(false);
-                return;
-            }
-            if (!reply || !reply.getMessage().includes("TEST GREETER")) {
-                console.error('wrong message');
-                setGrpcWorks(false);
-                return;
-            }
-            setGrpcWorks(true);
-        });
+        console.error('no grpc implementation at the moment; request would be:', req);
+        // greeterClient.sayHello(req, new BrowserHeaders(), (err, reply) => {
+        //     if (!!err) {
+        //         console.error(err);
+        //         setGrpcWorks(false);
+        //         return;
+        //     }
+        //     if (!reply || !reply.getMessage().includes("TEST GREETER")) {
+        //         console.error('wrong message');
+        //         setGrpcWorks(false);
+        //         return;
+        //     }
+        //     setGrpcWorks(true);
+        // });
     }, [helloTriggerCounter])
 
     return <Paper>
