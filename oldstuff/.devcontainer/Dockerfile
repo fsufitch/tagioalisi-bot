@@ -1,25 +1,58 @@
-FROM debian:sid AS devcontianer
+FROM fedora:37 AS devcontianer
+
+
 
 # Install stuff necessary for a reasonable CLI
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y \
+# RUN apt-get update && \
+#     apt-get upgrade -y && \
+#     apt-get install -y \
+#         bash \
+#         bash-completion \
+#         build-essential \
+#         curl \
+#         file \
+#         git \
+#         gnupg \
+#         inetutils-ping \
+#         man-db \
+#         net-tools \
+#         openssh-client \
+#         python3 \
+#         protobuf-compiler \
+#         sudo \
+#         vim \
+#         xz-utils
+
+
+RUN dnf install -y \
         bash \
         bash-completion \
         build-essential \
         curl \
         file \
         git \
-        gnupg \
-        inetutils-ping \
+        gzip \
+        gnupg2 \
+        iputils \
         man-db \
         net-tools \
-        openssh-client \
+        openssh-clients \
         python3 \
         protobuf-compiler \
         sudo \
+        tar \
         vim \
-        xz-utils
+        xz
+
+
+# Install Go
+ARG GO_DOWNLOAD=https://go.dev/dl/go1.20.linux-amd64.tar.gz
+WORKDIR /opt
+RUN curl -L -o go.tar.gz ${GO_DOWNLOAD} && \
+    tar xfz go.tar.gz && \
+    rm go.tar.gz
+ENV PATH=${PATH}:/opt/go/bin
+
 
 
 # Set up the devcontainer user
@@ -27,16 +60,6 @@ RUN useradd -ms /bin/bash -G sudo developer
 RUN echo "developer ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/developer
 USER developer
 RUN mkdir -p /home/developer/opt
-
-# Install Go
-ARG GO_DOWNLOAD=https://go.dev/dl/go1.18.1.linux-amd64.tar.gz
-WORKDIR /home/developer/opt
-RUN curl -L -o go.tar.gz ${GO_DOWNLOAD} && \
-    tar xfz go.tar.gz && \
-    rm go.tar.gz
-RUN mkdir -p /home/developer/opt/goenv
-ENV GOPATH=/home/developer/opt/goenv
-ENV PATH=${PATH}:/home/developer/opt/goenv/bin:/home/developer/opt/go/bin
 
 
 # Install Node

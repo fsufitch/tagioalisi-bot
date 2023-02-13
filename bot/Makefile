@@ -7,38 +7,50 @@ ifneq (, $(findstring windows,${PLATFORM_NAME}))
 EXT=.exe
 endif
 
-BIN_BOT=bin/${PLATFORM_NAME}/tagioalisi-bot${EXT}
-BIN_MIGRATIONS=bin/${PLATFORM_NAME}/tagioalisi-migrations${EXT}
 
 SOURCES=$(shell find . -type f -a \
 	-not -path './bin/*' -a \
 	-not -path './.gitignore' -a \
 	-not -path './Dockerfile')
-SOURCES_MANUAL=$(shell for s in ${SOURCES}; do echo $$s | grep -v '_gen.go'; done)
-SOURCES_GENERATED=$(shell for s in ${SOURCES}; do echo $$s | grep '_gen.go'; done)
+
+# SOURCES_MANUAL=$(shell for s in ${SOURCES}; do echo $$s | grep -v '_gen.go'; done)
+# SOURCES_GENERATED=$}GENERATED_TIMESTAMP} $(shell for s in ${SOURCES}; do echo $$s | grep '_gen.go'; done)
+
+PROTO_SRC=$(shell find ../proto-src}
+WIRE_OUTPUT=$(shell find proto)
+WIRE_OUTPUT=$(shell find . -name wire_gen.go)
+
+MANUAL_SRC=$(shell find . -type f -a \
+	-not -path './bin/*' -a \
+	-not -path './.gitignore' -a \
+	-not -name wire_gen.go -a \
+	-not -path './proto/*')
+
+BOT_OUTPUT=bin/${PLATFORM_NAME}/tagioalisi-bot${EXT} bin/${PLATFORM_NAME}/tagioalisi-migrations${EXT}
 
 # === Phonies
 
-.PHONY: all build bot generate proto migrations tests
-all: proto generate build
+.PHONY: all
+all: proto build test
 
-build: bot migrations tests
+.PHONY: build
+build: ${BIN_BOT} ${BIG_MIGRATIONS}
 
-bot: ${BIN_BOT}
+.PHONY: protos
+protos: ${SOURCES_GENERATED}
 
-generate: ${SOURCES_GENERATED}
-
+.PHONY: migrations
 migrations: ${BIN_MIGRATIONS}
 
-tests: ${BIN_TESTS}
+.PHONY: test
+test: ${BIN_TESTS}
 
 # Use Protoc to create the Go Protobuf/GRPC stubs
-proto:
-	make -C proto
+${SOURCES_GENERATED}: 
+	*.pb.go: ${PROTO_SRC_DIR}/*.proto
 
 
 # === Platform phonies
-
 .PHONY: $(shell go tool dist list)
 
 darwin/amd64:
@@ -67,6 +79,13 @@ ${SOURCES_GENERATED}: ${SOURCES_MANUAL}
 	GOOS= GOARCH= go get -u github.com/google/wire/cmd/wire@latest
 	GOOS= GOARCH= go run github.com/google/wire/cmd/wire ./...    
 
+
+	@echo Ignoring GOOS/GOARCH setting since proto generation is platform-independent
+	GOARCH= GOOS= protoc --go_out=. --go_opt=paths=source_relative \
+			--go-grpc_out=. --go-grpc_opt=paths=source_relative \
+			-I ${PROTO_SRC_DIR} \
+			${PROTO_SRC_DIR}/*.proto
+		echo 
 
 # === Actions
 

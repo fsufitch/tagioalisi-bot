@@ -1,0 +1,20 @@
+version: '3'
+services:
+  db:
+    image: postgres:alpine
+    env_file:
+      - .env
+    environment:
+      PGDATA: /var/tagioalisi/db/pgdata
+    volumes:
+      # Keep the database in the local fs to not accidentally lose it on `docker down`
+      - type: bind
+        source: ./var/db
+        target: /var/tagioalisi/db
+
+    networks:
+      - tagioalisi
+
+
+networks:
+  tagioalisi:

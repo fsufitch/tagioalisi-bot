@@ -1,0 +1,44 @@
+version: '3'
+services:
+  bot:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+
+    user: "developer"
+
+    networks:
+      - tagioalisi
+
+    ports:
+      - "${BOT_EXPOSE_PORT}:${BOT_PORT}"
+
+    volumes:
+      - .:/home/developer/tagioalisi-bot:cached
+      - $HOME:/home/developer/host-home:cached
+
+    # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
+    # cap_add:
+    #   - SYS_PTRACE
+    command:
+      'echo "This is a devcontainer, and should have its command overridden"'
+
+
+  db:
+    image: postgres:alpine
+    env_file:
+      - .env
+    environment:
+      PGDATA: /var/tagioalisi/db/pgdata
+    volumes:
+      - type: bind
+        source: ./var/db
+        target: /var/tagioalisi/db
+
+    networks:
+      - tagioalisi
+
+networks:
+  tagioalisi:
