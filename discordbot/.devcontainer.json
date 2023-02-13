@@ -7,7 +7,6 @@
     ],
     "workspaceFolder": "/home/developer/tagioalisi-bot",
     "overrideCommand": true,
-    "updateContentCommand": "bash /home/developer/tagioalisi-bot/discordbot/devcontainer-start.sh",
 
     // leave the containers running when VS Code closes 
     // which prevents you from accidentally shutting down both containers by closing one window

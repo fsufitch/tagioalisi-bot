@@ -16,7 +16,7 @@ fi
 
 echo "Platform: '${PLATFORM_NAME}' Extension: '${EXT}'"
 
-PROTO_SRC_DIR=${SCRIPT_DIR}/../proto
+PROTO_SRC_DIR=$(cd ${SCRIPT_DIR}/../proto; pwd)
 PROTO_GEN_DIR=${SCRIPT_DIR}/proto
 
 BIN_DIR=${SCRIPT_DIR}/bin
@@ -24,7 +24,7 @@ BIN_BOT=${BIN_DIR}/tagi-bot
 BIN_MIGRATIONS=${BIN_DIR}/tagi-migrate
 
 # Start build commands, echo them
-set -x
+set -xe
 
 # Generate protobuf
 GOARCH= GOOS= protoc \
@@ -41,6 +41,5 @@ go build -o ${BIN_BOT} ./cmd/tagi-bot
 go build -o ${BIN_MIGRATIONS} ./cmd/tagi-migrate
 
 # Done
-set +x
 
 echo Done
