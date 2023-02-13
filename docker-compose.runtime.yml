@@ -4,29 +4,22 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile.discordbot
-      target: devcontainer
-
-    hostname: dev-discordbot
-    user: "developer"
+      target: runtime
 
     networks:
-      - tagioalisi
+      - tagioalisi-runtime
 
     ports:
-      - "8081:8081"
-      - "8082:8082"
-
-    volumes:
-      - .:/home/developer/tagioalisi-bot:cached
-      - $HOME:/home/developer/host-home:cached
+      - "8091:8091"
+      - "8092:8092"
 
     env_file:
       - .env
 
     environment:
-      - DEBUG=true
-      - BOT_PORT=8081
-      - BOT_GRPC_PORT=8082
+      - DEBUG=false
+      - BOT_PORT=8091
+      - BOT_GRPC_PORT=8092
       - BLACKLIST_BOT_MODULES=
       - OAUTH_AUTH_ENDPOINT=https://discordapp.com/api/oauth2/authorize
       - OAUTH_TOKEN_ENDPOINT=https://discordapp.com/api/oauth2/token
@@ -38,21 +31,13 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile.webapp
-      target: devcontainer
-
-
-    hostname: dev-webapp
-    user: "developer"
+      target: runtime
 
     networks:
-      - tagioalisi
+      - tagioalisi-runtime
 
     ports:
-      - "8080:8080"
-
-    volumes:
-      - .:/home/developer/tagioalisi-bot:cached
-      - $HOME:/home/developer/host-home:cached
+      - "8090:8090"
 
     env_file:
       - .env
@@ -73,11 +58,11 @@ services:
         target: /var/tagioalisi/db
 
     networks:
-      - tagioalisi
+      - tagioalisi-runtime
 
     # WARNING: DO NOT EXPOSE PORTS IN PRODUCTION
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
 
 networks:
-  tagioalisi:
+  tagioalisi-runtime:
