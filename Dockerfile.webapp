@@ -1,0 +1,79 @@
+###########
+# DEVCONTAINER
+##########
+FROM fedora:37 AS devcontainer
+
+# Install stuff necessary for a reasonable CLI
+RUN dnf install -y \
+        bash-completion \
+        curl \
+        file \
+        git \
+        gzip \
+        gnupg2 \
+        iputils \
+        man-db \
+        net-tools \
+        openssh-clients \
+        python3 \
+        protobuf-compiler \
+        sudo \
+        tar \
+        vim \
+        xz
+
+# Install Node
+ARG NODE_DOWNLOAD=https://nodejs.org/dist/v19.6.0/node-v19.6.0-linux-x64.tar.xz
+WORKDIR /opt
+RUN curl -Lo node.tar.xz ${NODE_DOWNLOAD} && \
+    tar xfJ node.tar.xz && \
+    rm node.tar.xz && \
+    mv node-* node
+ENV PATH=${PATH}:/opt/node/bin
+RUN npm i -g npm
+
+# Set up the devcontainer user
+RUN useradd -ms /bin/bash developer
+RUN echo "developer ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/developer
+WORKDIR /home/developer
+USER developer
+# Everything from here on out is run as 'developer'
+
+###########
+# BUILD
+# This image builds the bundled web UI artifacts
+# The outputs are in /dist/web
+##########
+FROM devcontainer AS build
+
+COPY ./web /home/developer/tagioalisi-bot/web
+WORKDIR /home/developer/tagioalisi-bot/web
+RUN npm run webpack:esm --mode production
+RUN sudo mkdir -p /dist/web && \
+    sudo cp -r dist/* /dist/web
+
+##########
+# RUNTIME
+# This image runs a basic webserver exposing the web app
+##########
+FROM alpine:3 AS runtime
+
+RUN apk add nodejs npm && \
+    npm i -g http-server
+
+ENV WEBAPP_PORT=8080
+
+COPY --from=build /dist/web /web
+WORKDIR /web
+
+# Needed for single page apps
+RUN ln -s index.html 404.html
+
+# See: https://www.npmjs.com/package/http-server
+CMD http-server && \
+        --port ${WEBAPP_PORT}} && \
+        -d false && \
+        -i false && \
+        -e '' && \
+        -c-1 && \
+        .

@@ -1,0 +1,73 @@
+###########
+# DEVCONTAINER
+##########
+FROM fedora:37 AS devcontainer
+
+# Install stuff necessary for a reasonable CLI
+RUN dnf install -y \
+        bash-completion \
+        curl \
+        file \
+        git \
+        gzip \
+        gnupg2 \
+        iputils \
+        man-db \
+        net-tools \
+        openssh-clients \
+        python3 \
+        protobuf-compiler \
+        sudo \
+        tar \
+        vim \
+        xz
+
+ARG GO_DOWNLOAD=https://go.dev/dl/go1.20.linux-amd64.tar.gz
+WORKDIR /opt
+RUN curl -L -o go.tar.gz ${GO_DOWNLOAD} && \
+    tar xfz go.tar.gz && \
+    rm go.tar.gz
+ENV PATH=${PATH}:/opt/go/bin
+
+# Set up the devcontainer user
+RUN useradd -ms /bin/bash developer
+RUN echo "developer ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/developer
+WORKDIR /home/developer
+USER developer
+
+# Note: everything from here on out is run as 'developer'
+
+##########
+# BUILD IMAGE
+# This image creates the static-linked, ready-to-go binaries
+# Outputs are in /dist/bin
+##########
+FROM devcontainer AS build
+
+USER developer
+COPY bot /home/developer/tagioalisi-bot/bot
+WORKDIR /home/developer/tagioalisi-bot/bot
+RUN ./build.sh
+RUN sudo mkdir -p /dist/bin && \
+    sudo cp -r bin/* /dist/bin
+
+##########
+# TEST IMAGE
+# This image runs the bot test suite
+##########
+FROM build AS test
+
+WORKDIR /home/developer/tagioalisi-bot
+ENTRYPOINT ["./test.sh"]
+CMD []
+
+##########
+# RUNTIME
+# This image is the ready-to-run container for launching the bot
+##########
+
+FROM busybox:1.35-glibc AS runtime
+
+WORKDIR /opt/tagioalisi-bot
+COPY --from=build /dist/bin/* .
+CMD tagi-migrate && tagi-bot

@@ -1,11 +1,10 @@
 version: '3'
 services:
-  bot:
+  discordbot:
     build: 
       context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
+      dockerfile: Dockerfile.discordbot
+      target: devcontainer
 
     user: "developer"
 
@@ -13,18 +12,52 @@ services:
       - tagioalisi
 
     ports:
-      - "${BOT_EXPOSE_PORT}:${BOT_PORT}"
+      - "8081:8081"
+      - "8082:8082"
 
     volumes:
       - .:/home/developer/tagioalisi-bot:cached
       - $HOME:/home/developer/host-home:cached
 
-    # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
-    # cap_add:
-    #   - SYS_PTRACE
-    command:
-      'echo "This is a devcontainer, and should have its command overridden"'
+    env_file:
+      - .env
 
+    environment:
+      - DEBUG=true
+      - BOT_PORT=8081
+      - BOT_GRPC_PORT=8082
+      - BLACKLIST_BOT_MODULES=
+      - OAUTH_AUTH_ENDPOINT=https://discordapp.com/api/oauth2/authorize
+      - OAUTH_TOKEN_ENDPOINT=https://discordapp.com/api/oauth2/token
+      - POSTGRES_USER=tagioalisi
+      - POSTGRES_PASSWORD=tagi_secret!7461
+      - POSTGRES_DB=tagioalisi
+
+  webapp:
+    build: 
+      context: .
+      dockerfile: Dockerfile.webapp
+      target: devcontainer
+
+
+    user: "developer"
+
+    networks:
+      - tagioalisi
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - .:/home/developer/tagioalisi-bot:cached
+      - $HOME:/home/developer/host-home:cached
+
+    env_file:
+      - .env
+
+    environment:
+      - BOT_ENDPOINT=http://localhost:8081
+      - BOT_GRPC_ENDPOINT=http://localhost:8082
 
   db:
     image: postgres:alpine
@@ -39,6 +72,10 @@ services:
 
     networks:
       - tagioalisi
+
+    # WARNING: DO NOT EXPOSE PORTS IN PRODUCTION
+    ports:
+      - "5432:5432"
 
 networks:
   tagioalisi:
