@@ -1,30 +1,26 @@
 import React from 'react';
-import {grpc} from '@improbable-eng/grpc-web';
 
-// import { GreeterClientImpl } from '@tagioalisi/proto/hello';
-// import { SockpuppetClientImpl } from '@tagioalisi/proto/sockpuppet';
-// import { AuthenticationContext } from '@tagioalisi/contexts/Authentication';
-// import { APIConfigurationContext } from '@tagioalisi/contexts/APIConfiguration';
+import * as grpc from 'nice-grpc-web';
 
-// export const useGreeterClient = () => {
-//     const { configuration } = React.useContext(APIConfigurationContext)
-//     const { authentication } = React.useContext(AuthenticationContext);
-    
+import { AuthenticationContext } from '@tagioalisi/contexts/Authentication';
+import { APIConfigurationContext } from '@tagioalisi/contexts/APIConfiguration';
 
-//     const c = grpc.client(GreeterClientImpl, {host: configuration.baseURL})
-//     const transport = grpc.WebsocketTransport();
-//     const client = React.useMemo(() => new GreeterClientImpl(configuration.baseURL ?? '', {transport}), [configuration, authentication]);
-    
-//     return client;
-// }
 
-// export const useSockpuppetClient = () => {
-//     const { configuration } = React.useContext(APIConfigurationContext)
-//     const { authentication } = React.useContext(AuthenticationContext);
-    
-//     const transport = grpc.WebsocketTransport();
-//     const client = React.useMemo(() => new SockpuppetClient(configuration.baseURL ?? '', {transport}), [configuration, authentication]);
-    
-//     return client;
+export const useClient = <SD extends grpc.CompatServiceDefinition> (service: SD) => {
+    const { configuration } = React.useContext(APIConfigurationContext)
+    const { authentication } = React.useContext(AuthenticationContext);
 
-// }
+    const client = React.useMemo(() => {
+        if (!configuration.grpcBaseURL) {
+            throw "No GRPC base URL";
+        }
+        const channel = grpc.createChannel(configuration.grpcBaseURL);
+        const client = grpc.createClient(service, channel);
+        return client;
+
+
+    }, [configuration, authentication]);
+
+    return client;
+
+}

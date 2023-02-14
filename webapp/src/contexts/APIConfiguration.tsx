@@ -1,48 +1,48 @@
-import { ContactPageOutlined } from '@mui/icons-material';
 import React, { ReactNode } from 'react';
-import { useCookies } from 'react-cookie';
 
+export const getDefaultBaseURL = () => {
+    const url = __BOT_BASE_URL__ || '';
+    return url;
+}
 
-export const useDefaultBaseURL = () => {
-    const [cookies] = useCookies(['BOT_EXTERNAL_BASE_URL']);
-    const defaultBaseUrl = `${cookies.BOT_EXTERNAL_BASE_URL}`;
-    return defaultBaseUrl;
+export const getDefaultGrpcBaseURL = () => {
+    const url = __BOT_GRPC_BASE_URL__ || '';
+    return url;
+
 }
 
 export interface APIConfiguration {
     baseURL?: string;
+    grpcBaseURL?: string;
 }
 
 interface APIConfigurationContextValue {
-    configuration: APIConfiguration,
-    setBaseURL: (url: string) => void,
+    configuration: APIConfiguration;
+    setBaseURL: (url: string) => void;
+    setGrpcBaseURL: (url: string) => void;
 }
 
 export const APIConfigurationContext = React.createContext<APIConfigurationContextValue>({
     configuration: {},
     setBaseURL: (url: string) => {},
+    setGrpcBaseURL: (url: string) => {},
 });
 
 export default (props: {children: ReactNode}) => {
-    const [configuration, setConfiguration] = React.useState<APIConfiguration>({});
+    const [configuration, setConfiguration] = React.useState<APIConfiguration>({
+        baseURL: getDefaultBaseURL(),
+        grpcBaseURL: getDefaultGrpcBaseURL(),
+    });
 
-    const defaultBaseURL = useDefaultBaseURL();
-    React.useEffect(() => {
-        console.log('set default base url', defaultBaseURL);
-        setConfiguration({baseURL: defaultBaseURL});
-    }, [defaultBaseURL]);
+    const setBaseURL = (baseURL: string) => setConfiguration({...configuration, baseURL});
 
-
-    const setBaseURL = (baseURL: string) => {
-        console.log('set base url ???', {...configuration, baseURL})
-        setConfiguration({...configuration, baseURL})
-    };
+    const setGrpcBaseURL = (grpcBaseURL: string) => setConfiguration({...configuration, grpcBaseURL})
 
     React.useEffect(() => {
         console.log('config', configuration);
     }, [configuration]);
 
-    return <APIConfigurationContext.Provider value={{configuration, setBaseURL}}>
+    return <APIConfigurationContext.Provider value={{configuration, setBaseURL, setGrpcBaseURL}}>
         {props.children}
     </APIConfigurationContext.Provider>
 

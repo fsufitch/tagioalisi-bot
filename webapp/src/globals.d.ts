@@ -25,3 +25,6 @@ declare module '*.module.styl' {
   const classes: { [key: string]: string };
   export default classes;
 }
+
+declare const __BOT_BASE_URL__: string;
+declare const __BOT_GRPC_BASE_URL__: string;

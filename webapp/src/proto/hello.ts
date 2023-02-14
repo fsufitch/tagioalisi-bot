@@ -1,4 +1,5 @@
 /* eslint-disable */
+import type { CallContext, CallOptions } from "nice-grpc-common";
 import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "tagioalisi";
@@ -43,21 +44,11 @@ export const HelloRequest = {
     return message;
   },
 
-  fromJSON(object: any): HelloRequest {
-    return { name: isSet(object.name) ? String(object.name) : "" };
-  },
-
-  toJSON(message: HelloRequest): unknown {
-    const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<HelloRequest>, I>>(base?: I): HelloRequest {
+  create(base?: DeepPartial<HelloRequest>): HelloRequest {
     return HelloRequest.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<HelloRequest>, I>>(object: I): HelloRequest {
+  fromPartial(object: DeepPartial<HelloRequest>): HelloRequest {
     const message = createBaseHelloRequest();
     message.name = object.name ?? "";
     return message;
@@ -94,49 +85,42 @@ export const HelloReply = {
     return message;
   },
 
-  fromJSON(object: any): HelloReply {
-    return { message: isSet(object.message) ? String(object.message) : "" };
-  },
-
-  toJSON(message: HelloReply): unknown {
-    const obj: any = {};
-    message.message !== undefined && (obj.message = message.message);
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<HelloReply>, I>>(base?: I): HelloReply {
+  create(base?: DeepPartial<HelloReply>): HelloReply {
     return HelloReply.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<HelloReply>, I>>(object: I): HelloReply {
+  fromPartial(object: DeepPartial<HelloReply>): HelloReply {
     const message = createBaseHelloReply();
     message.message = object.message ?? "";
     return message;
   },
 };
 
-export interface Greeter {
+export type GreeterDefinition = typeof GreeterDefinition;
+export const GreeterDefinition = {
+  name: "Greeter",
+  fullName: "tagioalisi.Greeter",
+  methods: {
+    /** Sends a greeting */
+    sayHello: {
+      name: "SayHello",
+      requestType: HelloRequest,
+      requestStream: false,
+      responseType: HelloReply,
+      responseStream: false,
+      options: {},
+    },
+  },
+} as const;
+
+export interface GreeterServiceImplementation<CallContextExt = {}> {
   /** Sends a greeting */
-  SayHello(request: HelloRequest): Promise<HelloReply>;
+  sayHello(request: HelloRequest, context: CallContext & CallContextExt): Promise<DeepPartial<HelloReply>>;
 }
 
-export class GreeterClientImpl implements Greeter {
-  private readonly rpc: Rpc;
-  private readonly service: string;
-  constructor(rpc: Rpc, opts?: { service?: string }) {
-    this.service = opts?.service || "tagioalisi.Greeter";
-    this.rpc = rpc;
-    this.SayHello = this.SayHello.bind(this);
-  }
-  SayHello(request: HelloRequest): Promise<HelloReply> {
-    const data = HelloRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "SayHello", data);
-    return promise.then((data) => HelloReply.decode(new _m0.Reader(data)));
-  }
-}
-
-interface Rpc {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
+export interface GreeterClient<CallOptionsExt = {}> {
+  /** Sends a greeting */
+  sayHello(request: DeepPartial<HelloRequest>, options?: CallOptions & CallOptionsExt): Promise<HelloReply>;
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
@@ -145,11 +129,3 @@ export type DeepPartial<T> = T extends Builtin ? T
   : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
-
-type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
-
-function isSet(value: any): boolean {
-  return value !== null && value !== undefined;
-}

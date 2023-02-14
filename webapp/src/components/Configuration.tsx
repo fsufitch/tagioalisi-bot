@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Typography, Button, Paper, Stack, Avatar, IconButton, FormControl, OutlinedInput, InputLabel, InputAdornment, Tooltip } from '@mui/material';
 import { Api as ApiIcon, Undo as UndoIcon } from '@mui/icons-material';
 
-import { APIConfigurationContext, useDefaultBaseURL } from '@tagioalisi/contexts/APIConfiguration';
+import { APIConfigurationContext, getDefaultBaseURL } from '@tagioalisi/contexts/APIConfiguration';
 
 export default () => {
     return (
@@ -24,7 +24,7 @@ export default () => {
 }
 
 const EditableConfiguration = () => {
-    const defaultBaseURL = useDefaultBaseURL();
+    const defaultBaseURL = getDefaultBaseURL();
     const {configuration, setBaseURL} = React.useContext(APIConfigurationContext);
     const [editMode, setEditMode] = React.useState<boolean>(false);
     const [formBaseUrl, setFormBaseUrl] = React.useState<string>(configuration?.baseURL ?? '');

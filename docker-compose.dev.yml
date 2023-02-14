@@ -26,7 +26,8 @@ services:
     environment:
       - DEBUG=true
       - BOT_PORT=8081
-      - BOT_GRPC_PORT=8082
+      - BOT_GRPC_PORT=8092
+      - GRPC_WEB_PROXY_PORT=8082
       - BLACKLIST_BOT_MODULES=
       - OAUTH_AUTH_ENDPOINT=https://discordapp.com/api/oauth2/authorize
       - OAUTH_TOKEN_ENDPOINT=https://discordapp.com/api/oauth2/token

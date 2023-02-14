@@ -59,9 +59,7 @@ export default (props: { children: ReactNode }) => {
     }, [configuration, urlJWT]);
 
 
-
-    const [loginTrigger, setLoginTrigger] = React.useState<number>(0);
-    React.useEffect(() => {
+    const login = () => {
         console.log('config in login', configuration)
         if (!configuration?.baseURL) {
             console.error("No base URL configured; cannot log in");
@@ -70,18 +68,13 @@ export default (props: { children: ReactNode }) => {
         const url = new URL(configuration.baseURL);
         url.searchParams.set('return_url', window.location.href);
         url.pathname = '/login';
+        console.log('redirect would be', url.toString());
         window.location.href = url.toString();
-    }, [loginTrigger]);
-    const login = () => setLoginTrigger(loginTrigger+1);
+    }
 
-    const [logoutTrigger, setLogoutTrigger] = React.useState<number>(0);
-    React.useEffect(() => {
-        if (!logoutTrigger) {
-            return;
-        }
+    const logout = () => {
         clearAuthentication();
-    }, [logoutTrigger]);
-    const logout = () => setLogoutTrigger(logoutTrigger+1);
+    }
 
     return <AuthenticationContext.Provider value={{ authentication: authentication || {}, login, logout }}>
         {props.children}

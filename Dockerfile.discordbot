@@ -41,7 +41,8 @@ RUN go install -v golang.org/x/tools/gopls@latest && \
     go install -v honnef.co/go/tools/cmd/staticcheck@latest && \
     go install -v google.golang.org/protobuf/cmd/protoc-gen-go@latest && \
     go install -v google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest && \
-    go install -v github.com/google/wire/cmd/wire@latest
+    go install -v github.com/google/wire/cmd/wire@latest && \
+    go install -v github.com/improbable-eng/grpc-web/go/grpcwebproxy@latest
 ENV PATH=/home/developer/go/bin:${PATH}
 
 # Note: everything from here on out is run as 'developer'

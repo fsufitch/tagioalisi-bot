@@ -12,10 +12,9 @@ import {
 } from '@mui/icons-material';
 import { useHelloQuery } from '@tagioalisi/services/endpoints/hello';
 import { InlineOpenInNewIcon } from '@tagioalisi/services/styleUtils';
-// import { useGreeterClient } from '@tagioalisi/services/grpc';
-import { HelloRequest } from '@tagioalisi/proto/hello';
-
-import { BrowserHeaders } from 'browser-headers';
+import { useClient } from '@tagioalisi/services/grpc';
+import { GreeterDefinition } from '@tagioalisi/proto/hello';
+import { usePromiseEffect } from '@tagioalisi/services/async';
 
 const GITHUB_URL = 'https://github.com/fsufitch/tagioalisi-bot';
 
@@ -35,23 +34,18 @@ export default () => {
     }, [helloData]);
 
     const [grpcWorks, setGrpcWorks] = React.useState<boolean>(false);
-    // const greeterClient = useGreeterClient();
-    React.useEffect(() => {
-        const req: HelloRequest = {name: "TEST GREETER"};
-        console.error('no grpc implementation at the moment; request would be:', req);
-        // greeterClient.sayHello(req, new BrowserHeaders(), (err, reply) => {
-        //     if (!!err) {
-        //         console.error(err);
-        //         setGrpcWorks(false);
-        //         return;
-        //     }
-        //     if (!reply || !reply.getMessage().includes("TEST GREETER")) {
-        //         console.error('wrong message');
-        //         setGrpcWorks(false);
-        //         return;
-        //     }
-        //     setGrpcWorks(true);
-        // });
+    const greeterClient = useClient(GreeterDefinition);
+    usePromiseEffect(async () => {
+        try {
+            const reply = await greeterClient.sayHello({name: "TEST GREETER"});
+            if (!reply.message.includes("TEST GREETER")) {
+                throw "Server replied with wrong message";
+            }
+            setGrpcWorks(true);
+        } catch (err) {
+            console.error(err);
+            setGrpcWorks(false);
+        }
     }, [helloTriggerCounter])
 
     return <Paper>

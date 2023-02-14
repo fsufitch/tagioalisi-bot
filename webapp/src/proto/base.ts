@@ -44,25 +44,11 @@ export const UnaryStatus = {
     return message;
   },
 
-  fromJSON(object: any): UnaryStatus {
-    return {
-      ok: isSet(object.ok) ? Boolean(object.ok) : false,
-      message: isSet(object.message) ? String(object.message) : "",
-    };
-  },
-
-  toJSON(message: UnaryStatus): unknown {
-    const obj: any = {};
-    message.ok !== undefined && (obj.ok = message.ok);
-    message.message !== undefined && (obj.message = message.message);
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<UnaryStatus>, I>>(base?: I): UnaryStatus {
+  create(base?: DeepPartial<UnaryStatus>): UnaryStatus {
     return UnaryStatus.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<UnaryStatus>, I>>(object: I): UnaryStatus {
+  fromPartial(object: DeepPartial<UnaryStatus>): UnaryStatus {
     const message = createBaseUnaryStatus();
     message.ok = object.ok ?? false;
     message.message = object.message ?? "";
@@ -76,11 +62,3 @@ export type DeepPartial<T> = T extends Builtin ? T
   : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
-
-type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
-
-function isSet(value: any): boolean {
-  return value !== null && value !== undefined;
-}

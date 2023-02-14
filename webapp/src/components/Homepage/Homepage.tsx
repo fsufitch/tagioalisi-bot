@@ -19,8 +19,6 @@ export default () => {
     const [tagiLogo] = usePromiseEffect(() => import('@tagioalisi/resources/cicada-avatar.png').then(it => it.default), []);
     const [discordLogo] = usePromiseEffect(() => import('@tagioalisi/resources/discord-color.svg').then(it => it.default), []);
 
-    const helloData = useHelloQuery();
-
     return (
         <Grid container>
             <Grid item xs={12} md={9}>

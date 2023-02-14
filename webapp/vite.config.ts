@@ -10,9 +10,19 @@ export default defineConfig({
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.css'],
   },
 
-  build: {
-    
+  define: {
+    __BOT_BASE_URL__: JSON.stringify(process.env.BOT_ENDPOINT || ''),
+    __BOT_GRPC_BASE_URL__: JSON.stringify(process.env.BOT_GRPC_ENDPOINT || ''),
   },
 
-  plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: 8080,
+    hmr: true,
+    https: false,
+  },
+
+  plugins: [
+    react(),
+  ],
 })
