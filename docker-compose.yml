@@ -1,10 +1,7 @@
 version: '3'
 services:
   discordbot:
-    build: 
-      context: .
-      dockerfile: Dockerfile.discordbot
-      target: runtime
+    image: docker.io/fsufitch/tagioalisi-discordbot
     hostname: discordbot
     networks:
       - tagioalisi
@@ -25,10 +22,7 @@ services:
       - POSTGRES_DB=tagioalisi
 
   webapp:
-    build: 
-      context: .
-      dockerfile: Dockerfile.webapp
-      target: runtime
+    image: docker.io/fsufitch/tagioalisi-webapp
     hostname: webapp
     networks:
       - tagioalisi
@@ -42,9 +36,7 @@ services:
       - BOT_GRPC_ENDPOINT=https://localhost:8092
 
   grpcwebproxy:
-    build: 
-      context: .
-      dockerfile: Dockerfile.grpcwebproxy
+    image: docker.io/fsufitch/tagioalisi-grpcwebproxy
     hostname: grpcwebproxy
     networks:
       - tagioalisi
