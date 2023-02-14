@@ -55,7 +55,8 @@ ENV PATH=/home/developer/go/bin:${PATH}
 FROM devcontainer AS build
 
 USER developer
-COPY discordbot /home/developer/tagioalisi-bot/discordbot
+COPY --chown=developer discordbot /home/developer/tagioalisi-bot/discordbot
+COPY --chown=developer proto /home/developer/tagioalisi-bot/proto
 WORKDIR /home/developer/tagioalisi-bot/discordbot
 RUN ./build.sh
 RUN sudo mkdir -p /dist/bin && \
@@ -74,9 +75,11 @@ CMD ["go", "test", "./..."]
 # RUNTIME
 # This image is the ready-to-run container for launching the bot
 ##########
+FROM alpine AS alpine-certs
+RUN apk add ca-certificates
 
 FROM busybox:1.35-glibc AS runtime
-
+COPY --from=alpine-certs /etc/ssl/certs /etc/ssl/certs
 WORKDIR /opt/tagioalisi-bot
 COPY --from=build /dist/bin/* .
-CMD tagi-migrate && tagi-bot
+CMD ./tagi-migrate && ./tagi-bot

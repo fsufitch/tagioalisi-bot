@@ -19,7 +19,10 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 8080,
     hmr: true,
-    https: false,
+    https: {
+      key: './keys/default.key',
+      cert: './keys/default.pem',
+    },
   },
 
   plugins: [

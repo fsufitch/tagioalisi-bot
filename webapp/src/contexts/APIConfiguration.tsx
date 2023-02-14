@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
 
 export const getDefaultBaseURL = () => {
-    const url = __BOT_BASE_URL__ || '';
+    const url = __BOT_BASE_URL__ || 'http://localhost:8091'; // XXX: HARDCODING
     return url;
 }
 
 export const getDefaultGrpcBaseURL = () => {
-    const url = __BOT_GRPC_BASE_URL__ || '';
+    const url = __BOT_GRPC_BASE_URL__ || 'https://localhost:8092'; // XXX: HARDCODING
     return url;
 
 }
