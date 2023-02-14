@@ -7,7 +7,9 @@ import (
 
 	"github.com/fsufitch/tagioalisi-bot/bot"
 	"github.com/fsufitch/tagioalisi-bot/config"
+	"github.com/fsufitch/tagioalisi-bot/grpc"
 	"github.com/fsufitch/tagioalisi-bot/log"
+	"github.com/fsufitch/tagioalisi-bot/web"
 )
 
 var banner = []string{
@@ -18,10 +20,11 @@ var banner = []string{
 
 // Main is an initialized runtime with all necessary dependencies injected
 type Main struct {
-	context context.Context
-	log     *log.Logger
-	bot     bot.Bot
-	webRun  WebRunFunc
+	context    context.Context
+	log        *log.Logger
+	bot        bot.Bot
+	grpcServer *grpc.TagioalisiGRPC
+	webServer  *web.TagioalisiAPIServer
 }
 
 // Main is what it says on the tin
@@ -33,10 +36,19 @@ func (m Main) Main() int {
 
 	webError := make(chan error)
 	go func() {
-		if m.webRun != nil {
-			webError <- m.webRun()
+		if m.webServer != nil {
+			webError <- m.webServer.Run()
 		} else {
 			m.log.Infof("web server disabled, not starting")
+		}
+	}()
+
+	grpcError := make(chan error)
+	go func() {
+		if m.grpcServer != nil {
+			grpcError <- m.grpcServer.Run()
+		} else {
+			m.log.Infof("grpc server disabled, not starting")
 		}
 	}()
 
@@ -46,6 +58,9 @@ func (m Main) Main() int {
 		return 1
 	case err := <-webError:
 		m.log.Criticalf("critical web error: %v", err)
+		return 1
+	case err := <-grpcError:
+		m.log.Criticalf("critical grpc error: %v", err)
 		return 1
 	case <-m.context.Done():
 		m.log.Infof("main context canceled, shutting down")
@@ -60,14 +75,15 @@ func ProvideMain(
 	log *log.Logger,
 	debugMode config.DebugMode,
 	cliBS log.CLILoggingBootstrapper,
-	webRun WebRunFunc,
+	webServer *web.TagioalisiAPIServer,
+	grpcServer *grpc.TagioalisiGRPC,
 ) (Main, func(), error) {
 	cliBS.Start()
 	for _, line := range banner {
 		log.Infof(line)
 	}
 	log.Infof("Debug mode: %v", debugMode)
-	return Main{ctx, log, bot, webRun}, func() { cliBS.Stop() }, nil
+	return Main{ctx, log, bot, grpcServer, webServer}, func() { cliBS.Stop() }, nil
 }
 
 func main() {

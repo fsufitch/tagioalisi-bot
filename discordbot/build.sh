@@ -34,7 +34,7 @@ GOARCH= GOOS= protoc \
     ${PROTO_SRC_DIR}/*.proto
 
 # Generate wired files
-GOOS= GOARCH= go run github.com/google/wire/cmd/wire ./...    
+GOOS= GOARCH= wire ./...    
 
 # Build
 go build -o ${BIN_BOT} ./cmd/tagi-bot

@@ -21,7 +21,6 @@ func InitializeMain() (Main, func(), error) {
 	panic(wire.Build(
 		ProvideMain,
 		ProvideInterruptContext,
-		ProvideWebRunFunc,
 		config.EnvironmentProviderSet,
 		log.CLILoggingProviderSet,
 		azure.AzureProviderSet,
