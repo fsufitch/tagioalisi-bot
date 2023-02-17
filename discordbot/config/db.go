@@ -1,4 +1,4 @@
-package config
+ipackage config
 
 import (
 	"errors"
@@ -15,14 +15,17 @@ func ProvideDatabaseStringFromEnvironment() (DatabaseString, error) {
 	// POSTGRES_PASSWORD=tagi_secret!7461
 	// POSTGRES_DB=tagioalisi
 	var (
-		user, password, db string
-		ok                 bool
+		user, password, host, db string
+		ok                       bool
 	)
 	if user, ok = os.LookupEnv("POSTGRES_USER"); !ok {
 		return "", errors.New("missing env var: POSTGRES_USER")
 	}
 	if password, ok = os.LookupEnv("POSTGRES_PASSWORD"); !ok {
 		return "", errors.New("missing env var: POSTGRES_PASSWORD")
+	}
+	if host, ok = os.LookupEnv("POSTGRES_HOST"); !ok {
+	   	return "", errors.New("missing env var: POSTGRES_HOST")
 	}
 	if db, ok = os.LookupEnv("POSTGRES_DB"); !ok {
 		return "", errors.New("missing env var: POSTGRES_DB")
