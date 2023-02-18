@@ -1,0 +1,67 @@
+version: '3'
+services:
+  discordbot:
+    image: docker.io/fsufitch/tagioalisi-discordbot
+    hostname: discordbot
+    networks:
+      - tagioalisi
+    ports:
+      - "8091:8091"  # HTTP API
+      #- "9001:9001"  # gRPC API -- not exposed for production
+    env_file:
+      - .env
+    environment:
+      - DEBUG=false
+      - BOT_PORT=8091
+      - BOT_GRPC_PORT=9001
+      - POSTGRES_USER=tagioalisi
+      - POSTGRES_PASSWORD=tagi_secret!7461
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=tagioalisi
+
+
+  webapp:
+    image: docker.io/fsufitch/tagioalisi-webapp
+    hostname: webapp
+    networks:
+      - tagioalisi
+    ports:
+      - "8090:8090"
+    env_file:
+      - .env
+    environment:
+      - WEBAPP_PORT=8090
+      - BOT_ENDPOINT=http://localhost:8091
+      - BOT_GRPC_ENDPOINT=https://localhost:8092
+
+  grpcwebproxy:
+    image: docker.io/fsufitch/tagioalisi-grpcwebproxy
+    hostname: grpcwebproxy
+    networks:
+      - tagioalisi
+    environment:
+      - PROXY_BACKEND=discordbot:9001
+    ports:
+      - "8092:9001"
+
+  db:
+    image: postgres:alpine
+    env_file:
+      - .env
+    environment:
+      - PGDATA=/var/tagioalisi/db/pgdata
+      - POSTGRES_USER=tagioalisi
+      - POSTGRES_PASSWORD=tagi_secret!7461
+      - POSTGRES_DB=tagioalisi
+    volumes:
+      - type: bind
+        source: ./var/db
+        target: /var/tagioalisi/db
+    networks:
+      - tagioalisi
+    # WARNING: DO NOT EXPOSE PORTS IN PRODUCTION
+    # ports:
+    #   - "5432:5432"
+
+networks:
+  tagioalisi:

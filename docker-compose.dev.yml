@@ -1,0 +1,83 @@
+version: '3'
+services:
+  discordbot-dev:
+    build: 
+      context: .
+      dockerfile: Dockerfile.discordbot
+      target: devcontainer
+    user: "developer"
+    networks:
+      - tagioalisi-dev
+    ports:
+      - "8081:8081"  # HTTP API
+      - "9001:9001"  # gRPC API
+    volumes:
+      - .:/home/developer/tagioalisi-bot:cached
+      - $HOME:/home/developer/host-home:cached
+    env_file:
+      - .env
+    environment:
+      - DEBUG=true
+      - BOT_PORT=8081
+      - BOT_GRPC_PORT=9001
+      - POSTGRES_USER=tagioalisi
+      - POSTGRES_PASSWORD=tagi_secret!7461
+      - POSTGRES_HOST=postgres-dev
+      - POSTGRES_DB=tagioalisi
+    command:
+      sh -c 'while [[ true ]]; do sleep infinity; done'
+
+  webapp-dev:
+    build: 
+      context: .
+      dockerfile: Dockerfile.webapp
+      target: devcontainer
+    user: "developer"
+    networks:
+      - tagioalisi-dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/home/developer/tagioalisi-bot:cached
+      - $HOME:/home/developer/host-home:cached
+    env_file:
+      - .env
+    environment:
+      - BOT_ENDPOINT=http://localhost:8081
+      - BOT_GRPC_ENDPOINT=https://localhost:8082
+    command:
+      sh -c 'while [[ true ]]; do sleep infinity; done'
+  
+  grpcwebproxy-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.grpcwebproxy
+    networks:
+      - tagioalisi-dev
+    environment:
+      - PROXY_BACKEND=discordbot-dev:9001
+    ports:
+      - "8082:9001"
+
+  postgres-dev:
+    image: postgres:alpine
+    env_file:
+      - .env
+    environment:
+      - PGDATA=/var/tagioalisi/db/pgdata
+      - POSTGRES_USER=tagioalisi
+      - POSTGRES_PASSWORD=tagi_secret!7461
+      - POSTGRES_HOST=postgres-dev
+      - POSTGRES_DB=tagioalisi
+    volumes:
+      - type: bind
+        source: ./var/db
+        target: /var/tagioalisi/db
+    networks:
+      - tagioalisi-dev
+    # WARNING: DO NOT EXPOSE PORTS IN PRODUCTION
+    ports:
+      - "5432:5432"
+
+networks:
+  tagioalisi-dev:
