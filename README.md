@@ -61,7 +61,7 @@ A guide to the environment variables:
 | `OAUTH_CLIENT_ID` / `OAUTH_CLIENT_SECRET` | Your bot's OAuth2 credentials, from the "OAuth2" tab of its [developer page](https://discord.com/developers/applications); these are required for the "Login" feature of the webui to work |
 | `OAUTH_REDIRECT_URL` | The URL that Discord should redirect back to as part of the login process; example, for development: `http://localhost:8081/login/redirect` |
 | `JWT_HMAC_SECRET` | String to use for signing JWTs; **change in production** |
-| `AES_KEY_B64` | 32-byte AES key to encrypt session details with; **change in production**; to generate a new one, run `dd if=/dev/random of=/dev/stdout bs=1 count=32 | base64` |
+| `AES_KEY_B64` | 32-byte AES key to encrypt session details with; **change in production**; to generate a new one, run `dd if=/dev/random of=/dev/stdout bs=1 count=32 \| base64` |
 | `AZURE_NEWS_SEARCH_KEY` | API key for use with the [Bing News Search API](https://www.microsoft.com/en-us/bing/apis/bing-news-search-api) |
 | `MERRIAM_WEBSTER_DICTIONARY_KEY` | API key for use with the [Merriam-Webster Dictionary API]([https://www.microsoft.com/en-us/bing/apis/bing-news-search-api](https://dictionaryapi.com/)) |
 
