@@ -38,11 +38,9 @@ The bot functionality is split up into mostly independent modules that each act 
 
 These can be individually turned on/off using the `BLACKLIST_BOT_MODULES` environment variable.
 
-## Docker-Compose Stack
+## Docker-Compose Deployment
 
 Tagioalisi Bot is created to easily run via a Docker Compose stack. 
-
-## Deployment
 
 ### 1. Configure
 
@@ -98,7 +96,7 @@ The stack exposes the following ports:
 By default, the Postgres database's data is stored in `./var/db`, so it can survive `docker-compose down`. 
 If this is displeasing, remove the volume mount from `docker-compose.yml`.
 
-## Development
+## Docker-Compose Development
 
 Tagioalisi is designed to be developed through the use of [Development containers](https://containers.dev/).
 Both the `discordbot/` and `webapp/` directories feature a `.devcontainer.json` which contains a configuration
