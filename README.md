@@ -131,7 +131,7 @@ Source code relevant to the bot are in the `discordbot/` and `proto/` directorie
 
 Within the `discordbot/` directory:
 
-   ./build.sh
+    ./build.sh
 
 This does three things:
 
@@ -193,7 +193,7 @@ you will need to re-run the command.
 
 Within the `webapp/` directory:
 
-   npm run build
+    npm run build
    
 This does two things:
 
