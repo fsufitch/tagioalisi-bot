@@ -1,8 +1,5 @@
 # Tagioalisi
 
-[![DockerHub CI](https://github.com/fsufitch/tagioalisi-bot/actions/workflows/docker-image.yml/badge.svg)](https://github.com/fsufitch/tagioalisi-bot/actions/workflows/docker-image.yml)
-[![Generic badge](https://img.shields.io/badge/DockerHub-latest-blue.svg)](https://hub.docker.com/r/fsufitch/tagioalisi-bot)
-
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 [![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f.svg)](https://go.dev/)
 [![TypeScript](https://badgen.net/badge/icon/typescript?icon=typescript&label)](https://typescriptlang.org)
@@ -20,44 +17,6 @@ Custom bot for the Sociologic Planning Boar server on Discord. Now in Go!
     '-._____..-/`  |  \
          ,-'   /    `-.
 
-
-For non-Docker build instructions, consult the docs in [`src/bot`](./src/bot) and [`src/web`](./src/web). (TODO) 
-
-## Docker-Compose Stack
-
-Tagioalisi Bot is created to easily run via a Docker Compose stack. Follow these steps.
-
-### 1. Create the configuration
-
-In the repository root, run:
-
-    cp default.env .env
-
-Edit `.env` and follow the instructions there.
-Then, `cd runtime`. The remainder of the instructions depend on that.
-
-### 2. Get the Docker images
-
-To run the latest versions hosted on Docker Hub:
-
-    docker-compose pull
-
-Alternatively, build local images.
-
-    make  # Build archives containing precompiled files
-    docker-compose build  # Build the actual runtime images
-
-### 3. Initialize the database
-
-    docker-compose run migrations tagioalisi-migrations
-
-Re-run this command anytime database migrations need to be applied.
-
-### 4. Run the servers
-
-    docker-compose up -d
-
-Note: both bot API server and web server expose their traffic via plain HTTP. Add a separate HTTPS layer at your leisure. 
 
 ## Modular design
 
@@ -77,4 +36,170 @@ The bot functionality is split up into mostly independent modules that each act 
 | `remindme` | ⬜️ | basic reminder system for reminding yourself and others of stuff |
 | `ytplay` | ⬜️ | pipe audio from a YouTube video into an audio channel; as annoying as possible |
 
-These can be individually turned on/off using the `BLACKLIST_BOT_MODULES` environment variable. 
+These can be individually turned on/off using the `BLACKLIST_BOT_MODULES` environment variable.
+
+## Docker-Compose Stack
+
+Tagioalisi Bot is created to easily run via a Docker Compose stack. 
+
+## Deployment
+
+### 1. Configure
+
+In the repository root, edit `.env`. You should change nearly all the values to correspond to your setup.
+Only some placeholders for development are included.
+
+> Note: there are other environment variables that don't need to change. Those are in `docker-compose.yml` itself.
+
+### 2. Get the Docker images
+
+To run the latest versions hosted on Docker Hub:
+
+    docker-compose pull
+
+Alternatively, build local images.
+
+    ./build-docker-images.sh
+    
+The stack relies on three images:
+
+* `docker.io/fsufitch/tagioalisi-discordbot`
+* `docker.io/fsufitch/tagioalisi-webapp`
+* `docker.io/fsufitch/tagioalisi-grpcwebproxy`
+
+### 3. Run it!
+
+    docker-compose up -d
+
+The stack exposes the following ports:
+
+| Port | Protocol | Description |
+| ---- | -------- | ----------- |
+| 8090 | HTTPS    | The webapp UI |
+| 8091 | HTTP (not S!) | The bot's HTTP API; note this is not secured with TLS |
+| 8092 | HTTPS  | The bot's gRPC-web endpoint |
+
+> **TLS Note:** TLS uses self-signed certificates; you should gate _all_ these endpoints behind a proxy that gives them proper certs.
+
+By default, the Postgres database's data is stored in `./var/db`, so it can survive `docker-compose down`. 
+If this is displeasing, remove the volume mount from `docker-compose.yml`.
+
+## Development
+
+Tagioalisi is designed to be developed through the use of [Development containers](https://containers.dev/).
+Both the `discordbot/` and `webapp/` directories feature a `.devcontainer.json` which contains a configuration
+for launching a devcontainer intended to develop that particular piece of the application. 
+
+The devcontainers use the same `.env` configuration as the production runtime (see above), but a different
+Docker Compose file (`docker-compose.dev.yml`) and a different set of images (which include all sorts of tools/goodies). 
+
+**Use your favorite IDE to launch the devcontainers individually.** Visual Studio Code is recommended. 
+
+Alternatively, build and start the dev stack without an IDE by using `docker-compose -f docker-compose.dev.yml up -d`.
+
+The dev stack exposes the following ports:
+
+| Port | Protocol | Description |
+| ---- | -------- | ----------- |
+| 8080 | HTTPS    | The webapp UI |
+| 8081 | HTTP (not S!) | The bot's HTTP API; note this is not secured with TLS |
+| 8082 | HTTPS    | The bot's gRPC-web endpoint |
+| 9001 | gRPC     | The bot's raw gRPC endpoint |
+| 5432 | PostgreSQL | The bot's database |
+
+The dev stack has some notable differences from the production runtime:
+
+* **The bot and webapp processes do not start automatically**. 
+  You can use `docker-compose -f docker-compose.dev.yml exec dev-discordbot bash` or 
+  `docker-compose -f docker-compose.dev.yml exec dev-webapp bash` to "SSH in". You then need to build
+  and run the two processes manually (see below).
+* The user is `developer`. It is not root, but has `sudo` within the containers.
+* The repository is volume-mounted as `/home/developer/tagioalisi-bot`.
+* Your _host user's_ home directory is volume-mounted as `/home/developer/host-home`, for your convenience.
+
+## Developing the bot
+
+These instructions are intended to be used within the devcontainer. Development is possible
+without the container, but extra configuration (environment variables) may be necessary.
+The bot's code *is cross-platform compatible*, if you wish to develop it in a non-Linux environment.
+
+##### Sources:
+
+Source code relevant to the bot are in the `discordbot/` and `proto/` directories.
+
+##### Build:
+
+Within the `discordbot/` directory:
+
+   ./build.sh
+
+This does three things:
+
+1. Compiles the `proto/*.proto` Protobuf sources into `discordbot/proto/*.pb.go`.
+2. Uses [Wire](https://github.com/google/wire) to perform compile-time dependency injection. 
+   This generates the somewhat onerous code required to hook together the components of the
+   application:
+   * `discordbot/cmd/tagi-bot/wire_gen.go`
+   * `discordbot/cmd/tagi-migrate/wire_gen.go`
+3. Calls `go build` to actually generate `discordbot/bin/tagi-bot` and `discordbot/bin/tagi-migrate`
+   (with `.exe` extensions if built on/for Windows).
+   
+If you want to build the binaries for a different platform, specify the 
+GOOS/GOARCH environment variables. To see all combinations available to your current system, run
+`go tool dist list`.
+
+##### Run:
+
+Simply run `tagi-bot` for the main bot, and `tagi-migrate` for database migrations. 
+
+##### Test:
+
+Within the `discordbot/` directory, run:
+
+    go test ./...
+
+See `go help test` for relevant arguments.
+
+## Developing the webapp
+
+These instructions are intended to be used within the devcontainer. Development is possible
+without the container, but extra configuration (environment variables) may be necessary.
+The bot's code *is cross-platform compatible*, if you wish to develop it in a non-Linux environment.
+
+##### Sources:
+
+Source code relevant to the webapp are in the `webapp/` and `proto/` directories.
+
+For initial setup, within the `webapp` directory, run:
+
+    npm install
+
+##### Live server:
+
+Within the `webapp` directory:
+
+    npm run dev
+
+This does two things:
+
+1. Compiles the `proto/*.proto` Protobuf sources into `webapp/src/proto/*.ts`.
+2. Starts a [Vite](https://vitejs.dev/) server which compiles and serves the application.
+   
+The Vite server has HMR (hot module reload) enabled, so the served webpage *should reflect any
+changes as soon as you save the source file*! Note that if you make changes to the proto sources,
+you will need to re-run the command.
+
+##### Build and bundle static artifacts:
+
+Within the `webapp/` directory:
+
+   npm run build
+   
+This does two things:
+
+1. Compiles the `proto/*.proto` Protobuf sources into `webapp/src/proto/*.ts`.
+2. Uses [Vite](https://vitejs.dev/) to compile the sources and dependencies into static Javascript/etc files.
+
+The output files are found in `dist/`. They can be used with your webserver of choice (nginx, etc)
+to serve the webapp.
+
