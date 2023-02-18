@@ -51,6 +51,20 @@ Only some placeholders for development are included.
 
 > Note: there are other environment variables that don't need to change. Those are in `docker-compose.yml` itself.
 
+A guide to the environment variables:
+
+| Name | Description |
+| ---- | ----------- |
+| `DISCORD_TOKEN` | Your bot's token, from the "Bot" tab of its [developer page](https://discord.com/developers/applications); this is required for the bot to work at all |
+| `DISCORD_LOG_CHANNEL` | The ID of the Discord channel the bot should use for INFO+ logging; right click on the channel in your Discord client to copy the ID |
+| `BLACKLIST_BOT_MODULES` | Comma-separated list of bot modules (see above) to not load |
+| `OAUTH_CLIENT_ID` / `OAUTH_CLIENT_SECRET` | Your bot's OAuth2 credentials, from the "OAuth2" tab of its [developer page](https://discord.com/developers/applications); these are required for the "Login" feature of the webui to work |
+| `OAUTH_REDIRECT_URL` | The URL that Discord should redirect back to as part of the login process; example, for development: `http://localhost:8081/login/redirect` |
+| `JWT_HMAC_SECRET` | String to use for signing JWTs; **change in production** |
+| `AES_KEY_B64` | 32-byte AES key to encrypt session details with; **change in production**; to generate a new one, run `dd if=/dev/random of=/dev/stdout bs=1 count=32 | base64` |
+| `AZURE_NEWS_SEARCH_KEY` | API key for use with the [Bing News Search API](https://www.microsoft.com/en-us/bing/apis/bing-news-search-api) |
+| `MERRIAM_WEBSTER_DICTIONARY_KEY` | API key for use with the [Merriam-Webster Dictionary API]([https://www.microsoft.com/en-us/bing/apis/bing-news-search-api](https://dictionaryapi.com/)) |
+
 ### 2. Get the Docker images
 
 To run the latest versions hosted on Docker Hub:
