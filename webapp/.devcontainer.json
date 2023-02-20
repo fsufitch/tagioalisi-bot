@@ -1,7 +1,7 @@
 {
     "name": "Tagioalisi Webapp Devcontainer",
     "dockerComposeFile": "../docker-compose.dev.yml",
-    "service": "webapp",
+    "service": "webapp-dev",
     "workspaceFolder": "/home/developer/tagioalisi-bot",
     "overrideCommand": true,
 

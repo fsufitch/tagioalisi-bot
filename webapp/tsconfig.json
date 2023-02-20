@@ -1,6 +1,8 @@
 {
   "include": [
-      "./src",
+      "./@tagioalisi",
+      "main.ts",
+      "vite.config.ts",
   ],
   "compilerOptions": {
       // "plugins": [{ "name": "typescript-plugin-css-modules" }],
@@ -14,7 +16,7 @@
           "ESNext",
       ], /* Specify library files to be included in the compilation. */
       "skipLibCheck": true,
-      // "allowJs": true,                       /* Allow javascript files to be compiled. */
+      "allowJs": true,                       /* Allow javascript files to be compiled. */
       // "checkJs": true,                       /* Report errors in .js files. */
       "jsx": "react-jsx", /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
       // "declaration": true,                   /* Generates corresponding '.d.ts' file. */
@@ -68,10 +70,5 @@
       "experimentalDecorators": true, /* Enables experimental support for ES7 decorators. */
       "emitDecoratorMetadata": true, /* Enables experimental support for emitting type metadata for decorators. */
       "resolveJsonModule": true,
-  },
-  "references": [
-      {
-          "path": "./tsconfig.node.json"
-      }
-  ]
+  }
 }

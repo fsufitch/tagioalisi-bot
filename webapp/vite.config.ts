@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   resolve: {
     alias: {
-      '@tagioalisi': '/src',
+      '@tagioalisi': '/@tagioalisi',
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.css'],
   },
