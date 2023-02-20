@@ -4,7 +4,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { Application } from "./@tagioalisi/components/Application/Application";
+import Application from "@tagioalisi/components/Application";
 
 const container = document.getElementById("app-container") as HTMLElement;
 

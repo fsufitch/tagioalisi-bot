@@ -1,1 +1,0 @@
-export const Application = () => <p>hello react</p>;
