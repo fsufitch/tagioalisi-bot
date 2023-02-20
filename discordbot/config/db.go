@@ -1,4 +1,4 @@
-ipackage config
+package config
 
 import (
 	"errors"
@@ -30,7 +30,7 @@ func ProvideDatabaseStringFromEnvironment() (DatabaseString, error) {
 	if db, ok = os.LookupEnv("POSTGRES_DB"); !ok {
 		return "", errors.New("missing env var: POSTGRES_DB")
 	}
-	databaseURL := fmt.Sprintf("postgres://%s:%s@db/%s?sslmode=disable", user, password, db)
+	databaseURL := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", user, password, host, db)
 	return DatabaseString(databaseURL), nil
 
 }
