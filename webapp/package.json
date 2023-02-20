@@ -3,11 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "foo": "bar",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "proto": "npx -c 'protoc --ts_proto_out=./src/proto --ts_proto_opt=env=browser,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false -I ../proto ../proto/*'"
+    "proto": "npx -c 'protoc --ts_proto_out=./src/proto --ts_proto_opt=env=browser,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false -I ../proto ../proto/*'",
+    "format-all": "npm run format './**/*.@(js?(x)|ts?(x)|?(s)css|sass|htm?(l)|json|y?(a)ml)'",
+    "format": "npx prettier-eslint --write -l info"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -18,6 +21,10 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^3.1.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier-eslint": "^15.0.1",
+    "prettier-eslint-cli": "^7.1.0",
     "sass": "^1.58.0",
     "ts-proto": "^1.139.0",
     "typescript": "^4.9.3",

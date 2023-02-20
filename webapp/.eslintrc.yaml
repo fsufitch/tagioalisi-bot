@@ -1,0 +1,23 @@
+root: true
+ignorePatterns:
+  - '!.*' # Include dot-files so it formats itself and prettier's config
+
+extends:
+  - 'eslint:recommended'
+  - 'plugin:react/recommended'
+  - 'plugin:@typescript-eslint/recommended'
+
+env:
+  node: true
+
+parserOptions:
+  parser: '@typescript-eslint/parser'
+  ecmaVersion: latest
+  sourceType: 'module'
+
+plugins:
+  - '@typescript-eslint'
+
+settings:
+  react:
+    version: detect
