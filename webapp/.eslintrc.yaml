@@ -13,6 +13,9 @@ extends:
 env:
   node: true
 
+rules:
+  'import/default': off
+
 parserOptions:
   parser: '@typescript-eslint/parser'
   ecmaVersion: latest

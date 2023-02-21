@@ -1,3 +1,8 @@
+import { Button } from '@mui/material';
 import * as React from 'react';
 
-export const PageOne: React.FC = () => <>one</>;
+export const PageOne: React.FC = () => (
+  <>
+    <Button variant="contained">hello</Button>
+  </>
+);
