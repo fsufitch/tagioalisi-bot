@@ -5,22 +5,22 @@ FROM fedora:37 AS devcontainer
 
 # Install stuff necessary for a reasonable CLI
 RUN dnf install -y \
-        bash-completion \
-        curl \
-        file \
-        git \
-        gzip \
-        gnupg2 \
-        iputils \
-        man-db \
-        net-tools \
-        openssh-clients \
-        python3 \
-        protobuf-compiler \
-        sudo \
-        tar \
-        vim \
-        xz
+    bash-completion \
+    curl \
+    file \
+    git \
+    gzip \
+    gnupg2 \
+    iputils \
+    man-db \
+    net-tools \
+    openssh-clients \
+    python3 \
+    protobuf-compiler \
+    sudo \
+    tar \
+    vim \
+    xz
 
 # Install Node
 ARG NODE_DOWNLOAD=https://nodejs.org/dist/v19.6.0/node-v19.6.0-linux-x64.tar.xz
@@ -76,10 +76,10 @@ ENV WEBAPP_TLS_KEY=keys/default.key
 
 # See: https://www.npmjs.com/package/http-server
 CMD http-server \
-        --port ${WEBAPP_PORT} \
-        -S -C ${WEBAPP_TLS_CERT} -K ${WEBAPP_TLS_KEY} \
-        -d false && \
-        -i false && \
-        -e '' && \
-        -c-1 && \
-        .
+    --port ${WEBAPP_PORT} \
+    -S -C ${WEBAPP_TLS_CERT} -K ${WEBAPP_TLS_KEY} \
+    -d false && \
+    -i false && \
+    -e '' && \
+    -c-1 && \
+    .

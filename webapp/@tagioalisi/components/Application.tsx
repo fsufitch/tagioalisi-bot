@@ -1,1 +1,3 @@
-export default () => <p>hello react</p>;
+import React from 'react';
+
+export const Application = () => <p>hello react</p>;
