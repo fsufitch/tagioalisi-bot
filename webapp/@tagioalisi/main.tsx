@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
 
 import routes from '@tagioalisi/routes';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { createTheme, ThemeProvider } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 
 (() => {
   const theme = createTheme({
@@ -15,11 +14,10 @@ import { createTheme, ThemeProvider } from '@mui/material';
 
   return createRoot(document.getElementById('app-container') as HTMLElement).render(
     <React.StrictMode>
-      <ScopedCssBaseline enableColorScheme>
-        <ThemeProvider theme={theme}>
-          <RouterProvider router={createBrowserRouter(routes)} />
-        </ThemeProvider>
-      </ScopedCssBaseline>
+      <CssBaseline enableColorScheme />
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={createBrowserRouter(routes)} />
+      </ThemeProvider>
     </React.StrictMode>,
   );
 })();
