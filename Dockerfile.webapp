@@ -49,6 +49,7 @@ FROM devcontainer AS build
 COPY --chown=developer ./webapp /home/developer/tagioalisi-bot/webapp
 COPY --chown=developer ./proto /home/developer/tagioalisi-bot/proto
 WORKDIR /home/developer/tagioalisi-bot/webapp
+RUN npm install
 RUN npm run proto && npm run build
 RUN sudo mkdir -p /dist/webapp && \
     sudo cp -r dist/* /dist/webapp

@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "proto": "npx -c 'protoc --ts_proto_out=./src/proto --ts_proto_opt=env=browser,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false -I ../proto ../proto/*'",
+    "proto": "npx -c 'protoc --ts_proto_out=./@tagioalisi/proto --ts_proto_opt=env=browser,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false -I ../proto ../proto/*'",
     "format-all": "npm run format $(find . -type f -not -path '*/node_modules/*' | grep -E '.(jsx?|tsx?|s?css|sass|html?|json|ya?ml)$')",
     "format": "npx prettier-eslint --include-dotfiles --write"
   },
@@ -18,6 +18,7 @@
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.9",
     "@mui/material": "^5.11.10",
+    "nice-grpc": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.1"
