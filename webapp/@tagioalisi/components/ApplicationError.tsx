@@ -8,13 +8,8 @@ import {
   Button,
   Stack,
 } from '@mui/material';
-import React from 'react';
-import {
-  isRouteErrorResponse,
-  useNavigate,
-  useRouteError,
-  NavigateFunction,
-} from 'react-router-dom';
+import React, { useTransition } from 'react';
+import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router-dom';
 import { ErrorResponse } from '@remix-run/router';
 import ErrorIcon from '@mui/icons-material/Error';
 import LinkOffIcon from '@mui/icons-material/LinkOff';
@@ -26,52 +21,64 @@ import UndoIcon from '@mui/icons-material/Undo';
 
 export const ApplicationError = () => {
   const error = useRouteError();
-  const navigate = useNavigate();
   return (
     <Container maxWidth="md">
       <Stack direction="column" justifyContent="center" minHeight="95vh">
         {isRouteErrorResponse(error) ? (
-          <RouteError error={error} navigate={navigate} />
+          <RouteError error={error} />
         ) : (
-          <GenericError error={error} navigate={navigate} />
+          <GenericError error={error} />
         )}
       </Stack>
     </Container>
   );
 };
 
+export default ApplicationError;
+
 const RouteError: React.FC<{
   error: ErrorResponse;
-  navigate: NavigateFunction;
-}> = ({ error, navigate }) => (
-  <Card>
-    <CardHeader
-      avatar={<LinkOffIcon />}
-      title={
-        <h2>
-          Routing error ({error.status}): {error.statusText}
-        </h2>
-      }
-    />
-    <CardContent>
-      <Typography>You flummoxed the page router!</Typography>
-      <CodeBlock>{error.data}</CodeBlock>
-    </CardContent>
-    <CardActions css={{ justifyContent: 'right' }}>
-      <Button startIcon={<UndoIcon />} onClick={() => navigate(-1)}>
-        Go Back
-      </Button>
-      <Button startIcon={<HouseIcon />} onClick={() => navigate('/')}>
-        Home
-      </Button>
-    </CardActions>
-  </Card>
-);
+}> = ({ error }) => {
+  const navigate = useNavigate();
+  const [pending, startTransition] = useTransition();
 
-const GenericError: React.FC<{ error: unknown; navigate: NavigateFunction }> = ({
-  error,
-  navigate,
-}) => {
+  return (
+    <Card>
+      <CardHeader
+        avatar={<LinkOffIcon />}
+        title={
+          <h2>
+            Routing error ({error.status}): {error.statusText}
+          </h2>
+        }
+      />
+      <CardContent>
+        <Typography>You flummoxed the page router!</Typography>
+        <CodeBlock>{error.data}</CodeBlock>
+      </CardContent>
+      <CardActions css={{ justifyContent: 'right' }}>
+        <Button
+          startIcon={<UndoIcon />}
+          disabled={pending}
+          onClick={() => startTransition(() => navigate(-1))}
+        >
+          Go Back
+        </Button>
+        <Button
+          startIcon={<HouseIcon />}
+          disabled={pending}
+          onClick={() => startTransition(() => navigate('/'))}
+        >
+          Home
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};
+
+const GenericError: React.FC<{ error: unknown }> = ({ error }) => {
+  const navigate = useNavigate();
+  const [pending, startTransition] = useTransition();
   console.error('Application error:', error);
   return (
     <Card>
@@ -83,7 +90,11 @@ const GenericError: React.FC<{ error: unknown; navigate: NavigateFunction }> = (
         <CodeBlock>{`${error}`}</CodeBlock>
       </CardContent>
       <CardActions css={{ justifyContent: 'right' }}>
-        <Button startIcon={<HouseIcon />} onClick={() => navigate('/')}>
+        <Button
+          startIcon={<HouseIcon />}
+          disabled={pending}
+          onClick={() => startTransition(() => navigate('/'))}
+        >
           Home
         </Button>
       </CardActions>

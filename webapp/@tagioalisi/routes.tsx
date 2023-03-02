@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { lazy } from 'react';
 
-import { Home } from '@tagioalisi/components/Home';
-import { PageOne } from '@tagioalisi/components/PageOne';
-import { PageTwo } from '@tagioalisi/components/PageTwo';
-import { ApplicationLayout } from './components/ApplicationLayout';
-import { ApplicationError } from './components/ApplicationError';
+const ApplicationLayout = lazy(() => import('@tagioalisi/components/ApplicationLayout'));
+const Home = lazy(() => import('@tagioalisi/components/Home'));
+const PageOne = lazy(() => import('@tagioalisi/components/PageOne'));
+const PageTwo = lazy(() => import('@tagioalisi/components/PageTwo'));
+const ApplicationError = lazy(() => import('@tagioalisi/components/ApplicationError'));
 
 export default [
   {

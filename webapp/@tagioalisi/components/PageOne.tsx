@@ -6,3 +6,5 @@ export const PageOne: React.FC = () => (
     <Button variant="contained">hello</Button>
   </>
 );
+
+export default PageOne;

@@ -16,3 +16,5 @@ export const ApplicationLayout: FC = () => {
     </Container>
   );
 };
+
+export default ApplicationLayout;
