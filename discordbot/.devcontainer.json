@@ -1,7 +1,7 @@
 {
     "name": "Tagioalisi Bot Devcontainer",
     "dockerComposeFile": "../docker-compose.dev.yml",
-    "service": "discordbot",
+    "service": "discordbot-dev",
     "runServices": [
         "db"
     ],
