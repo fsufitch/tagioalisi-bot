@@ -2,12 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
+
+    <link rel="icon" type="image/svg+xml" href="/icon.png" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
+    <script>
+      var __GRPC_ENDPOINT__ = __GRPC_ENDPOINT__ || '';
+    </script>
   </head>
   <body>
-    <div id="app-wrapper"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div id="app-container">Loading...</div>
+    <script type="module" src="./@tagioalisi/main.ts"></script>
   </body>
 </html>

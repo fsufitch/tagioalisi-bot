@@ -3,32 +3,29 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "foo": "bar",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "proto": "npx -c 'protoc --ts_proto_out=./src/proto --ts_proto_opt=env=browser,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false -I ../proto ../proto/*'"
+    "proto": "npx -c 'protoc --ts_proto_out=./@tagioalisi/proto --ts_proto_opt=env=browser,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false -I ../proto ../proto/*'",
+    "format-all": "npm run format $(find . -type f -not -path '*/node_modules/*' | grep -E '.(jsx?|tsx?|s?css|sass|html?|json|ya?ml)$')",
+    "format": "npx prettier-eslint --include-dotfiles --write"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "@fontsource/roboto": "^4.5.8",
-    "@improbable-eng/grpc-web": "^0.15.0",
-    "@mui/icons-material": "^5.11.0",
-    "@mui/material": "^5.11.8",
-    "nice-grpc-web": "^2.0.2",
-    "react": "^18.2.0",
-    "react-cookie": "^4.1.1",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.1"
+    "axios": "^1.3.4",
+    "nice-grpc": "^2.1.0",
+    "nice-grpc-web": "^3.0.0",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6",
+    "vuetify": "^3.1.7"
   },
   "devDependencies": {
-    "@types/react": "^18.0.27",
-    "@types/react-dom": "^18.0.10",
-    "@vitejs/plugin-react": "^3.1.0",
+    "@vitejs/plugin-vue": "^4.0.0",
     "sass": "^1.58.0",
     "ts-proto": "^1.139.0",
     "typescript": "^4.9.3",
-    "vite": "^4.1.0"
+    "vite": "^4.1.0",
+    "vite-plugin-vuetify": "^1.0.2"
   }
 }
