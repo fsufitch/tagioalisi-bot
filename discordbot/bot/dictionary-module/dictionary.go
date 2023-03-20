@@ -32,9 +32,10 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 func (m *Module) define(ctx commandContext, word string) error {
 	word = strings.TrimSpace(strings.ToLower(word))
 
-	if !m.Client.IsConfigredCorrectly() {
+	initError := m.Client.GetInitError()
+	if m.Client.GetInitError() == nil {
 		m.Log.Errorf("API key failed to be retreived on init")
-		util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, "Failed to look up definition due to error with api key")
+		return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, initError.Error())
 	}
 
 	results, suggestions, err := m.Client.SearchCollegiate(word)

@@ -1,8 +1,6 @@
 package dictionary
 
 import (
-	"errors"
-
 	"github.com/fsufitch/tagioalisi-bot/config"
 	mwdict "github.com/fsufitch/tagioalisi-bot/merriam-webster"
 )
@@ -11,9 +9,6 @@ import (
 type Client mwdict.Client
 
 // NewClient creates a new client for the dictionary module
-func NewClient(apiKey config.MerriamWebsterAPIKey, userAgent config.UserAgent) *mwdict.BasicClient {
-	if apiKey == "" {
-		return mwdict.NewBasicClient("", string(userAgent), errors.New("no Merriam-Webster API key found"))
-	}
-	return mwdict.NewBasicClient(string(apiKey), string(userAgent), nil)
+func NewClient(apiKey config.MerriamWebsterAPIKey, userAgent config.UserAgent) (*mwdict.BasicClient, error) {
+	return mwdict.NewBasicClient(string(apiKey), string(userAgent)), nil
 }
