@@ -24,24 +24,31 @@ func init() {
 // Client describes access to the Merriam-Webster dictionary at dictionaryapi.com
 type Client interface {
 	SearchCollegiate(word string) ([]types.CollegiateResult, []string, error)
+	IsConfigredCorrectly() bool
 }
 
 // BasicClient is a basic HTTP-based client for querying the M-W dictionary
 type BasicClient struct {
-	APIKey    string
-	BaseURL   *url.URL
-	UserAgent string
-	Client    *http.Client
+	APIKey          string
+	BaseURL         *url.URL
+	UserAgent       string
+	Client          *http.Client
+	InitFailedError error
 }
 
 // NewBasicClient creates a client based on a given API key
-func NewBasicClient(apiKey string, userAgent string) *BasicClient {
+func NewBasicClient(apiKey string, userAgent string, err error) *BasicClient {
 	return &BasicClient{
-		APIKey:    apiKey,
-		BaseURL:   dictionaryAPIBaseURL,
-		UserAgent: userAgent,
-		Client:    http.DefaultClient,
+		APIKey:          apiKey,
+		BaseURL:         dictionaryAPIBaseURL,
+		UserAgent:       userAgent,
+		Client:          http.DefaultClient,
+		InitFailedError: err,
 	}
+}
+
+func (bc BasicClient) IsConfigredCorrectly() bool {
+	return bc.InitFailedError == nil
 }
 
 // SearchCollegiate implements a search of the collegiate dictionary

@@ -11,9 +11,9 @@ import (
 type Client mwdict.Client
 
 // NewClient creates a new client for the dictionary module
-func NewClient(apiKey config.MerriamWebsterAPIKey, userAgent config.UserAgent) (*mwdict.BasicClient, error) {
+func NewClient(apiKey config.MerriamWebsterAPIKey, userAgent config.UserAgent) *mwdict.BasicClient {
 	if apiKey == "" {
-		return nil, errors.New("no Merriam-Webster API key found")
+		return mwdict.NewBasicClient("", string(userAgent), errors.New("no Merriam-Webster API key found"))
 	}
-	return mwdict.NewBasicClient(string(apiKey), string(userAgent)), nil
+	return mwdict.NewBasicClient(string(apiKey), string(userAgent), nil)
 }
