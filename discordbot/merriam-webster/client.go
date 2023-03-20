@@ -58,6 +58,11 @@ func (bc BasicClient) GetInitError() error {
 
 // SearchCollegiate implements a search of the collegiate dictionary
 func (bc BasicClient) SearchCollegiate(word string) ([]types.CollegiateResult, []string, error) {
+	initError := bc.GetInitError()
+	if initError != nil {
+		return nil, nil, initError
+	}
+
 	word = strings.TrimSpace(strings.ToLower(word))
 
 	queryURL := *bc.BaseURL

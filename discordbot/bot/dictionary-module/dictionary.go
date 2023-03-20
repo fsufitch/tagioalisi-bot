@@ -32,12 +32,6 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 func (m *Module) define(ctx commandContext, word string) error {
 	word = strings.TrimSpace(strings.ToLower(word))
 
-	initError := m.Client.GetInitError()
-	if m.Client.GetInitError() == nil {
-		m.Log.Errorf("API key failed to be retreived on init")
-		return util.DiscordMessageSendRawBlock(ctx.session, ctx.messageCreate.ChannelID, initError.Error())
-	}
-
 	results, suggestions, err := m.Client.SearchCollegiate(word)
 	if err != nil {
 		m.Log.Errorf("failed SearchCollegiate: %v", err)
