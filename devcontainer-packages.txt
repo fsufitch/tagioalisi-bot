@@ -6,6 +6,7 @@ golang
 gzip
 gnupg2
 hostname
+htop
 iputils
 man-db
 net-tools
