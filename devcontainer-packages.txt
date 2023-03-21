@@ -5,6 +5,7 @@ git
 golang
 gzip
 gnupg2
+hostname
 iputils
 man-db
 net-tools
