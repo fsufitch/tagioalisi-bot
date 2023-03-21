@@ -16,9 +16,9 @@ WORKDIR /home/developer
 USER developer
 
 COPY ./.bashrc.d /home/developer/.bashrc.d
-COPY ./.devcontainer-install-go-tools.sh /opt/go-tools.sh
 
-RUN bash /opt/go-tools.sh
+# COPY ./.devcontainer-install-go-tools.sh /opt/go-tools.sh
+# RUN bash /opt/go-tools.sh
 
 ENV PATH=/home/developer/go/bin:${PATH}
 

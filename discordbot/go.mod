@@ -12,24 +12,26 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsufitch/seedless-rand v0.0.0-20200226123932-0bb5063608b0
 	github.com/golang-migrate/migrate/v4 v4.12.1
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/uuid v1.1.2
 	github.com/google/wire v0.5.0
 	github.com/gorilla/handlers v1.4.2
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/kr/pretty v0.3.0 // indirect
 	github.com/lib/pq v1.8.0
 	github.com/mrjones/oauth v0.0.0-20190623134757-126b35219450 // indirect
 	github.com/pkg/errors v0.9.1
+	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/urfave/cli/v2 v2.8.1
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
-	golang.org/x/net v0.0.0-20220526153639-5463443f8c37 // indirect
+	golang.org/x/crypto v0.1.0 // indirect
+	golang.org/x/net v0.3.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/xerrors v0.0.0-20220517211312-f3a8303e98df // indirect
 	google.golang.org/genproto v0.0.0-20220525015930-6ca3db687a9d // indirect
 	google.golang.org/grpc v1.46.2
-	google.golang.org/protobuf v1.28.0
+	google.golang.org/protobuf v1.30.0
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
