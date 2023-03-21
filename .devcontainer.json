@@ -8,6 +8,13 @@
     // leave the containers running when VS Code closes 
     "shutdownAction": "stopCompose",
 
+    "updateContentCommand": {
+        // Download Go dependencies to local cache
+        //"go-cache-deps": "cd /home/developer/tagioalisi-bot/discordbot && go mod download",
+        // Install Webapp deps
+        "webapp-deps": "cd /home/developer/tagioalisi-bot/webapp && npm i"
+    },
+
     "customizations": {
         "vscode": {
             "extensions": [

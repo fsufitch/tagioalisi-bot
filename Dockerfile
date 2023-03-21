@@ -16,15 +16,10 @@ WORKDIR /home/developer
 USER developer
 
 COPY ./.bashrc.d /home/developer/.bashrc.d
+COPY ./.devcontainer-install-go-tools.sh /opt/go-tools.sh
 
-# Install Go dev devendencies (tools etc)
-RUN go install -v golang.org/x/tools/gopls@latest && \
-    go install -v github.com/go-delve/delve/cmd/dlv@latest && \
-    go install -v honnef.co/go/tools/cmd/staticcheck@latest && \
-    go install -v google.golang.org/protobuf/cmd/protoc-gen-go@latest && \
-    go install -v google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest && \
-    go install -v github.com/google/wire/cmd/wire@latest && \
-    go install -v github.com/improbable-eng/grpc-web/go/grpcwebproxy@latest
+RUN bash /opt/go-tools.sh
+
 ENV PATH=/home/developer/go/bin:${PATH}
 
 CMD ["echo", "devcontainer should have its command overridden by the IDE"]
