@@ -33,13 +33,15 @@ func (m Module) groupCreate(session *discordgo.Session, event *discordgo.Message
 
 	m.Log.Debugf("groups: creating role; guildID=%s", event.GuildID)
 
-	role, err := session.GuildRoleCreate(event.GuildID)
+	role, err := session.GuildRoleCreate(event.GuildID, nil)
 	if err != nil {
 		return errors.Wrap(err, "failed to create role")
 	}
 
 	m.Log.Debugf("groups: editing role; guildID=%s, roleID=%s, roleName=%s", event.GuildID, role.ID, newRoleName)
-	roleEdited, err := session.GuildRoleEdit(event.GuildID, role.ID, newRoleName, 0, false, 0, true)
+	roleEdited, err := session.GuildRoleEdit(event.GuildID, role.ID, &discordgo.RoleParams{
+		Name: newRoleName,
+	})
 	if err != nil {
 		if err2 := session.GuildRoleDelete(event.GuildID, role.ID); err2 != nil {
 			return errors.Wrapf(err, "could not edit role; could not revert role creation: %v", err2)

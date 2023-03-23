@@ -1,32 +1,32 @@
 {
-    "git.enableCommitSigning": true,
-    "terminal.integrated.shellIntegration.enabled": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnPaste": false, // required
-    "editor.formatOnType": false, // required
-    "editor.formatOnSave": true, // optional
-    "editor.formatOnSaveMode": "file",
-    "[ignore]": {
-        "editor.defaultFormatter": "foxundermoon.shell-format"
-    },
-    "[dockerfile]": {
-        "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-    },
-    "[go]": {
-        "editor.defaultFormatter": "golang.go"
-    },
-    "[go.mod]": {
-        "editor.defaultFormatter": "golang.go"
-    },
-    "go.delveConfig": {
-        "debugAdapter": "dlv-dap",
-    },
-    "gopls": {
-        "build.directoryFilters": [
-            "-",
-            "+discordbot"
-        ],
-        "formatting.local": "github.com/fsufitch/tagioalisi-bot",
-        "ui.semanticTokens": true
-    }
+  "git.enableCommitSigning": true,
+  "terminal.integrated.shellIntegration.enabled": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": false, // required
+  "editor.formatOnType": false, // required
+  "editor.formatOnSave": true, // optional
+  "editor.formatOnSaveMode": "file",
+  "[ignore]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
+  },
+  "[go.mod]": {
+    "editor.defaultFormatter": "golang.go"
+  },
+  "go.delveConfig": {
+    "debugAdapter": "dlv-dap"
+  },
+  "gopls": {
+    "build.directoryFilters": ["-", "+discordbot"],
+    "formatting.local": "github.com/fsufitch/tagioalisi-bot",
+    "ui.semanticTokens": true,
+    "build.expandWorkspaceToModule": true,
+    "verboseOutput": true
+  },
+  "go.toolsEnvVars": {}
 }

@@ -14,7 +14,7 @@ type websocketSupport interface {
 // Identity is a session for getting information about users
 type Identity interface {
 	websocketSupport
-	User(id string) (*discordgo.User, error)
+	User(id string, options ...discordgo.RequestOption) (*discordgo.User, error)
 }
 
 // NewIdentity creates an IdentitySession from a token
