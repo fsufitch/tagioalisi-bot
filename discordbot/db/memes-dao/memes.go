@@ -38,7 +38,7 @@ type MemeName struct {
 }
 
 // SearchByName finds a meme given the filename prefix
-func (dao DAO) SearchByName(guildId string, name string) (*Meme, error) {
+func (dao DAO) SearchByName(name string) (*Meme, error) {
 	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return nil, err
@@ -50,14 +50,13 @@ func (dao DAO) SearchByName(guildId string, name string) (*Meme, error) {
 		FROM meme_names m_n
 		INNER JOIN memes m ON m_n.meme_id=m.id
 		INNER JOIN meme_urls m_u ON m.id=m_u.meme_id
-		WHERE (m.guild_id=$1 OR m.guild_id='')
-			AND m_n.name=$2 
+		WHERE m_n.name=$1
 	`)
 	if err != nil {
 		return nil, err
 	}
 
-	rows, err := stmt.Query(guildId, strings.ToLower(name))
+	rows, err := stmt.Query(strings.ToLower(name))
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
@@ -86,7 +85,7 @@ func (dao DAO) SearchByName(guildId string, name string) (*Meme, error) {
 
 		if meme.ID > 0 {
 			if meme.ID != mID {
-				return nil, fmt.Errorf("multiple IDs found for search [guild=%s name=%s]: %d, %d", guildId, name, meme.ID, mID)
+				return nil, fmt.Errorf("Multiple IDs found for search %s: %d, %d", name, meme.ID, mID)
 			}
 		} else {
 			meme.ID = mID
@@ -117,7 +116,7 @@ func (dao DAO) SearchByName(guildId string, name string) (*Meme, error) {
 }
 
 // SearchMany does a fuzzy name search; on empty query, returns all memes
-func (dao DAO) SearchMany(guildId string, query string) ([]Meme, error) {
+func (dao DAO) SearchMany(query string) ([]Meme, error) {
 	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return nil, err
@@ -132,17 +131,15 @@ func (dao DAO) SearchMany(guildId string, query string) ([]Meme, error) {
 			FROM meme_names m_n
 			INNER JOIN memes m ON m_n.meme_id=m.id
 			INNER JOIN meme_urls m_u ON m.id=m_u.meme_id
-			WHERE (m.guild_id=$1 OR m.guild_id='')
-				AND m_n.name=$2 
-		`, guildId, strings.ToLower(query))
+			WHERE m_n.name LIKE $1
+		`, strings.ToLower(query))
 	} else {
 		rows, err = tx.Query(`
 			SELECT m.id, m_n.id, m_n.name, m_n.timestamp, m_n.author, m_u.id, m_u.url, m_u.timestamp, m_u.author
 			FROM meme_names m_n
 			INNER JOIN memes m ON m_n.meme_id=m.id
 			INNER JOIN meme_urls m_u ON m.id=m_u.meme_id
-			WHERE (m.guild_id=$1 OR m.guild_id='')
-		`, guildId)
+		`)
 	}
 
 	if err == sql.ErrNoRows {
@@ -256,7 +253,7 @@ func (dao DAO) AddURL(memeID int, url string, author string) error {
 }
 
 // Add creates a new meme with the given name and URL
-func (dao DAO) Add(guildId string, name string, url string, author string) error {
+func (dao DAO) Add(name string, url string, author string) error {
 	tx, err := (*sql.DB)(dao.Conn).Begin()
 	if err != nil {
 		return err
@@ -266,10 +263,10 @@ func (dao DAO) Add(guildId string, name string, url string, author string) error
 	var memeID int
 
 	if stmt, err := tx.Prepare(`
-		INSERT INTO memes (guildId) VALUES ($1) RETURNING id
+		INSERT INTO memes DEFAULT VALUES RETURNING id
 	`); err != nil {
 		return err
-	} else if err := stmt.QueryRow(guildId).Scan(&memeID); err != nil {
+	} else if err := stmt.QueryRow().Scan(&memeID); err != nil {
 		return err
 	}
 

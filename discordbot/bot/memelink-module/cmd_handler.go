@@ -8,10 +8,9 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/urfave/cli/v2"
-
 	"github.com/fsufitch/tagioalisi-bot/bot/util"
 	"github.com/fsufitch/tagioalisi-bot/db/memes-dao"
+	"github.com/urfave/cli/v2"
 )
 
 var urlRegex = regexp.MustCompile(`^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$`)
@@ -142,7 +141,7 @@ func (m Module) handleAddMeme(s *discordgo.Session, event *discordgo.MessageCrea
 	appended := false
 
 	if appendOK {
-		existingMeme, errSearch := m.MemeDAO.SearchByName(event.GuildID, name)
+		existingMeme, errSearch := m.MemeDAO.SearchByName(name)
 		if errSearch != nil {
 			return errSearch
 		}
@@ -153,7 +152,7 @@ func (m Module) handleAddMeme(s *discordgo.Session, event *discordgo.MessageCrea
 		}
 	}
 	if !appended {
-		err = m.MemeDAO.Add(event.GuildID, name, url, event.Author.String())
+		err = m.MemeDAO.Add(name, url, event.Author.String())
 	}
 
 	if err != nil {
@@ -176,7 +175,7 @@ func (m Module) handleAddAlias(s *discordgo.Session, event *discordgo.MessageCre
 	}
 	s.ChannelMessageSend(event.Message.ChannelID, fmt.Sprintf("Adding alias `%s` -> `%s`", newName, oldName))
 
-	if existingMeme, err := m.MemeDAO.SearchByName(event.GuildID, oldName); err != nil {
+	if existingMeme, err := m.MemeDAO.SearchByName(oldName); err != nil {
 		return err
 	} else if existingMeme == nil {
 		_, err = s.ChannelMessageSend(event.Message.ChannelID, "No meme found with the old alias")
@@ -193,9 +192,9 @@ func (m Module) handleSearch(s *discordgo.Session, event *discordgo.MessageCreat
 	var memeResults []memes.Meme
 	var err error
 	if all {
-		memeResults, err = m.MemeDAO.SearchMany(event.GuildID, "")
+		memeResults, err = m.MemeDAO.SearchMany("")
 	} else if query != "" {
-		memeResults, err = m.MemeDAO.SearchMany(event.GuildID, query)
+		memeResults, err = m.MemeDAO.SearchMany(query)
 	} else {
 		_, err = s.ChannelMessageSend(event.Message.ChannelID, "No query specified. Please specify a query or `--all`/`-a`")
 		return err
