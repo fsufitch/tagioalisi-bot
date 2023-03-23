@@ -31,6 +31,7 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 
 func (m *Module) define(ctx commandContext, word string) error {
 	word = strings.TrimSpace(strings.ToLower(word))
+
 	results, suggestions, err := m.Client.SearchCollegiate(word)
 	if err != nil {
 		m.Log.Errorf("failed SearchCollegiate: %v", err)

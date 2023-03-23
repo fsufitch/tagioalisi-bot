@@ -21,6 +21,11 @@ type LoginHandler struct {
 }
 
 func (h LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Validate that the oauth config exists prior to attemting any request
+	if h.OAuth2Config == nil {
+		http.Error(w, "oauth2 config not found", http.StatusInternalServerError)
+		return
+	}
 	returnURL := r.URL.Query().Get("return_url")
 	if returnURL == "" {
 		w.Header().Set("Content-Type", "text/plain")
@@ -48,6 +53,11 @@ type AuthCodeHandler struct {
 }
 
 func (h AuthCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Validate that the oauth config exists prior to attemting any request
+	if h.OAuth2Config == nil {
+		http.Error(w, "oauth2 config not found", http.StatusInternalServerError)
+		return
+	}
 	code := r.URL.Query().Get("code")
 	state := r.URL.Query().Get("state")
 

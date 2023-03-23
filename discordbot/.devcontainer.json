@@ -1,9 +1,9 @@
 {
     "name": "Tagioalisi Bot Devcontainer",
     "dockerComposeFile": "../docker-compose.dev.yml",
-    "service": "discordbot",
+    "service": "discordbot-dev",
     "runServices": [
-        "db"
+        "postgres-dev"
     ],
     "workspaceFolder": "/home/developer/tagioalisi-bot",
     "overrideCommand": true,
