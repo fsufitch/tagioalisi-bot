@@ -7,8 +7,9 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/tagioalisi-bot/bot/util"
 	"github.com/urfave/cli/v2"
+
+	"github.com/fsufitch/tagioalisi-bot/bot/util"
 )
 
 func (m *Module) cliApp(ctx commandContext) (app *cli.App, stdout, stderr *bytes.Buffer) {
