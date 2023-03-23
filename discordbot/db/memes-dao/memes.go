@@ -266,7 +266,7 @@ func (dao DAO) Add(guildId string, name string, url string, author string) error
 	var memeID int
 
 	if stmt, err := tx.Prepare(`
-		INSERT INTO memes (guild_id) VALUES ($1) RETURNING id
+		INSERT INTO memes (guildId) VALUES ($1) RETURNING id
 	`); err != nil {
 		return err
 	} else if err := stmt.QueryRow(guildId).Scan(&memeID); err != nil {

@@ -19,15 +19,6 @@ func (m Module) isMemeEditor(s *discordgo.Session, userID string, guildID string
 		return false
 	}
 
-	guild, err := s.Guild(guildID)
-	if err != nil {
-		m.Log.Errorf("could not obtain guild from id: %v", err)
-	}
-	if member.User.ID == guild.OwnerID {
-		// Guild owners have all permissions
-		return true
-	}
-
 	allowed, err := m.ACLDAO.CheckMultiRoleACL(member.Roles, memeEditorACL)
 	if err != nil {
 		m.Log.Errorf("could not check meme editor roles ACL: %v", err)
