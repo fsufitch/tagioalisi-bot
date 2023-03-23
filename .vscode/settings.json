@@ -24,9 +24,9 @@
   "gopls": {
     "build.directoryFilters": ["-", "+discordbot"],
     "formatting.local": "github.com/fsufitch/tagioalisi-bot",
-    "ui.semanticTokens": true,
     "build.expandWorkspaceToModule": true,
-    "verboseOutput": true
+    "verboseOutput": true,
+    "ui.semanticTokens": true
   },
   "go.toolsEnvVars": {},
   "[properties]": {
