@@ -2,6 +2,7 @@ package mwdict
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -24,28 +25,44 @@ func init() {
 // Client describes access to the Merriam-Webster dictionary at dictionaryapi.com
 type Client interface {
 	SearchCollegiate(word string) ([]types.CollegiateResult, []string, error)
+	GetInitError() error
 }
 
 // BasicClient is a basic HTTP-based client for querying the M-W dictionary
 type BasicClient struct {
-	APIKey    string
-	BaseURL   *url.URL
-	UserAgent string
-	Client    *http.Client
+	APIKey          string
+	BaseURL         *url.URL
+	UserAgent       string
+	Client          *http.Client
+	InitFailedError error
 }
 
 // NewBasicClient creates a client based on a given API key
 func NewBasicClient(apiKey string, userAgent string) *BasicClient {
-	return &BasicClient{
-		APIKey:    apiKey,
-		BaseURL:   dictionaryAPIBaseURL,
-		UserAgent: userAgent,
-		Client:    http.DefaultClient,
+	var err error = nil
+	if apiKey == "" {
+		err = errors.New("no merriam-webster api key found")
 	}
+	return &BasicClient{
+		APIKey:          apiKey,
+		BaseURL:         dictionaryAPIBaseURL,
+		UserAgent:       userAgent,
+		Client:          http.DefaultClient,
+		InitFailedError: err,
+	}
+}
+
+func (bc BasicClient) GetInitError() error {
+	return bc.InitFailedError
 }
 
 // SearchCollegiate implements a search of the collegiate dictionary
 func (bc BasicClient) SearchCollegiate(word string) ([]types.CollegiateResult, []string, error) {
+	initError := bc.GetInitError()
+	if initError != nil {
+		return nil, nil, initError
+	}
+
 	word = strings.TrimSpace(strings.ToLower(word))
 
 	queryURL := *bc.BaseURL
