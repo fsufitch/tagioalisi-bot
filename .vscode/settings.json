@@ -28,5 +28,8 @@
     "build.expandWorkspaceToModule": true,
     "verboseOutput": true
   },
-  "go.toolsEnvVars": {}
+  "go.toolsEnvVars": {},
+  "[properties]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  }
 }
