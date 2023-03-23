@@ -22,7 +22,10 @@
     "debugAdapter": "dlv-dap"
   },
   "gopls": {
-    "build.directoryFilters": ["-", "+discordbot"],
+    "build.directoryFilters": [
+      "-",
+      "+discordbot"
+    ],
     "formatting.local": "github.com/fsufitch/tagioalisi-bot",
     "build.expandWorkspaceToModule": true,
     "verboseOutput": true,
@@ -30,6 +33,9 @@
   },
   "go.toolsEnvVars": {},
   "[properties]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[dotenv]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
   }
 }
