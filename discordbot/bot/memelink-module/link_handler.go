@@ -32,7 +32,7 @@ func (m Module) handleLink(s *discordgo.Session, event *discordgo.MessageCreate)
 
 	memeCount := 0
 	for memeName, memeFileName := range uniqueMemes {
-		meme, err := m.MemeDAO.SearchByName(memeName)
+		meme, err := m.MemeDAO.SearchByName(event.GuildID, memeName)
 		if err != nil {
 			m.Log.Errorf("error searching for meme `%s`: %v", memeName, err)
 			continue
