@@ -38,40 +38,7 @@
                 "Vue.volar"
             ],
             "settings": {
-                "git.enableCommitSigning": true,
-                "git-graph.repository.commits.showSignatureStatus": true,
-                "git-graph.repository.sign.commits": true,
-                "git-graph.repository.sign.tags": true,
-                "terminal.integrated.shellIntegration.enabled": true,
-                "remote.containers.cacheVolume": true, // Speeds up extension install
-                "editor.defaultFormatter": "esbenp.prettier-vscode",
-                "editor.formatOnPaste": false, // required
-                "editor.formatOnType": false, // required
-                "editor.formatOnSave": true, // optional
-                "editor.formatOnSaveMode": "file",
-                "[ignore]": {
-                    "editor.defaultFormatter": "foxundermoon.shell-format"
-                },
-                "[dockerfile]": {
-                    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-                },
-                "[go]": {
-                    "editor.defaultFormatter": "golang.go"
-                },
-                "[go.mod]": {
-                    "editor.defaultFormatter": "golang.go"
-                },
-                "go.delveConfig": {
-                    "debugAdapter": "dlv-dap"
-                },
-                "gopls": {
-                    "build.directoryFilters": [
-                        "-webapp/**",
-                        "-**/node_modules"
-                    ],
-                    "formatting.local": "github.com/fsufitch/tagioalisi-bot",
-                    "ui.semanticTokens": true
-                }
+                "remote.containers.cacheVolume": true // Speeds up extension install
             }
         }
     }
