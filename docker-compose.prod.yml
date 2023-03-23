@@ -1,0 +1,81 @@
+version: '3'
+services:
+  discordbot:
+    image: docker.io/fsufitch/tagioalisi-discordbot
+    build:
+      context: .
+      target: discordbot-runtime
+    hostname: discordbot
+    networks:
+      - tagioalisi
+    ports:
+      - "8081:8081"  # HTTP API
+      #- "9001:9001"  # gRPC API -- not exposed for production
+    env_file:
+      - .env
+    environment:
+      - DEBUG=false
+      - BOT_PORT=8081
+      - BOT_GRPC_PORT=9000
+      - POSTGRES_USER=tagioalisi
+      - POSTGRES_PASSWORD=tagi_secret!7461
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=tagioalisi
+
+
+  webapp:
+    image: docker.io/fsufitch/tagioalisi-webapp
+    build:
+      context: .
+      target: webapp-runtime
+    hostname: webapp
+    networks:
+      - tagioalisi
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - WEBAPP_PORT=8080
+      - BOT_ENDPOINT=http://localhost:8081
+      - BOT_GRPC_ENDPOINT=https://localhost:8082
+
+  grpcwebproxy:
+    image: docker.io/fsufitch/tagioalisi-grpcwebproxy
+    build:
+      context: .
+      target: grpcwebproxy
+    hostname: grpcwebproxy
+    networks:
+      - tagioalisi
+    environment:
+      - PROXY_BACKEND=discordbot:9000
+    ports:
+      - "8082:9000"
+
+  db:
+    image: docker.io/fsufitch/tagioalisi-db
+    build:
+      context: .
+      target: database
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=tagioalisi
+      - POSTGRES_PASSWORD=tagi_secret!7461
+      - POSTGRES_DB=tagioalisi
+    volumes:
+      - type: volume
+        source: tagioalisi-db
+        target: /var/tagioalisi/db
+    networks:
+      - tagioalisi
+    # WARNING: DO NOT EXPOSE PORTS IN PRODUCTION
+    # ports:
+    #   - "5432:5432"
+
+networks:
+  tagioalisi:
+
+volumes:
+  tagioalisi-db:

@@ -1,35 +1,55 @@
 module github.com/fsufitch/tagioalisi-bot
 
-go 1.16
+go 1.19
 
 require (
 	cgt.name/pkg/go-mwclient v1.2.0
-	github.com/Azure/azure-sdk-for-go v44.2.0+incompatible
-	github.com/Azure/go-autorest/autorest v0.11.2
-	github.com/PuerkitoBio/goquery v1.5.1
+	github.com/Azure/azure-sdk-for-go v68.0.0+incompatible
+	github.com/Azure/go-autorest/autorest v0.11.28
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/antonholmquist/jason v1.0.0
-	github.com/bwmarrin/discordgo v0.25.0
+	github.com/bwmarrin/discordgo v0.27.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsufitch/seedless-rand v0.0.0-20200226123932-0bb5063608b0
-	github.com/golang-migrate/migrate/v4 v4.12.1
-	github.com/google/subcommands v1.2.0 // indirect
-	github.com/google/uuid v1.1.2
+	github.com/golang-migrate/migrate/v4 v4.15.2
+	github.com/google/uuid v1.3.0
 	github.com/google/wire v0.5.0
-	github.com/gorilla/handlers v1.4.2
-	github.com/gorilla/mux v1.7.4
-	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/improbable-eng/grpc-web v0.15.0
-	github.com/lib/pq v1.8.0
-	github.com/mrjones/oauth v0.0.0-20190623134757-126b35219450 // indirect
+	github.com/gorilla/handlers v1.5.1
+	github.com/gorilla/mux v1.8.0
+	github.com/lib/pq v1.10.7
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.7.0
-	github.com/urfave/cli/v2 v2.8.1
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
-	golang.org/x/net v0.0.0-20220526153639-5463443f8c37 // indirect
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/tools v0.1.10 // indirect
-	golang.org/x/xerrors v0.0.0-20220517211312-f3a8303e98df // indirect
-	google.golang.org/genproto v0.0.0-20220525015930-6ca3db687a9d // indirect
-	google.golang.org/grpc v1.46.2
-	google.golang.org/protobuf v1.28.0
+	github.com/stretchr/testify v1.8.2
+	github.com/urfave/cli/v2 v2.25.0
+	golang.org/x/oauth2 v0.6.0
+	google.golang.org/grpc v1.54.0
+	google.golang.org/protobuf v1.30.0
+)
+
+require (
+	github.com/Azure/go-autorest v14.2.0+incompatible // indirect
+	github.com/Azure/go-autorest/autorest/adal v0.9.18 // indirect
+	github.com/Azure/go-autorest/autorest/date v0.3.0 // indirect
+	github.com/Azure/go-autorest/logger v0.2.1 // indirect
+	github.com/Azure/go-autorest/tracing v0.6.0 // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/felixge/httpsnoop v1.0.1 // indirect
+	github.com/golang-jwt/jwt/v4 v4.2.0 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
+	github.com/hashicorp/errwrap v1.1.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
+	github.com/mrjones/oauth v0.0.0-20190623134757-126b35219450 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
+	go.uber.org/atomic v1.7.0 // indirect
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
+	golang.org/x/net v0.8.0 // indirect
+	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
+	google.golang.org/appengine v1.6.7 // indirect
+	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
