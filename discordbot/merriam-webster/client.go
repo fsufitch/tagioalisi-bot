@@ -1,6 +1,7 @@
 package mwdict
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 	"net/url"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/fsufitch/tagioalisi-bot/merriam-webster/types"
 )
@@ -73,13 +75,15 @@ func (bc BasicClient) SearchCollegiate(word string) ([]types.CollegiateResult, [
 
 	queryURL.RawQuery = q.Encode()
 
-	response, err := bc.Client.Do(&http.Request{
-		Method: "GET",
-		URL:    &queryURL,
-		Header: http.Header{
-			"User-Agent": {bc.UserAgent},
-		},
-	})
+	timeoutcontext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(timeoutcontext, http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	response, err := bc.Client.Do(req)
 
 	if err != nil {
 		return nil, nil, err
@@ -89,7 +93,7 @@ func (bc BasicClient) SearchCollegiate(word string) ([]types.CollegiateResult, [
 		return nil, nil, err
 	}
 	if response.StatusCode != http.StatusOK {
-		return nil, nil, fmt.Errorf("Non-zero status %d; body: %s", response.StatusCode, string(body))
+		return nil, nil, fmt.Errorf("non-zero status %d; body: %s", response.StatusCode, string(body))
 	}
 
 	result := []types.CollegiateResult{}
