@@ -102,6 +102,15 @@ func (m *Module) handleApplicationCommand(s *discordgo.Session, event *discordgo
 		return
 	}
 
+	if len(answer.Articles) == 0 {
+		s.InteractionRespond(event.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: "No relevant news found.",
+			},
+		})
+	}
+
 	var f formatter = verboseFormatter
 	if compact {
 		f = compactFormatter
