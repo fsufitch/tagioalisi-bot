@@ -1,50 +1,71 @@
 version: '3'
-
 services:
-  grpcwebproxy:
-    extends:
-      file: docker-compose.prod.yml
-      service: grpcwebproxy
-
-  db:
-    extends:
-      file: docker-compose.prod.yml
-      service: db
-    ports:
-      - "5432:5432"
-
-  devcontainer:
-    image: docker.io/fsufitch/tagioalisi-devcontainer
+  discordbot:
+    image: docker.io/fsufitch/tagioalisi-discordbot
     build:
       context: .
-      target: devcontainer
-    hostname: devcontainer
+      target: discordbot-runtime
+    hostname: discordbot
     networks:
       - tagioalisi
     ports:
-      - "8080:8080"  # Webapp
-      - "8081:8081"  # HTTP API
-      - "9000:9000"  # gRPC API
-    env_file:
-      - .env
-    environment:
-      - DEBUG=false
-      - BOT_PORT=8081
-      - BOT_GRPC_PORT=9000
-      - POSTGRES_USER=tagioalisi
-      - POSTGRES_PASSWORD=tagi_secret!7461
-      - POSTGRES_HOST=db
-      - POSTGRES_DB=tagioalisi
+      - "7443:7443"  # HTTPS API
+      # gRPC should be exposed via grpcwebproxy
+      #- "9000:9000"
     volumes:
-      - ./:/home/developer/tagioalisi-bot/
-    depends_on:
-      - grpcwebproxy
-      - db
+      - type: bind
+        source: .
+        target: /workspaces/tagioalisi-bot
+    env_file:
+      - env/defaults/discordbot.env
+      - env/discordbot.env
 
+  webapp:
+    image: docker.io/fsufitch/tagioalisi-webapp
+    build:
+      context: .
+      target: webapp-runtime
+    hostname: webapp
+    networks:
+      - tagioalisi
+    ports:
+      - "8443:8443" # HTTPS server
+    env_file:
+      - env/defaults/webapp.env
+      - env/webapp.env
+
+  grpcwebproxy:
+    image: docker.io/fsufitch/tagioalisi-grpcwebproxy
+    build:
+      context: .
+      target: grpcwebproxy
+    hostname: grpcwebproxy
+    networks:
+      - tagioalisi
+    env_file:
+      - env/defaults/grpcwebproxy.env
+      - env/grpcwebproxy.env
+    ports:
+      # gRPC requires TLS
+      - "9443:9443"
+
+  db:
+    image: docker.io/fsufitch/tagioalisi-db
+    build:
+      context: .
+      target: database
+    env_file:
+      - env/defaults/db.env
+      - env/db.env
+    volumes:
+      - type: volume
+        source: tagioalisi-db
+        target: /var/tagioalisi/db
+    networks:
+      - tagioalisi
 
 networks:
   tagioalisi:
-
 
 volumes:
   tagioalisi-db:

@@ -1,7 +1,6 @@
 {
   "git.enableCommitSigning": true,
   "terminal.integrated.shellIntegration.enabled": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnPaste": false, // required
   "editor.formatOnType": false, // required
   "editor.formatOnSave": true, // optional
@@ -27,7 +26,6 @@
       "+discordbot"
     ],
     "formatting.local": "github.com/fsufitch/tagioalisi-bot",
-    "build.expandWorkspaceToModule": true,
     "verboseOutput": true,
     "ui.semanticTokens": true
   },
@@ -37,5 +35,8 @@
   },
   "[dotenv]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

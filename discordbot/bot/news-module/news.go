@@ -4,15 +4,15 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
+
 	"github.com/fsufitch/tagioalisi-bot/azure"
-	"github.com/fsufitch/tagioalisi-bot/bot/util"
 	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
 // Module is a news module implementing RegisterableModule
 type Module struct {
 	Log  *log.Logger
-	News azure.NewsSearch
+	News azure.BingNewsSearch
 
 	session *discordgo.Session
 }
@@ -45,16 +45,11 @@ func (m *Module) DoSearch(
 ) error {
 	m.Log.Debugf("news: searching for `%s`", query)
 
-	if !m.News.Ready() {
-		return util.DiscordMessageSendRawBlock(session, channelID, "News API not properly instantiated. Sorry! :(")
-	}
-	m.Log.Debugf("news: api ready")
-
-	results, err := m.News.Search(ctx, query, int32(count))
+	answer, err := m.News.Search(ctx, query, int32(count))
 	if err != nil {
 		return err
 	}
-	m.Log.Debugf("news: got %d results for %s", results.Len(), query)
+	m.Log.Debugf("news: got %d results for %s", len(answer.Articles), query)
 
 	var f formatter
 	if verbose {
@@ -63,5 +58,5 @@ func (m *Module) DoSearch(
 		f = compactFormatter
 	}
 
-	return f(session, channelID, results)
+	return f(session, channelID, answer)
 }

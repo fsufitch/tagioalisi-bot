@@ -3,24 +3,26 @@
 ##########
 FROM fedora:37 AS devcontainer
 
+# /certs dir is where further images put default certs, or containers mount proper external certs
+RUN mkdir -p /certs
+
 # Install stuff necessary for a reasonable CLI
-COPY devcontainer-packages.txt /opt
-RUN dnf install -y $(cat /opt/devcontainer-packages.txt) && \
+COPY .devcontainer/packages.txt /opt
+RUN dnf install -y $(cat /opt/packages.txt) && \
     rm -rf /var/cache/dnf && \
     npm i -g node npm
 
-# Set up the devcontainer user
-RUN useradd -ms /bin/bash developer
-RUN echo "developer ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/developer
-WORKDIR /home/developer
-USER developer
+COPY .devcontainer/profile.d/* /etc/profile.d/
 
-COPY ./.bashrc.d /home/developer/.bashrc.d
-
-COPY ./.devcontainer-install-go-tools.sh /opt/go-tools.sh
+COPY .devcontainer/install-go-tools.sh /opt/go-tools.sh
 RUN bash /opt/go-tools.sh
 
-ENV PATH=/home/developer/go/bin:${PATH}
+# Add default certs, handy for dev
+COPY ./certs/default.crt /certs/discordbot.crt
+COPY ./certs/default.key /certs/discordbot.key
+COPY ./certs/default.crt /certs/webapp.crt
+COPY ./certs/default.key /certs/webapp.key
+
 
 CMD ["echo", "devcontainer should have its command overridden by the IDE"]
 
@@ -47,7 +49,8 @@ WORKDIR /opt/tagioalisi-bot
 RUN apk add gcompat
 
 COPY --from=discordbot-builder /dist/bin/* .
-COPY certs /certs
+COPY ./certs/default.crt /certs/discordbot.pem
+COPY ./certs/default.key /certs/discordbot.key
 
 CMD ./tagi-migrate && ./tagi-bot
 
@@ -74,17 +77,17 @@ FROM alpine:3 AS webapp-runtime
 RUN apk add nodejs npm && \
     npm i -g http-server
 
-
 COPY --from=webapp-builder /dist/webapp /webapp
-COPY certs /certs
+COPY ./certs/default.crt /certs/webapp.crt
+COPY ./certs/default.key /certs/webapp.key
 WORKDIR /webapp
 
 # Needed for single page apps
 RUN ln -s index.html 404.html
 
-ENV WEBAPP_PORT=8080
-ENV WEBAPP_TLS_CERT=/certs/default.pem
-ENV WEBAPP_TLS_KEY=/certs/default.key
+ENV WEBAPP_PORT=443
+ENV WEBAPP_TLS_CERT=/certs/webapp.pem
+ENV WEBAPP_TLS_KEY=/certs/webapp.key
 
 # See: https://www.npmjs.com/package/http-server
 CMD http-server \
@@ -107,14 +110,17 @@ FROM golang:alpine AS grpcwebproxy
 RUN go install -v github.com/improbable-eng/grpc-web/go/grpcwebproxy@latest
 
 COPY ./grpcwebproxy /opt/grpcwebproxy
+COPY ./certs/default.crt /certs/grpcwebproxy.crt
+COPY ./certs/default.key /certs/grpcwebproxy.key
 COPY certs /certs
 
+# SET THESE FOR ACTUAL RUNTIME
 ENV PROXY_BACKEND=localhost:9000
 ENV PROXY_BACKEND_TLS=false
 
-ENV PROXY_TLS_PORT=9001
-ENV PROXY_TLS_CERT=/certs/default.pem
-ENV PROXY_TLS_KEY=/certs/default.key
+ENV PROXY_TLS_PORT=9443
+ENV PROXY_TLS_CERT=/certs/grpcwebproxy.crt
+ENV PROXY_TLS_KEY=/certs/grpcwebproxy.key
 
 ENV PROXY_DEBUG_PORT=9002
 

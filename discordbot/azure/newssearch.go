@@ -2,168 +2,105 @@ package azure
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
 
-	"github.com/Azure/azure-sdk-for-go/services/cognitiveservices/v1.0/newssearch"
-	"github.com/Azure/go-autorest/autorest"
 	"github.com/fsufitch/tagioalisi-bot/config"
-	"github.com/pkg/errors"
+	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
-// OnlineNewsSearch encapsulates functionality of Azure news searches
-type OnlineNewsSearch struct {
-	client *newssearch.NewsClient
+// BingNewsSearch encapsulates functionality of Azure news searches
+type BingNewsSearch struct {
+	Log *log.Logger
+	Key       config.AzureNewsSearchAPIKey
+	UserAgent config.UserAgent
 }
 
-// ProvideOnlineNewsSearch creates a NewsSearch based on the available API key
-func ProvideOnlineNewsSearch(key config.AzureNewsSearchAPIKey, userAgent config.UserAgent) *OnlineNewsSearch {
-	ans := OnlineNewsSearch{}
-	if key != "" {
-		client := newssearch.NewNewsClient()
-		client.Authorizer = autorest.NewCognitiveServicesAuthorizer(string(key))
-		client.AddToUserAgent(string(userAgent))
-		client.AddToUserAgent("azure-sdk-for-go/cognitiveservices/newssearch")
-		ans.client = &client
+var newsSearchEndpoint url.URL
+
+func init() {
+	url, err := url.Parse("https://api.bing.microsoft.com/v7.0/news/search")
+	if err != nil {
+		panic("could not parse news search endpoint")
 	}
-	return &ans
-}
-
-// Ready returns whether the NewsSearch is ready to use
-func (a OnlineNewsSearch) Ready() bool {
-	return a.client != nil
+	newsSearchEndpoint = *url
 }
 
 // Search performs a search
-func (a OnlineNewsSearch) Search(ctx context.Context, query string, maxNum int32) (NewsResults, error) {
-	if maxNum < 1 || maxNum > 10 {
-		return nil, errors.New("only 1-10 return articles supported")
+func (a BingNewsSearch) Search(ctx context.Context, query string, maxNum int32) (*NewsAnswer, error) {
+	// See: https://github.com/microsoft/bing-search-sdk-for-python/blob/main/samples/rest/BingCustomSearchV7.py
+	//      https://learn.microsoft.com/en-us/bing/search-apis/bing-web-search/reference/endpoints
+	url := newsSearchEndpoint
+
+	q := url.Query()
+	q.Set("q", query)
+	if maxNum > 10 || maxNum < 1 {
+		return nil, errors.New("article count must be between 1 and 10")
 	}
+	
+	url.RawQuery = q.Encode()
 
-	news, err := a.client.Search(
-		context.Background(), // context
-		query,                // query keyword
-		"",                   // Accept-Language header
-		"",                   // User-Agent header
-		"",                   // X-MSEdge-ClientID header
-		"",                   // X-MSEdge-ClientIP header
-		"",                   // X-Search-Location header
-		"",                   // country code
-		&maxNum,              // count
-		newssearch.Month,     // freshness
-		"",                   // market
-		nil,                  // offset
-		nil,                  // original image
-		newssearch.Strict,    // safe search
-		"",                   // set lang
-		"",                   // sort by
-		nil,                  // text decorations
-		newssearch.Raw,       // text format
-	)
+	req, _ := http.NewRequestWithContext(ctx, "GET", url.String(), nil)
+	req.Header.Set("User-Agent", string(a.UserAgent))
+	req.Header.Set("Ocp-Apim-Subscription-Key", string(a.Key))
 
+	a.Log.Debugf("azure news search, request: %+v", req)
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("unexpected error querying Azure news search: %w", err)
-	}
-	if news.Value == nil {
-		return nil, errors.New("search response .Value was nil")
+		return nil, fmt.Errorf("request failed: %w", err)
 	}
 
-	return OnlineNewsResults{news}, nil
-}
-
-// OnlineNewsResults contains a result set of a search
-type OnlineNewsResults struct {
-	news newssearch.News
-}
-
-// Len returns the number of articles in the result set
-func (r OnlineNewsResults) Len() int {
-	return len(*r.news.Value)
-}
-
-// Get returns the n'th result in the result set
-func (r OnlineNewsResults) Get(idx int) (NewsResult, bool) {
-	if idx >= r.Len() {
-		return nil, false
+	byts, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response: %w", err)
 	}
 
-	return OnlineNewsResult{(*r.news.Value)[idx]}, true
-}
-
-// OnlineNewsResult is a single article in the result set
-type OnlineNewsResult struct {
-	article newssearch.NewsArticle
-}
-
-// Title returns the article's title
-func (r OnlineNewsResult) Title() string {
-	if r.article.Name == nil {
-		return ""
-	}
-	return *r.article.Name
-}
-
-// Description returns the article's title
-func (r OnlineNewsResult) Description() string {
-	if r.article.Description == nil {
-		return ""
-	}
-	return *r.article.Description
-}
-
-// Source returns the article's first cited provider/source
-func (r OnlineNewsResult) Source() string {
-	if r.article.Provider == nil || len(*r.article.Provider) == 0 {
-		println("source was nil or empty", r.article.Provider)
-		return ""
+	answer := NewsAnswer{}
+	err = json.Unmarshal(byts, &answer)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling response: %w", err)
 	}
 
-	if p, ok := (*r.article.Provider)[0].AsOrganization(); ok {
-		return *p.Name
-	}
+	a.Log.Debugf("azure news search, response (%d): %+v", resp.StatusCode, answer)
 
-	if p, ok := (*r.article.Provider)[0].AsThing(); ok {
-		return *p.Name
-	}
-	println("provider was not a thing or org", (*r.article.Provider)[0])
-	return ""
+	return &answer, nil
 }
 
-// ThumbnailURL returns the article's thumbnail image
-func (r OnlineNewsResult) ThumbnailURL() string {
-	if r.article.Image != nil &&
-		r.article.Image.Thumbnail != nil &&
-		r.article.Image.Thumbnail.ContentURL != nil {
-		return *r.article.Image.Thumbnail.ContentURL
-	}
-	print("thumbnail was nil")
-	return ""
+// NewsAnswer implements https://learn.microsoft.com/en-us/bing/search-apis/bing-news-search/reference/response-objects#newsanswer
+type NewsAnswer struct {
+	ReadLink string        `json:"readLink"`
+	Articles []NewsArticle `json:"value"`
 }
 
-// URL returns the URL to the article itself
-func (r OnlineNewsResult) URL() string {
-	if r.article.URL == nil {
-		return ""
-	}
-	return *r.article.URL
+// NewsArticle implements https://learn.microsoft.com/en-us/bing/search-apis/bing-news-search/reference/response-objects#newsarticle
+type NewsArticle struct {
+	Category      string     `json:"category"`
+	DatePublished string     `json:"datePublished"`
+	Description   string     `json:"description"`
+	Headline      bool       `json:"headline"`
+	ID            string     `json:"id"`
+	Image         Image      `json:"image"`
+	Name          string     `json:"name"`
+	Providers     []Provider `json:"provider"`
+	URL           string     `json:"url"`
 }
 
-// NewsSearch is a general interface for a news search service
-type NewsSearch interface {
-	Ready() bool
-	Search(ctx context.Context, query string, maxNum int32) (NewsResults, error)
+type Provider struct {
+	Type string `json:"_type"`
+	Name string `json:"name"`
 }
 
-// NewsResults is a general interface for a collection of news
-type NewsResults interface {
-	Len() int
-	Get(int) (NewsResult, bool)
+type Image struct {
+	Thumbnail Thumbnail `json:"thumbnail"`
 }
 
-// NewsResult is a general interface for a single news article
-type NewsResult interface {
-	Title() string
-	Description() string
-	Source() string
-	ThumbnailURL() string
-	URL() string
+type Thumbnail struct {
+	URL    string `json:"contentUrl"`
+	Height int    `json:"height"`
+	Width  int    `json:"width"`
 }

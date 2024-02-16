@@ -10,7 +10,8 @@ import (
 
 // TagioalisiAPIServer is the API webserver of Tagioalisi
 type TagioalisiAPIServer struct {
-	Port   config.BotWebAPIPort
+	Port   config.BotHTTPSPort
+	TLS    config.BotTLS
 	Log    *log.Logger
 	Router Router
 	// GRPCWrapperFunc grpc.WrapGRPCWebsocketFunc
@@ -27,7 +28,7 @@ func (s TagioalisiAPIServer) Run() error {
 
 	s.Log.Infof("web: starting server on addr: %s ", serv.Addr)
 
-	err := serv.ListenAndServe()
+	err := serv.ListenAndServeTLS(s.TLS.Certificate, s.TLS.SecretKey)
 
 	s.Log.Errorf("web: server unexpectedly shut down with error: %v", err)
 

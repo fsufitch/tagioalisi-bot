@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+
 	"github.com/fsufitch/tagioalisi-bot/azure"
 )
 
 // formatter is a common interface for formatting news results
-type formatter func(session *discordgo.Session, channelID string, results azure.NewsResults) error
+type formatter func(session *discordgo.Session, channelID string, answer *azure.NewsAnswer) error
 
-func compactFormatter(session *discordgo.Session, channelID string, results azure.NewsResults) error {
+func compactFormatter(session *discordgo.Session, channelID string, answer *azure.NewsAnswer) error {
 	embed := &discordgo.MessageEmbed{
 		Color: 0xbeefed,
 		Footer: &discordgo.MessageEmbedFooter{
@@ -19,32 +20,39 @@ func compactFormatter(session *discordgo.Session, channelID string, results azur
 		Fields: []*discordgo.MessageEmbedField{},
 	}
 
-	for i := 0; i < results.Len(); i++ {
-		article, _ := results.Get(i)
-		fmt.Printf("%+v\n", article)
+	for _, article := range answer.Articles {
+		// fmt.Printf("%+v\n", article)
+		embedName := "(no source provided)"
+		if len(article.Providers) > 0 {
+			embedName = article.Providers[0].Name
+		}
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-			Name:  fmt.Sprintf("__%s__", article.Source()),
-			Value: fmt.Sprintf("[%s](%s)", article.Title(), article.URL()),
+			Name:  fmt.Sprintf("__%s__", embedName),
+			Value: fmt.Sprintf("[%s](%s)", article.Name, article.URL),
 		})
 	}
 	_, err := session.ChannelMessageSendEmbed(channelID, embed)
 	return err
 }
 
-func verboseFormatter(session *discordgo.Session, channelID string, results azure.NewsResults) error {
-	for i := 0; i < results.Len(); i++ {
-		article, _ := results.Get(i)
+func verboseFormatter(session *discordgo.Session, channelID string, answer *azure.NewsAnswer) error {
+
+	for _, article := range answer.Articles {
+		author := "unknown"
+		if len(article.Providers) > 0 {
+			author = article.Providers[0].Name
+		}
 		embed := &discordgo.MessageEmbed{
 			Color: 0xbeefed,
-			Title: article.Title(),
-			URL:   article.URL(),
+			Title: article.Name,
+			URL:   article.URL,
 			Author: &discordgo.MessageEmbedAuthor{
-				Name: article.Source(),
+				Name: author,
 			},
 			Thumbnail: &discordgo.MessageEmbedThumbnail{
-				URL: article.ThumbnailURL(),
+				URL: article.Image.Thumbnail.URL,
 			},
-			Description: article.Description(),
+			Description: article.Description,
 		}
 		_, err := session.ChannelMessageSendEmbed(channelID, embed)
 		if err != nil {

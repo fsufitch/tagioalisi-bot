@@ -1,0 +1,64 @@
+{
+    "name": "Tagioalisi Devcontainer",
+    "dockerComposeFile": "../docker-compose.devcontainer.yml",
+    "service": "devcontainer",
+    "runServices": [
+        "db",
+        "grpcwebproxy"
+    ],
+    "remoteEnv": {
+        "DOCKER_HOST": "{localEnv:DOCKER_HOST}"
+    },
+    "workspaceFolder": "/workspaces/tagioalisi-bot",
+    "overrideCommand": true,
+    "initializeCommand": "echo hello", // https://github.com/microsoft/vscode-remote-release/issues/9302
+    // leave the containers running when VS Code closes 
+    // which prevents you from accidentally shutting down both containers by closing one window
+    "shutdownAction": "none",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                // Common stuff
+                "ms-vscode-remote.remote-ssh",
+                "eamodio.gitlens",
+                "yzhang.markdown-all-in-one",
+                "redhat.vscode-yaml",
+                "mikestead.dotenv",
+                "foxundermoon.shell-format",
+                "ms-azuretools.vscode-docker",
+                "zxh404.vscode-proto3",
+                // Go
+                "golang.go",
+                // Web
+                "michelemelluso.code-beautifier",
+                "mrmlnc.vscode-scss",
+                "pmneo.tsimporter",
+                "stringham.move-ts",
+                "esbenp.prettier-vscode",
+                "dbaeumer.vscode-eslint",
+                "Vue.volar"
+            ],
+            "settings": {
+                "git.enableCommitSigning": true,
+                "git-graph.repository.commits.showSignatureStatus": true,
+                "git-graph.repository.sign.commits": true,
+                "git-graph.repository.sign.tags": true,
+                "terminal.integrated.shellIntegration.enabled": false,
+                "editor.defaultFormatter": "esbenp.prettier-vscode",
+                "editor.formatOnPaste": false, // required
+                "editor.formatOnType": false, // required
+                "editor.formatOnSave": true, // optional
+                "editor.formatOnSaveMode": "file",
+                "[ignore]": {
+                    "editor.defaultFormatter": "foxundermoon.shell-format"
+                },
+                "[dockerfile]": {
+                    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+                },
+                "[go]": {
+                    "editor.defaultFormatter": "golang.go"
+                }
+            }
+        }
+    }
+}

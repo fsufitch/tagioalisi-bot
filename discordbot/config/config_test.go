@@ -32,10 +32,10 @@ func TestDatabaseString_Missing(t *testing.T) {
 
 func TestWebPort(t *testing.T) {
 	// Setup
-	os.Setenv("PORT", "1234")
+	os.Setenv("DISCORDBOT_HTTPS_PORT", "1234")
 
 	// Tested code
-	port, err := ProvideBotWebAPIPortFromEnvironment()
+	port, err := ProvideBotHTTPSPortFromEnvironment()
 
 	// Asserts
 	assert.Nil(t, err)
@@ -44,22 +44,22 @@ func TestWebPort(t *testing.T) {
 
 func TestWebPort_Default(t *testing.T) {
 	// Setup
-	os.Unsetenv("PORT")
+	os.Unsetenv("DISCORDBOT_HTTPS_PORT")
 
 	// Tested code
-	port, err := ProvideBotWebAPIPortFromEnvironment()
+	port, err := ProvideBotHTTPSPortFromEnvironment()
 
 	// Asserts
 	assert.Nil(t, err)
-	assert.Equal(t, 8080, int(port))
+	assert.Equal(t, 7443, int(port))
 }
 
 func TestWebPort_Invalid(t *testing.T) {
 	// Setup
-	os.Setenv("PORT", "Not a real port")
+	os.Setenv("DISCORDBOT_HTTPS_PORT", "Not a real port")
 
 	// Tested code
-	_, err := ProvideBotWebAPIPortFromEnvironment()
+	_, err := ProvideBotHTTPSPortFromEnvironment()
 
 	// Asserts
 	assert.NotNil(t, err)
