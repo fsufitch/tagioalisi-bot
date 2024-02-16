@@ -99,8 +99,9 @@ func InitializeMain() (Main, func(), error) {
 		UserAgent: userAgent,
 	}
 	newsModule := &news.Module{
-		Log:  logger,
-		News: bingNewsSearch,
+		Log:   logger,
+		News:  bingNewsSearch,
+		AppID: applicationID,
 	}
 	merriamWebsterAPIKey := config.ProvideMerriamWebsterAPIKeyFromEnvironment()
 	basicClient, err := dictionary.NewClient(merriamWebsterAPIKey, userAgent)
