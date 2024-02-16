@@ -42,7 +42,8 @@ func (a BingNewsSearch) Search(ctx context.Context, query string, maxNum int32) 
 		return nil, errors.New("article count must be between 1 and 10")
 	}
 	q.Set("count", fmt.Sprintf("%d", maxNum))
-	
+	q.Set("freshness", "month")
+
 	url.RawQuery = q.Encode()
 
 	req, _ := http.NewRequestWithContext(ctx, "GET", url.String(), nil)
