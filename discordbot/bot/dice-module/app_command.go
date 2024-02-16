@@ -8,7 +8,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func (m *Module) RegisterApplicationCommand(ctx context.Context, session *discordgo.Session) error {
+func (m *Module) RegisterApplicationCommand(ctx context.Context, session *discordgo.Session, guildID string) error {
 	cmd := discordgo.ApplicationCommand{
 		ApplicationID: string(m.AppID),
 		Name:          "roll-dice",
@@ -30,17 +30,17 @@ func (m *Module) RegisterApplicationCommand(ctx context.Context, session *discor
 		},
 	}
 
-	_, err := session.ApplicationCommandCreate(string(m.AppID), "", &cmd)
+	_, err := session.ApplicationCommandCreate(string(m.AppID), guildID, &cmd)
 	if err != nil {
 		return err
 	}
 	cancel := session.AddHandler(m.handleApplicationCommand)
 	go func() {
 		<-ctx.Done()
-		m.Log.Infof("dice application command context done")
+		m.Log.Infof("dice application command context done (guild=%v)", guildID)
 		cancel()
 	}()
-	m.Log.Infof("Registered dice application command")
+	m.Log.Infof("Registered dice application command (guild=%v)", guildID)
 	return nil
 }
 

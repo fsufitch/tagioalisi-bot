@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
+
 	"github.com/fsufitch/tagioalisi-bot/bot/dice-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/dictionary-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
@@ -19,6 +20,7 @@ import (
 type Module interface {
 	Name() string
 	Register(context.Context, *discordgo.Session) error
+	RegisterGuild(ctx context.Context, s *discordgo.Session, guild string) error
 }
 
 // Modules is a struct containing all the possible implemented modules
@@ -51,3 +53,4 @@ func ProvideModuleList(m Modules) ModuleList {
 		m.Dictionary,
 	}
 }
+

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
+
 	"github.com/fsufitch/tagioalisi-bot/db/acl-dao"
 	"github.com/fsufitch/tagioalisi-bot/db/memes-dao"
 	"github.com/fsufitch/tagioalisi-bot/log"
@@ -35,3 +36,8 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 	}()
 	return nil
 }
+
+func (m *Module) RegisterGuild(ctx context.Context, session *discordgo.Session, guildID string) error {
+	return nil
+}
+

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/bwmarrin/discordgo"
+
 	"github.com/fsufitch/tagioalisi-bot/config"
 	"github.com/fsufitch/tagioalisi-bot/log"
 )
@@ -38,6 +39,10 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 		return nil
 	}
 	m.Log.Warningf("log: Discord logging channel ID not set, cannot log to Discord")
+	return nil
+}
+
+func (m *Module) RegisterGuild(ctx context.Context, session *discordgo.Session, guildID string) error {
 	return nil
 }
 

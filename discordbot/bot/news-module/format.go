@@ -9,9 +9,9 @@ import (
 )
 
 // formatter is a common interface for formatting news results
-type formatter func(session *discordgo.Session, channelID string, answer *azure.NewsAnswer) error
+type formatter func(answer *azure.NewsAnswer) []*discordgo.MessageEmbed
 
-func compactFormatter(session *discordgo.Session, channelID string, answer *azure.NewsAnswer) error {
+func compactFormatter(answer *azure.NewsAnswer) []*discordgo.MessageEmbed {
 	embed := &discordgo.MessageEmbed{
 		Color: 0xbeefed,
 		Footer: &discordgo.MessageEmbedFooter{
@@ -31,12 +31,12 @@ func compactFormatter(session *discordgo.Session, channelID string, answer *azur
 			Value: fmt.Sprintf("[%s](%s)", article.Name, article.URL),
 		})
 	}
-	_, err := session.ChannelMessageSendEmbed(channelID, embed)
-	return err
+
+	return []*discordgo.MessageEmbed{embed}
+	
 }
 
-func verboseFormatter(session *discordgo.Session, channelID string, answer *azure.NewsAnswer) error {
-
+func verboseFormatter(answer *azure.NewsAnswer) (embeds []*discordgo.MessageEmbed) {
 	for _, article := range answer.Articles {
 		author := "unknown"
 		if len(article.Providers) > 0 {
@@ -54,10 +54,7 @@ func verboseFormatter(session *discordgo.Session, channelID string, answer *azur
 			},
 			Description: article.Description,
 		}
-		_, err := session.ChannelMessageSendEmbed(channelID, embed)
-		if err != nil {
-			return err
-		}
+		embeds = append(embeds, embed)
 	}
-	return nil
+	return embeds
 }

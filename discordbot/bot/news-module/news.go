@@ -6,15 +6,15 @@ import (
 	"github.com/bwmarrin/discordgo"
 
 	"github.com/fsufitch/tagioalisi-bot/azure"
+	"github.com/fsufitch/tagioalisi-bot/config"
 	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
 // Module is a news module implementing RegisterableModule
 type Module struct {
-	Log  *log.Logger
-	News azure.BingNewsSearch
-
-	session *discordgo.Session
+	Log   *log.Logger
+	News  azure.BingNewsSearch
+	AppID config.ApplicationID
 }
 
 // Name returns the name of the module, for blacklisting
@@ -22,41 +22,12 @@ func (m Module) Name() string { return "news" }
 
 // Register adds this module to the Discord session
 func (m *Module) Register(ctx context.Context, session *discordgo.Session) error {
-	m.session = session
-
-	cancel := m.session.AddHandler(m.handleCommand)
-	go func() {
-		<-ctx.Done()
-		m.Log.Infof("news module context done")
-		cancel()
-	}()
-
 	return nil
 }
 
-// DoSearch performs an actual news search
-func (m *Module) DoSearch(
-	ctx context.Context,
-	session *discordgo.Session,
-	channelID string,
-	query string,
-	count int,
-	verbose bool,
-) error {
-	m.Log.Debugf("news: searching for `%s`", query)
-
-	answer, err := m.News.Search(ctx, query, int32(count))
-	if err != nil {
+func (m *Module) RegisterGuild(ctx context.Context, session *discordgo.Session, guildID string) error {
+	if err := m.RegisterApplicationCommand(ctx, session, guildID); err != nil {
 		return err
 	}
-	m.Log.Debugf("news: got %d results for %s", len(answer.Articles), query)
-
-	var f formatter
-	if verbose {
-		f = verboseFormatter
-	} else {
-		f = compactFormatter
-	}
-
-	return f(session, channelID, answer)
+	return nil
 }
