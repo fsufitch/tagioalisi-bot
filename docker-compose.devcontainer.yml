@@ -9,11 +9,11 @@ services:
     hostname: devcontainer
     networks:
       - tagioalisi
-    ports:
-      - 7080:7080
-      - 7443:7443
-      - 8443:8443
-      - 9000:9000
+    # ports:
+    #   - 7080:7080
+    #   - 7443:7443
+    #   - 8443:8443
+    #   - 9000:9000
     volumes:
       - .:/workspaces/tagioalisi-bot:z
     env_file:
@@ -24,7 +24,7 @@ services:
 
   db:
     extends:
-      file: docker-compose.yml
+      file: docker-compose.base.yml
       service: db
     volumes:
       - type: volume
@@ -33,8 +33,10 @@ services:
 
   grpcwebproxy:
     extends:
-      file: docker-compose.yml
+      file: docker-compose.base.yml
       service: grpcwebproxy
+    # ports:
+    #   - 9443:9443
     environment:
       PROXY_BACKEND: devcontainer:9000
 

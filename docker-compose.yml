@@ -1,62 +1,39 @@
 version: '3'
 services:
   discordbot:
-    image: docker.io/fsufitch/tagioalisi-discordbot
-    build:
-      context: .
-      target: discordbot-runtime
-    hostname: discordbot
+    extends:
+      file: docker-compose.base.yml
+      service: discordbot
     networks:
       - tagioalisi
     ports:
       - "7443:7443"  # HTTPS API
       # gRPC should be exposed via grpcwebproxy
       #- "9000:9000"
-    volumes:
-      - type: bind
-        source: .
-        target: /workspaces/tagioalisi-bot
-    env_file:
-      - env/defaults/discordbot.env
-      - env/discordbot.env
 
   webapp:
-    image: docker.io/fsufitch/tagioalisi-webapp
-    build:
-      context: .
-      target: webapp-runtime
-    hostname: webapp
+    extends:
+      file: docker-compose.base.yml
+      service: webapp
     networks:
       - tagioalisi
     ports:
       - "8443:8443" # HTTPS server
-    env_file:
-      - env/defaults/webapp.env
-      - env/webapp.env
 
   grpcwebproxy:
-    image: docker.io/fsufitch/tagioalisi-grpcwebproxy
-    build:
-      context: .
-      target: grpcwebproxy
-    hostname: grpcwebproxy
+    extends:
+      file: docker-compose.base.yml
+      service: grpcwebproxy
     networks:
       - tagioalisi
-    env_file:
-      - env/defaults/grpcwebproxy.env
-      - env/grpcwebproxy.env
     ports:
       # gRPC requires TLS
       - "9443:9443"
 
   db:
-    image: docker.io/fsufitch/tagioalisi-db
-    build:
-      context: .
-      target: database
-    env_file:
-      - env/defaults/db.env
-      - env/db.env
+    extends:
+      file: docker-compose.base.yml
+      service: db
     volumes:
       - type: volume
         source: tagioalisi-db

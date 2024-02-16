@@ -32,9 +32,9 @@ CMD ["echo", "devcontainer should have its command overridden by the IDE"]
 ##########
 FROM devcontainer AS discordbot-builder
 
-COPY --chown=developer discordbot /home/developer/tagioalisi-bot/discordbot
-COPY --chown=developer proto /home/developer/tagioalisi-bot/proto
-WORKDIR /home/developer/tagioalisi-bot/discordbot
+COPY discordbot /tagioalisi-bot/discordbot
+COPY proto /tagioalisi-bot/proto
+WORKDIR /tagioalisi-bot/discordbot
 RUN ./build.sh
 RUN sudo mkdir -p /dist/bin && \
     sudo cp -r bin /dist/bin
@@ -49,7 +49,7 @@ WORKDIR /opt/tagioalisi-bot
 RUN apk add gcompat
 
 COPY --from=discordbot-builder /dist/bin/* .
-COPY ./certs/default.crt /certs/discordbot.pem
+COPY ./certs/default.crt /certs/discordbot.crt
 COPY ./certs/default.key /certs/discordbot.key
 
 CMD ./tagi-migrate && ./tagi-bot
@@ -60,9 +60,9 @@ CMD ./tagi-migrate && ./tagi-bot
 ##########
 FROM devcontainer AS webapp-builder
 
-COPY --chown=developer ./webapp /home/developer/tagioalisi-bot/webapp
-COPY --chown=developer ./proto /home/developer/tagioalisi-bot/proto
-WORKDIR /home/developer/tagioalisi-bot/webapp
+COPY ./webapp /tagioalisi-bot/webapp
+COPY ./proto /tagioalisi-bot/proto
+WORKDIR /tagioalisi-bot/webapp
 RUN npm install
 RUN npm run proto && npm run build
 RUN sudo mkdir -p /dist/webapp && \
