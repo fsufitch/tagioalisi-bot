@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+
 	"github.com/fsufitch/tagioalisi-bot/bot/util"
 	"github.com/fsufitch/tagioalisi-bot/log"
 )
@@ -52,5 +53,9 @@ func (m *Module) define(ctx commandContext, word string) error {
 		return errorFormatter(ctx.session, ctx.messageCreate.ChannelID, word, "No results found", "")
 	}
 
+	return nil
+}
+
+func (m *Module) RegisterGuild(ctx context.Context, session *discordgo.Session, guildID string) error {
 	return nil
 }

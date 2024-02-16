@@ -5,8 +5,9 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/fsufitch/tagioalisi-bot/log"
 	"github.com/pkg/errors"
+
+	"github.com/fsufitch/tagioalisi-bot/log"
 )
 
 // Module is a bot module that sockpuppets messages from elsewhere
@@ -27,6 +28,10 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 		m.Log.Infof("sockpuppet module context done")
 		m.done = true
 	}()
+	return nil
+}
+
+func (m *Module) RegisterGuild(ctx context.Context, session *discordgo.Session, guildID string) error {
 	return nil
 }
 

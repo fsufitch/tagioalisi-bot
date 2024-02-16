@@ -4,9 +4,10 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/pkg/errors"
+
 	"github.com/fsufitch/tagioalisi-bot/config"
 	"github.com/fsufitch/tagioalisi-bot/log"
-	"github.com/pkg/errors"
 )
 
 // Module is a bot module that responds to "!groups" commands
@@ -52,4 +53,8 @@ func (m Module) isGroupManager(session *discordgo.Session, event *discordgo.Mess
 		}
 	}
 	return false, nil
+}
+
+func (m *Module) RegisterGuild(ctx context.Context, session *discordgo.Session, guildID string) error {
+	return nil
 }

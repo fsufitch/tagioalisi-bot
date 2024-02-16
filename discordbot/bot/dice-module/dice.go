@@ -26,15 +26,6 @@ func (m Module) Name() string { return "dice" }
 
 // Register adds this module to the Discord session
 func (m *Module) Register(ctx context.Context, session *discordgo.Session) error {
-	if err := m.RegisterApplicationCommand(ctx, session); err != nil {
-		return err
-	}
-	cancel := session.AddHandler(m.handleCommand)
-	go func() {
-		<-ctx.Done()
-		m.Log.Infof("dice module context done")
-		cancel()
-	}()
 	return nil
 }
 
@@ -78,4 +69,17 @@ func (m *Module) roll(cmdCtx commandContext, verbose bool, query string) error {
 
 	_, err = cmdCtx.session.ChannelMessageSend(cmdCtx.channelID, buf.String())
 	return err
+}
+
+func (m *Module) RegisterGuild(ctx context.Context, session *discordgo.Session, guildID string) error {
+	if err := m.RegisterApplicationCommand(ctx, session, guildID); err != nil {
+		return err
+	}
+	cancel := session.AddHandler(m.handleCommand)
+	go func() {
+		<-ctx.Done()
+		m.Log.Infof("dice module context done (guild=%v)", guildID)
+		cancel()
+	}()
+	return nil
 }
