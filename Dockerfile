@@ -49,7 +49,7 @@ WORKDIR /opt/tagioalisi-bot
 RUN apk add gcompat
 
 COPY --from=discordbot-builder /dist/bin/* .
-COPY ./certs/default.crt /certs/discordbot.pem
+COPY ./certs/default.crt /certs/discordbot.crt
 COPY ./certs/default.key /certs/discordbot.key
 
 CMD ./tagi-migrate && ./tagi-bot
