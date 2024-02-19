@@ -21,12 +21,12 @@ if [[ "$PLATFORM_NAME" =~ "windows" ]]; then
     EXT=.exe
 fi
 
-if [[ -n "$RUN_PROTOC" ]]; then
-    echo "NOTE: RUN_PROTOC is set; this is an in-place change. Consider building without this."
+if [[ -n "$SKIP_PROTOC" ]]; then
+    echo "NOTE: SKIP_PROTOC is set; protobuf stubs will not be regenerated"
 fi
 
-if [[ -n "$RUN_WIRE" ]]; then
-    echo "NOTE: RUN_WIRE is set; this is an in-place change, and a slow process. Consider building without this."
+if [[ -n "$SKIP_WIRE" ]]; then
+    echo "NOTE: SKIP_WIRE is set; wire dependency injection will not be regenerated"
 fi
 
 echo "Platform: '${PLATFORM_NAME}' Extension: '${EXT}'"
@@ -44,7 +44,7 @@ BIN_MIGRATIONS=${BIN_DIR}/tagi-migrate
 set -e
 
 # Generate protobuf
-if [[ -n "$RUN_PROTOC" ]]; then
+if [[ -z "$SKIP_PROTOC" ]]; then
     echo "Updating protobuf generated stubs..."
     (
         set -x
@@ -57,7 +57,7 @@ if [[ -n "$RUN_PROTOC" ]]; then
 fi
 
 # Generate wired files
-if [[ -n "$RUN_WIRE" ]]; then
+if [[ -z "$SKIP_WIRE" ]]; then
     echo "Updating wire generated sources..."
     echo $PATH
     (

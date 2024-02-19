@@ -18,6 +18,7 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/bot/news-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/ping-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/util"
 	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module/wikisupport"
 	"github.com/fsufitch/tagioalisi-bot/config"
@@ -72,9 +73,16 @@ func InitializeMain() (Main, func(), error) {
 		ACLDAO:  aclDAO,
 	}
 	managedGroupPrefix := config.ProvideManagedGroupPrefixFromEnvironment()
+	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
+	applicationID := config.ProvideApplicationIDFromOAuth2Config(oAuth2Config)
+	interactionUtil := util.InteractionUtil{
+		Log: logger,
+	}
 	groupsModule := &groups.Module{
-		Log:    logger,
-		Prefix: managedGroupPrefix,
+		Log:           logger,
+		Prefix:        managedGroupPrefix,
+		ApplicationID: applicationID,
+		InterUtil:     interactionUtil,
 	}
 	multi := _wireMultiValue
 	wikiModule := &wiki.Module{
@@ -84,8 +92,6 @@ func InitializeMain() (Main, func(), error) {
 	diceCalculator := calc.DiceCalculator{
 		Log: logger,
 	}
-	oAuth2Config := config.ProvideOAuth2ConfigFromEnvironment()
-	applicationID := config.ProvideApplicationIDFromOAuth2Config(oAuth2Config)
 	diceModule := &dice.Module{
 		Log:        logger,
 		Calculator: diceCalculator,

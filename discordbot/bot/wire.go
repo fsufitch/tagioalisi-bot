@@ -1,6 +1,8 @@
 package bot
 
 import (
+	"github.com/google/wire"
+
 	"github.com/fsufitch/tagioalisi-bot/bot/dice-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/dictionary-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
@@ -9,8 +11,8 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/bot/news-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/ping-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/sockpuppet-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/util"
 	"github.com/fsufitch/tagioalisi-bot/bot/wiki-module"
-	"github.com/google/wire"
 )
 
 // ProvideTagioalisiBot contains all the necessary wire providers to stand up a Tagioalisi Bot
@@ -28,4 +30,5 @@ var ProvideTagioalisiBot = wire.NewSet(
 	dice.ProvideModule,
 	news.ProvideModule,
 	dictionary.ProvideModule,
+	util.ProvideModule,
 )
