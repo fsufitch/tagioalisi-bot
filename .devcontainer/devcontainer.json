@@ -12,6 +12,9 @@
     "workspaceFolder": "/workspaces/tagioalisi-bot",
     "overrideCommand": true,
     "initializeCommand": "echo hello", // https://github.com/microsoft/vscode-remote-release/issues/9302
+    "postStartCommand": [
+        "git config --global --add safe.directory ${containerWorkspaceFolder}"
+    ],
     // leave the containers running when VS Code closes 
     // which prevents you from accidentally shutting down both containers by closing one window
     "shutdownAction": "none",

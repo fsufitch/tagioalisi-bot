@@ -1,7 +1,7 @@
 ###########
 # DEVCONTAINER
 ##########
-FROM fedora:37 AS devcontainer
+FROM fedora:39 AS devcontainer
 
 # /certs dir is where further images put default certs, or containers mount proper external certs
 RUN mkdir -p /certs
