@@ -61,10 +61,7 @@ func (m Module) Receive(messageChan <-chan log.Message) {
 
 func (m Module) sendWorker() {
 	for message := range m.sendQueue {
-		if m.DebugMode && message.Level < log.Info {
-			continue
-		}
-		if !m.DebugMode && message.Level < log.Warning {
+		if message.Level < log.Warning {
 			continue
 		}
 
