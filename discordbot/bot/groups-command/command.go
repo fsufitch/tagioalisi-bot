@@ -30,16 +30,18 @@ func ProvideApplicationCommand(logger *log.Logger, prefixer *Prefixer, appID con
 					cmdLeaveGroup,
 				},
 			},
-			Handlers: []interactions.HandlerFunc{},
 		},
 		Logger:            logger,
 		Prefixer:          prefixer,
 		GuildCacheManager: gcm,
 	}
 
-	cmd.ApplicationCommandWrapper.Handlers = append(cmd.ApplicationCommandWrapper.Handlers,
+	cmd.ApplicationCommandWrapper.Handlers = []interactions.HandlerFunc{
 		cmd.subcommandJoin,
-	)
+	}
+	cmd.ApplicationCommandWrapper.AutocompleteHandlers = []interactions.AutocompleteHandlerFunc{
+		cmd.subcommandJoinAutocomplete,
+	}
 
 	return cmd
 }

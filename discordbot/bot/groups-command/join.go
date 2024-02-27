@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 
@@ -17,11 +18,11 @@ var cmdJoinGroup = &discordgo.ApplicationCommandOption{
 	Type:        discordgo.ApplicationCommandOptionSubCommand,
 	Options: []*discordgo.ApplicationCommandOption{
 		{
-			Name:        "group",
-			Description: "group to join",
-			Type:        discordgo.ApplicationCommandOptionString,
-			Required:    true,
-			// Autocomplete: true,
+			Name:         "group",
+			Description:  "group to join",
+			Type:         discordgo.ApplicationCommandOptionString,
+			Required:     true,
+			Autocomplete: true,
 		},
 	},
 }
@@ -82,4 +83,36 @@ func (cmd *GroupsCommandModule) subcommandJoin(iw *interactions.InteractionWrapp
 		Title:       "Group joined!",
 		Description: fmt.Sprintf("%s joined \"%s\"", guildMember.Mention(), groupName),
 	})
+}
+
+func (cmd *GroupsCommandModule) subcommandJoinAutocomplete(iw *interactions.InteractionWrapper) []string {
+	if iw.GetCommandOption("join") == nil {
+		// This isn't a join command
+		return nil
+	}
+
+	groupNameOpt := iw.GetCommandOption("join", "group")
+	if groupNameOpt == nil {
+		cmd.Logger.Warningf("no group option found; this should not happen")
+		return []string{}
+	}
+	partialGroupName := groupNameOpt.StringValue()
+
+	roleList, err := cmd.GuildCacheManager.Cache(iw.Interaction().GuildID).Roles(iw.Session(), guildcache.AnyRole())
+	if err != nil {
+		panic(fmt.Errorf("failed to fetch role list: %v", err))
+	}
+
+	groupChoices := []string{}
+	for _, role := range roleList {
+		groupName, err := cmd.Prefixer.RemoveGroupRolePrefix(role.Name)
+		if err != nil {
+			// Fine, skip over it
+			continue
+		}
+		if strings.HasPrefix(strings.ToLower(groupName), strings.ToLower(partialGroupName)) {
+			groupChoices = append(groupChoices, groupName)
+		}
+	}
+	return groupChoices
 }

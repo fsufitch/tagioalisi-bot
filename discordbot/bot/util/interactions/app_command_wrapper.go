@@ -108,6 +108,16 @@ func (acw *ApplicationCommandWrapper) HandleInteractionAutocomplete(session *dis
 	}
 	defer acw.recoverPanic(iw)
 
+	var choices []string
+	for _, handlerFunc := range acw.AutocompleteHandlers {
+		choices = handlerFunc(iw)
+		if choices != nil {
+			break
+		}
+	}
+
+	iw.RespondAutocomplete(choices...)
+
 	if !iw.Acknowledged() {
 		acw.Logger.Errorf(
 			"autocomplete interaction was not acknowledged: gid=%s cid=%s ",

@@ -51,7 +51,7 @@ func (gc GuildCache) Expired() bool {
 	if ttl == 0 {
 		ttl = defaultTTL
 	}
-	gc.logger.Debugf("fetched=%d ttl=%d now=%d", gc.rolesFetchedTime, gc.TTL, time.Now())
+	gc.logger.Debugf("fetched=%d ttl=%d now=%d", gc.rolesFetchedTime, ttl, time.Now())
 	gc.logger.Debugf("exp=%d  expired? %+v", gc.rolesFetchedTime.Add(ttl), time.Now().After(gc.rolesFetchedTime.Add(ttl)))
 	return time.Now().After(gc.rolesFetchedTime.Add(ttl))
 }
@@ -61,6 +61,7 @@ func (gc *GuildCache) RefreshRoles(s *discordgo.Session) error {
 	if err != nil {
 		return err
 	}
+	gc.rolesFetchedTime = time.Now()
 	gc.logger.Debugf("refreshed roles; now have %d", len(roles))
 	gc.roles = roles
 	return nil
