@@ -21,6 +21,7 @@ type TagioalisiBot struct {
 	Modules         ModuleList
 	ModuleBlacklist config.BotModuleBlacklist
 	Token           config.DiscordBotToken
+	CmdBootstrapper ApplicationCommandModuleBootstrapper
 }
 
 // Run is a blocking function that holds the runtime of the Discord bot
@@ -30,6 +31,12 @@ func (b TagioalisiBot) Run(ctx context.Context) error {
 		return errors.Wrap(err, "could not create bot session")
 	}
 	defer session.Close()
+
+	err = session.Open()
+	if err != nil {
+		return errors.Wrap(err, "could not open communication to Discord server")
+	}
+	b.Log.Infof("init session opened")
 
 	// Register global modules
 	session.AddHandlerOnce(func(s *discordgo.Session, event *discordgo.Ready) {
@@ -46,29 +53,11 @@ func (b TagioalisiBot) Run(ctx context.Context) error {
 		}
 	})
 
-
-	session.AddHandler(func(s *discordgo.Session, event *discordgo.GuildCreate) {
-		b.Log.Infof("registering guild: %s (%s)", event.Guild.Name, event.Guild.ID)
-		for _, module := range b.Modules {
-			if _, ok := b.ModuleBlacklist[module.Name()]; ok {
-				b.Log.Infof("not registering blacklisted module: module=%+v guild=%v", module.Name(), event.Guild.ID)
-				continue
-			}
-			if err = module.RegisterGuild(ctx, session, event.Guild.ID); err != nil {
-				b.Log.Errorf("error registering bot module to guild: module=%s guild=%s -- %s", module.Name(), event.Guild.ID, err)
-			} else {
-				b.Log.Infof("registered module to guild: module=%+v guild=%v", module.Name(), event.Guild.ID)
-			}
-		}
-	})
-
-	err = session.Open()
-	if err != nil {
-		return errors.Wrap(err, "could not open communication to Discord server")
-	}
-	b.Log.Infof("bot initialized and listening")
+	cancelGuildRegistrations := b.CmdBootstrapper.registerToAllGuilds(session)
+	b.Log.Infof("init complete")
 
 	<-ctx.Done()
 	b.Log.Infof("bot context canceled, shutting down")
+	cancelGuildRegistrations()
 	return session.Close()
 }

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+
 	"github.com/fsufitch/tagioalisi-bot/merriam-webster/types"
 )
 
@@ -40,15 +41,11 @@ func collegiateResultFormatter(session *discordgo.Session, channelID string, wor
 		}
 		field.Name = strings.Join(nameParts, "; ")
 
-		lines := []string{}
-
-		for _, shortDef := range result.ShortDefinitions {
-			lines = append(lines, shortDef)
-		}
+		lines := append([]string{}, result.ShortDefinitions...)
 
 		if len(lines) > 1 {
 			for i, line := range lines {
-				lines[i] = fmt.Sprintf("%s. %s", string('a'+i), line)
+				lines[i] = fmt.Sprintf("%s. %s", string(rune('a'+i)), line)
 			}
 		}
 

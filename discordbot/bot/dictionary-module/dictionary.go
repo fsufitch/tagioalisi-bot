@@ -55,7 +55,3 @@ func (m *Module) define(ctx commandContext, word string) error {
 
 	return nil
 }
-
-func (m *Module) RegisterGuild(ctx context.Context, session *discordgo.Session, guildID string) error {
-	return nil
-}

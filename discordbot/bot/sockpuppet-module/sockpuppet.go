@@ -31,10 +31,6 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 	return nil
 }
 
-func (m *Module) RegisterGuild(ctx context.Context, session *discordgo.Session, guildID string) error {
-	return nil
-}
-
 // ErrSendingNotPermitted is an error indicating sending a message is not allowed
 var ErrSendingNotPermitted = errors.New("not allowed to sockpuppet in this channel")
 

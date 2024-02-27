@@ -10,73 +10,30 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/bot/util"
 )
 
-var cmdGroupMember_Search = &discordgo.ApplicationCommandOption{
-	Name:        "search",
-	Description: "search for a group",
-	Type:        discordgo.ApplicationCommandOptionSubCommand,
-	Options: []*discordgo.ApplicationCommandOption{
-		{
-			Name:        "query",
-			Description: "wtf",
-			Type:        discordgo.ApplicationCommandOptionString,
-			Required:    true,
-		},
-	},
-}
-
 var cmdGroupMember_Join = &discordgo.ApplicationCommandOption{
 	Name:        "join",
 	Description: "join a group",
 	Type:        discordgo.ApplicationCommandOptionSubCommand,
 	Options: []*discordgo.ApplicationCommandOption{
 		{
-			Name:         "group",
-			Description:  "wtf",
-			Type:         discordgo.ApplicationCommandOptionString,
-			Required:     true,
-			Autocomplete: true,
+			Name:        "group",
+			Description: "group to join",
+			Type:        discordgo.ApplicationCommandOptionString,
+			Required:    true,
+			// Autocomplete: true,
 		},
 	},
-}
-
-var cmdGroupMember_Leave = &discordgo.ApplicationCommandOption{
-	Name:        "leave",
-	Type:        discordgo.ApplicationCommandOptionSubCommand,
-	Description: "leave a group",
-	Options: []*discordgo.ApplicationCommandOption{
-		{
-			Name:         "group",
-			Description:  "wtf",
-			Type:         discordgo.ApplicationCommandOptionString,
-			Required:     true,
-			Autocomplete: true,
-		},
-	},
-}
-
-var cmdGroupMember = &discordgo.ApplicationCommand{
-	Name:        "groups",
-	Description: "interact with group roles",
-	Options: []*discordgo.ApplicationCommandOption{
-		cmdGroupMember_Search,
-		cmdGroupMember_Join,
-		cmdGroupMember_Leave,
-	},
-	// Options: []*discordgo.ApplicationCommandOption{
-	// 	{
-	// 		Name:     "action",
-	// 		Required: true,
-	// 		Type:     discordgo.ApplicationCommandOptionSubCommand,
-	// 		Options: []*discordgo.ApplicationCommandOption{
-	// 			cmdGroupMember_Search,
-	// 			cmdGroupMember_Join,
-	// 			cmdGroupMember_Leave,
-	// 		},
-	// 	},
-	// },
 }
 
 func (m *Module) handleGroupJoin(s *discordgo.Session, inter *discordgo.InteractionCreate) {
+	// s.InteractionRespond(inter.Interaction, &discordgo.InteractionResponse{
+	// 	Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
+	// 	Data: &discordgo.InteractionResponseData{
+	// 		Content: "loading",
+	// 	},
+	// })
+	fmt.Printf("AAAAA inter=%s\n", inter.Interaction.ID)
+	fmt.Println(inter.Interaction.ID + " " + inter.Type.String())
 	if !(inter.Type == discordgo.InteractionApplicationCommand) {
 		return // Looking for an app command, not autocomplete etc
 	}
@@ -86,11 +43,14 @@ func (m *Module) handleGroupJoin(s *discordgo.Session, inter *discordgo.Interact
 		return // No command match
 	}
 
+	fmt.Printf("11111 inter=%s\n", inter.Interaction.ID)
+
 	joinGroupName := strings.ToLower(joinGroupOpt.StringValue())
 
 	m.Log.Debugf("user %+v wants to join group %+v", inter.Member.User.Username, joinGroupName)
 
 	role, err := getRoleByName(s, inter.GuildID, groupToRole(joinGroupName))
+	fmt.Printf("22222 inter=%s\n", inter.Interaction.ID)
 	if errors.Is(err, errNoSuchGroup) {
 		m.InterUtil.ErrorResponse(s, inter.Interaction, "Invalid group name", fmt.Sprintf("No such group: %s", joinGroupName))
 		return
@@ -100,18 +60,37 @@ func (m *Module) handleGroupJoin(s *discordgo.Session, inter *discordgo.Interact
 		return
 	}
 
+	fmt.Printf("BBBBB inter=%s\n", inter.Interaction.ID)
+
+	isIndbg, err := userIsInGroup(s, inter.GuildID, inter.Member.User.ID, joinGroupName)
+	fmt.Printf("isin=%+v err=%+v\n", isIndbg, err)
+
+	if isIn, _ := userIsInGroup(s, inter.GuildID, inter.Member.User.ID, joinGroupName); isIn {
+		m.InterUtil.ErrorResponse(s, inter.Interaction, "Already in group", fmt.Sprintf("%s is already in `%s`", inter.Member.Mention(), joinGroupName))
+		return
+	}
+	fmt.Printf("CCCCC inter=%s\n", inter.Interaction.ID)
+
 	err = s.GuildMemberRoleAdd(inter.GuildID, inter.Member.User.ID, role.ID)
 	if err != nil {
 		m.InterUtil.UnexpectedError(s, inter.Interaction, err)
 		return
 	}
 
-	s.InteractionRespond(inter.Interaction, &discordgo.InteractionResponse{
+	fmt.Printf("DDDDD inter=%s\n", inter.Interaction.ID)
+
+	err = s.InteractionRespond(inter.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Content: fmt.Sprintf("%s joined `%s`", inter.Member.Mention(), joinGroupName),
 		},
 	})
+	fmt.Printf("EEEEE inter=%s\n", inter.Interaction.ID)
+
+	if err != nil {
+		m.InterUtil.UnexpectedError(s, inter.Interaction, err)
+		return
+	}
 }
 
 func (m *Module) handleGroupJoin_AutoComplete(s *discordgo.Session, inter *discordgo.InteractionCreate) {
@@ -124,8 +103,14 @@ func (m *Module) handleGroupJoin_AutoComplete(s *discordgo.Session, inter *disco
 		return // No command match
 	}
 
+	userID, err := util.InteractionUserID(inter.Interaction)
+	if err != nil {
+		m.InterUtil.UnexpectedError(s, inter.Interaction, err)
+		return
+	}
+
 	partialGroupName := strings.ToLower(joinGroupOpt.StringValue())
-	validGroups, err := allGroups(s, inter.GuildID)
+	validGroups, err := getGuildGroups(s, inter.GuildID)
 	if err != nil {
 		m.InterUtil.UnexpectedError(s, inter.Interaction, err)
 		return
@@ -133,10 +118,13 @@ func (m *Module) handleGroupJoin_AutoComplete(s *discordgo.Session, inter *disco
 
 	acChoices := []string{}
 	for _, group := range validGroups {
-		lowerGroup := strings.ToLower(group)
-		if strings.HasPrefix(lowerGroup, partialGroupName) {
-			acChoices = append(acChoices, group)
+		if !strings.HasPrefix(strings.ToLower(group), partialGroupName) {
+			continue
 		}
+		if userInGroup, _ := userIsInGroup(s, inter.GuildID, userID, group); userInGroup {
+			continue
+		}
+		acChoices = append(acChoices, group)
 	}
 
 	s.InteractionRespond(inter.Interaction, &discordgo.InteractionResponse{

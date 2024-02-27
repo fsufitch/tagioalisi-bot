@@ -28,7 +28,3 @@ func (m *Module) Register(ctx context.Context, session *discordgo.Session) error
 	}()
 	return nil
 }
-
-func (m *Module) RegisterGuild(ctx context.Context, session *discordgo.Session, guildID string) error {
-	return nil
-}

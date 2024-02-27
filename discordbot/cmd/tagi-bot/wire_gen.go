@@ -12,7 +12,9 @@ import (
 	"github.com/fsufitch/tagioalisi-bot/bot/dice-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/dice-module/calc"
 	"github.com/fsufitch/tagioalisi-bot/bot/dictionary-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/groups-command"
 	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
+	"github.com/fsufitch/tagioalisi-bot/bot/guild-cache"
 	log2 "github.com/fsufitch/tagioalisi-bot/bot/log-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/news-module"
@@ -137,11 +139,16 @@ func InitializeMain() (Main, func(), error) {
 		cleanup()
 		return Main{}, nil, err
 	}
+	prefixer := groupscommand.ProvideDefaultPrefixer()
+	guildCacheManager := guildcache.ProvideGuildCacheManager(logger)
+	groupsCommandModule := groupscommand.ProvideApplicationCommand(logger, prefixer, applicationID, guildCacheManager)
+	applicationCommandModuleBootstrapper := bot.ProvideApplicationCommandModuleBootstrapper(logger, groupsCommandModule)
 	tagioalisiBot := &bot.TagioalisiBot{
 		Log:             logger,
 		Modules:         moduleList,
 		ModuleBlacklist: botModuleBlacklist,
 		Token:           discordBotToken,
+		CmdBootstrapper: applicationCommandModuleBootstrapper,
 	}
 	stdOutReceiver := log.ProvideStdOutReceiver(debugMode)
 	stdErrReceiver := log.ProvideStdErrReceiver(debugMode)

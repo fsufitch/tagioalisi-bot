@@ -5,7 +5,9 @@ import (
 
 	"github.com/fsufitch/tagioalisi-bot/bot/dice-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/dictionary-module"
+	groupscommand "github.com/fsufitch/tagioalisi-bot/bot/groups-command"
 	"github.com/fsufitch/tagioalisi-bot/bot/groups-module"
+	guildcache "github.com/fsufitch/tagioalisi-bot/bot/guild-cache"
 	"github.com/fsufitch/tagioalisi-bot/bot/log-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/memelink-module"
 	"github.com/fsufitch/tagioalisi-bot/bot/news-module"
@@ -26,9 +28,12 @@ var ProvideTagioalisiBot = wire.NewSet(
 	memelink.ProvideModule,
 	log.ProvideModule,
 	groups.ProvideModule,
+	guildcache.ProvideModule,
 	wiki.ProvideModule,
 	dice.ProvideModule,
 	news.ProvideModule,
 	dictionary.ProvideModule,
 	util.ProvideModule,
+	ProvideApplicationCommandModuleBootstrapper,
+	groupscommand.ProvideModule,
 )

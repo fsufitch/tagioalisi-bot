@@ -14,10 +14,21 @@ import (
 // 	DefaultMemberPermissions: &permissionManageGroups,
 // }
 
+var cmdGroupMember = &discordgo.ApplicationCommand{
+	Name:        "groups",
+	Description: "interact with group roles",
+	Options: []*discordgo.ApplicationCommandOption{
+		cmdGroupMember_Join,
+		cmdGroupMember_Leave,
+	},
+}
+
 func (m *Module) applicationCommandHandlers() []any {
 	return []any{
 		m.handleGroupJoin_AutoComplete,
 		m.handleGroupJoin,
+		m.handleGroupLeave,
+		m.handleGroupLeave_AutoComplete,
 	}
 }
 
@@ -26,11 +37,6 @@ func (m *Module) RegisterApplicationCommand(ctx context.Context, session *discor
 	if err != nil {
 		return
 	}
-
-	// _, err = session.ApplicationCommandCreate(string(m.ApplicationID), guildID, &cmdGroupsAdmin)
-	// if err != nil {
-	// 	return err
-	// }
 
 	for _, handler := range m.applicationCommandHandlers() {
 		cancel := session.AddHandler(handler)

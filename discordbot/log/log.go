@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
 
 // Level is an enum of log levels
@@ -106,8 +107,8 @@ func (l Logger) print(m Message) {
 		select {
 		case dest.Chan <- m:
 			// OK
-		default:
-			fmt.Fprintf(os.Stderr, "[LOG FAILURE] receiver `%s` did not receive message", dest.Name)
+		case <-time.After(1 * time.Second):
+			fmt.Fprintf(os.Stderr, "[LOG FAILURE] receiver `%s` did not receive message: %+v\n", dest.Name, m)
 		}
 	}
 }
