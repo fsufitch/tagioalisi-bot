@@ -61,6 +61,7 @@ func (gc *GuildCache) RefreshRoles(s *discordgo.Session) error {
 	if err != nil {
 		return err
 	}
+
 	gc.rolesFetchedTime = time.Now()
 	gc.logger.Debugf("refreshed roles; now have %d", len(roles))
 	gc.roles = roles
