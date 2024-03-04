@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-option go_package = "github.com/fsufitch/tagioalisi-bot/proto";
-package tagioalisi;
-
-message UnaryStatus {
-    bool ok = 1;
-    string message = 2;
-}

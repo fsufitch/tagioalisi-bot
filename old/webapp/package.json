@@ -1,0 +1,31 @@
+{
+  "name": "tagioalisi-webapp",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "foo": "bar",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "proto": "npx -c 'protoc --ts_proto_out=./@tagioalisi/proto --ts_proto_opt=env=browser,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false -I ../proto ../proto/*'",
+    "format-all": "npm run format $(find . -type f -not -path '*/node_modules/*' | grep -E '.(jsx?|tsx?|s?css|sass|html?|json|ya?ml)$')",
+    "format": "npx prettier-eslint --include-dotfiles --write"
+  },
+  "dependencies": {
+    "axios": "^1.3.4",
+    "nice-grpc": "^2.1.0",
+    "nice-grpc-web": "^3.0.0",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6",
+    "vuetify": "^3.1.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.0.0",
+    "sass": "^1.58.0",
+    "ts-proto": "^1.139.0",
+    "typescript": "^4.9.3",
+    "vite": "^4.1.0",
+    "vite-plugin-vuetify": "^1.0.2"
+  }
+}
