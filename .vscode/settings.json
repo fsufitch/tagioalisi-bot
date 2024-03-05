@@ -1,4 +1,6 @@
 {
+  "search.useIgnoreFiles": true,
+  "explorer.excludeGitIgnore": true,
   "git.enableCommitSigning": true,
   "terminal.integrated.shellIntegration.enabled": true,
   "editor.formatOnPaste": false, // required
@@ -42,5 +44,6 @@
   "[shellscript]": {
     "files.eol": "\n",
     "editor.defaultFormatter": "foxundermoon.shell-format"
-  }
+  },
+  "java.compile.nullAnalysis.mode": "automatic"
 }

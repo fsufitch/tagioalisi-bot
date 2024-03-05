@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 /*
@@ -9,6 +8,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
  */
 
 group = "org.tagioalisi"
+
 version = "0.0.1-SNAPSHOT"
 
 plugins {
@@ -18,10 +18,7 @@ plugins {
     id("org.springframework.boot") version "3.2.3"
 }
 
-
-repositories {
-    mavenCentral()
-}
+repositories { mavenCentral() }
 
 dependencies {
     implementation("org.springframework.boot", "spring-boot-starter-parent", "3.2.3")
@@ -30,17 +27,13 @@ dependencies {
     implementation("dev.kord", "kord-core", "0.13.1")
 }
 
-kotlin {
-    jvmToolchain(21)
-}
+kotlin { jvmToolchain(21) }
 
 tasks.named<BootJar>("bootJar") {
     archiveClassifier.set("boot")
     mainClass.set("org.tagioalisi.ApplicationMain")
 }
 
-//bootJar {
+// bootJar {
 //
-//}
-
-
+// }

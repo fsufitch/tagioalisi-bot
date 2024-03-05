@@ -13,15 +13,12 @@ class TagioalisiBot(
         private val discordConnectionConfiguration: DiscordConnectionConfiguration,
         private val kord: Kord,
 ) {
-    @Autowired
-    lateinit var features: Array<TagioalisiFeature>
-
+    @Autowired lateinit var features: Array<TagioalisiFeature>
 
     suspend fun start() {
         features.forEach { it.start() }
         kord.login()
     }
-
 }
 
 @Component
@@ -30,4 +27,11 @@ class KordProvider(private val discordConnectionConfiguration: DiscordConnection
     fun initializeKord(): Kord {
         return runBlocking { Kord(discordConnectionConfiguration.botToken) }
     }
+}
+
+typealias DiscordBotJoinURL = String
+
+@Bean
+fun createJoinURL(): DiscordBotJoinURL {
+    return "hello"
 }
