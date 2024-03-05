@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 /*
@@ -7,6 +8,9 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
  * To learn more about Gradle by exploring our Samples at https://docs.gradle.org/8.6/samples
  */
 
+group = "org.tagioalisi"
+version = "0.0.1-SNAPSHOT"
+
 plugins {
     java
     `java-library`
@@ -14,8 +18,6 @@ plugins {
     id("org.springframework.boot") version "3.2.3"
 }
 
-group = "org.tagioalisi"
-version = "0.0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -24,6 +26,8 @@ repositories {
 dependencies {
     implementation("org.springframework.boot", "spring-boot-starter-parent", "3.2.3")
     implementation("org.springframework.boot", "spring-boot-starter", "3.2.3")
+    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.8.0")
+    implementation("dev.kord", "kord-core", "0.13.1")
 }
 
 kotlin {
@@ -32,7 +36,7 @@ kotlin {
 
 tasks.named<BootJar>("bootJar") {
     archiveClassifier.set("boot")
-    mainClass.set("org.tagioalisi.TagioalisiMain")
+    mainClass.set("org.tagioalisi.ApplicationMain")
 }
 
 //bootJar {
