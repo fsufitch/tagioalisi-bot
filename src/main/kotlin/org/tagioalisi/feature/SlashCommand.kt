@@ -35,19 +35,19 @@ open class SlashCommand {
         val outputFlow = MutableSharedFlow<ApplicationCommand>(replay = 5)
         if (context.isGlobal) {
             log.info("register global command '$name'")
-            kord.createGlobalApplicationCommands { input(name, description, builder) }.collect { outputFlow.emit(it) }
+            val cmd = kord.createGlobalChatInputCommand(name, description, builder)
+            outputFlow.emit(cmd)
         }
 
         if (context.isGuild) {
             kord.on<GuildCreateEvent> {
                 log.info("register guild command '$name' (guild=${guild.id})")
-                kord.createGuildApplicationCommands(guild.id) { input(name, description, builder) }
-                    .collect { outputFlow.emit(it) }
+                val cmd = kord.createGuildChatInputCommand(guild.id, name, description, builder)
+                outputFlow.emit(cmd)
             }
         }
         return outputFlow
     }
-
 
     suspend fun listen(kord: Kord): Job {
         kord.on<AutoCompleteInteractionCreateEvent> {

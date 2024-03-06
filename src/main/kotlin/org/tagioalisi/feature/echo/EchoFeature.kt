@@ -15,7 +15,7 @@ class EchoFeature(kord: Kord) : TagioalisiFeature(kord) {
     private val log = LogFactory.getLog(javaClass)
 
     override val slashCommands = listOf(SlashCommand().apply {
-        name = "echo"
+        name = "echo2"
         context = SlashCommandContext.GUILD
         description = "Echo the received message back"
         ephemeral = true
@@ -23,6 +23,7 @@ class EchoFeature(kord: Kord) : TagioalisiFeature(kord) {
             string("message", "message to echo") {
                 required = true
                 autocomplete = true
+                minLength = 1
             }
         }
 
