@@ -11,13 +11,17 @@ plugins {
     id("org.springframework.boot") version "3.2.3"
 }
 
-repositories { mavenCentral() }
+repositories {
+    mavenCentral()
+
+}
 
 dependencies {
     implementation("org.springframework.boot", "spring-boot-starter-parent", "3.2.3")
     implementation("org.springframework.boot", "spring-boot-starter", "3.2.3")
     implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.8.0")
-    implementation("dev.kord", "kord-core", "0.13.1")
+    implementation("jakarta.inject", "jakarta.inject-api", "2.0.1")
+    implementation("com.kotlindiscord.kord.extensions", "kord-extensions", "1.6.0")
 }
 
 kotlin { jvmToolchain(21) }
@@ -25,6 +29,6 @@ kotlin { jvmToolchain(21) }
 tasks {
     named<BootJar>("bootJar") {
         archiveClassifier.set("boot")
-        mainClass.set("org.tagioalisi.ApplicationMain")
+        mainClass.set("org.tagioalisi.Main")
     }
 }
