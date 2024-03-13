@@ -8,16 +8,10 @@ import com.kotlindiscord.kord.extensions.utils.suggestStringCollection
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.guild.GuildCreateEvent
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Component
 
 
-@Configuration
-open class EchoExtensionProvider {
-    @Bean
-    open fun getEchoExtension() = EchoExtension()
-}
-
+@Component
 class EchoExtension : TagioalisiBotExtension() {
     private val logger = LoggerFactory.getLogger(javaClass)
     override val name: String = "echo"
@@ -38,9 +32,6 @@ class EchoExtension : TagioalisiBotExtension() {
     override suspend fun setup() {
         event<GuildCreateEvent> {
             action {
-                event.guild.getApplicationCommands().collect { cmd ->
-                    cmd.delete()
-                }
                 logger.info("setting up echo for guild ${event.guild.id} ('${event.guild.name}')")
                 setupEchoCommand(event.guild.id)
             }

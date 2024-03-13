@@ -29,7 +29,5 @@ open class TagioalisiRuntime(
         runBlocking {
             tagioalisiBot.start()
         }
-
     }
-
 }

@@ -42,7 +42,6 @@ open class TagioalisiBotProvider(
         }
 
         bot.on<GuildCreateEvent> {
-            println("guildcreate event")
             this.kord.getGlobalApplicationCommands().buffer().collect {
                 logger.info("delete global application command ${it.id} (${it.name})")
                 it.delete()
